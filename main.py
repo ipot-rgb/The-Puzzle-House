@@ -10,10 +10,6 @@ puzzle = pygame.image.load(data, '.png')
 # Set up the display
 display = pygame.display.set_mode((1200, 700), pygame.SCALED) 
 
-# Background and objects
-display.blit(wall, (0, 0))
-display.blit(puzzle, (100, 100))
-
 # Update the display
 pygame.display.update()
 
