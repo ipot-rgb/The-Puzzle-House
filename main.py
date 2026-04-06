@@ -14,8 +14,12 @@ display = pygame.display.set_mode((1200, 700), pygame.SCALED)
 display.blit(wall, (0, 0))
 display.blit(puzzle, (100, 100))
 
+font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
+text = font.render("Hello, World!", True, (0,0,0))
+display.blit(text, (400, 300))
+
 # Update the display
-pygame.display.update()
+pygame.display.flip()
 
 pygame.display.toggle_fullscreen()
 time.sleep(2)
