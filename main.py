@@ -25,4 +25,4 @@ pygame.display.toggle_fullscreen()
 time.sleep(2)
 
 # Quit Pygame
-pygame.quit()
+start = pygame.quit()
