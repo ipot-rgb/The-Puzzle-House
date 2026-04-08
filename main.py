@@ -18,6 +18,11 @@ font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSan
 text = font.render("Hello, World!", True, (0,0,0))
 display.blit(text, (400, 300))
 
+# Color 
+color = Color(255, 0, 0)  # Red color
+color2 = Color(f"#5F5F5F")  # Gray color
+pygame.draw.rect(display, color, (250,0,0))
+
 # Update the display
 pygame.display.flip()
 
