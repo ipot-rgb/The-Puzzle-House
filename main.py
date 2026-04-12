@@ -14,7 +14,7 @@ puzzle3 = pygame.image.load(data3, '.png')
 puzzle4 = pygame.image.load(data4, '.png')
 
 # Set up the display
-display = pygame.display.set_mode((1200, 700), pygame.SCALED) 
+display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
 
 # Background and objects
 display.blit(wall, (0, 0))
@@ -32,7 +32,6 @@ display.blit(text, (400, 300))
 # Update the display
 pygame.display.flip()
 
-pygame.display.toggle_fullscreen()
 time.sleep(2)
 
 # Quit Pygame
