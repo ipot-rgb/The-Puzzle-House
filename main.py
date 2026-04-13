@@ -1,6 +1,84 @@
 import pygame
 import time
+
 pygame.init()
+#===============================
+# Main Menu
+#===============================
+display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
+exit_icon = pygame.image.load("exit_button.png")
+exit_icon = pygame.transform.scale(exit_icon, (110, 75))
+pygame.display.flip()
+
+#===============================
+# Set up the display screen
+#===============================
+pygame.display.set_caption("The Puzzle House")
+icon = pygame.image.load("puzzle_icon.png")
+pygame.display.set_icon(icon)
+
+#===============================
+# Button class
+#===============================
+class Button:
+    def __init__(self, x, y, image):
+        self.image = image
+        self.x = x
+        self.y = y
+        self.rect = self.image.get_rect(center=(x, y))
+
+    def update(self, display):
+        display.blit(self.image, self.rect)
+    
+    def is_clicked(self, pos):
+        return self.rect.collidepoint(pos)
+
+    def is_hovered(self, pos):
+        return self.rect.collidepoint(pos)
+
+#===============================
+# Picture class
+#===============================
+class picture:
+    def __init__(self, image_name, x, y):
+        self.name = pygame.image.load(image_name)
+        self.x = x
+        self.y = y
+
+brg = picture("menu_brg.jpg", 0, 0)
+display.blit(brg.name, (brg.x, brg.y))
+
+exit_button = Button(1125, 587, exit_icon)
+
+default_cursor = pygame.SYSTEM_CURSOR_ARROW
+hand_cursor = pygame.SYSTEM_CURSOR_HAND
+
+
+#===============================
+# Game loop
+#===============================
+running = True
+while running:
+    exit_button.update(display)
+
+    #cursor changing
+    mouse_pos = pygame.mouse.get_pos()
+    if exit_button.is_hovered(mouse_pos):
+        pygame.mouse.set_cursor(hand_cursor)
+    else:
+        pygame.mouse.set_cursor(default_cursor)
+
+    # Event handling
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if exit_button.is_clicked(event.pos):
+                running = False
+
+    pygame.display.update()
+pygame.quit()
+
 
 # # Load images
 # wall = pygame.image.load("wall.png")
@@ -28,84 +106,3 @@ pygame.init()
 # pygame.display.flip()
 
 # time.sleep(2)
-
-# Main Menu
-display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
-brg = pygame.image.load("menu_brg.jpg")
-brg = pygame.transform.scale(brg, (1200, 650))
-
-start_icon = pygame.image.load("start_button.png")
-start_icon = pygame.transform.scale(start_icon, (120, 120))
-exit_icon = pygame.image.load("exit_button.png")
-exit_icon = pygame.transform.scale(exit_icon, (90, 90))
-display.blit(brg, (0,0))
-display.blit(start_icon, (550, 193))
-pygame.display.flip()
-
-
-# Set up the display screen
-pygame.display.set_caption("The Puzzle House")
-icon = pygame.image.load("puzzle_icon.png")
-pygame.display.set_icon(icon)
-
-# Button class
-class Button:
-    def __init__(self, x, y, image):
-        self.image = image
-        self.x = x
-        self.y = y
-        self.rect = self.image.get_rect(center=(x, y))
-
-    def update(self, display):
-        display.blit(self.image, self.rect)
-    
-    def is_clicked(self, pos):
-        return self.rect.collidepoint(pos)
-
-    def is_hovered(self, pos):
-        return self.rect.collidepoint(pos)
-
-exit_button = Button(1150, 580, exit_icon)
-start_button = Button(550, 193, start_icon)
-buttons = [exit_button, start_button]
-
-default_cursor = pygame.SYSTEM_CURSOR_ARROW
-hand_cursor = pygame.SYSTEM_CURSOR_HAND
-
-
-# Game loop
-running = True
-while running:
-    exit_button.update(display)
-    # start_button.update(display)
-
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if exit_button.is_clicked(event.pos):
-                running = False
-
-    #cursor changing
-    mouse_pos = pygame.mouse.get_pos()
-    hovering_any = False
-
-    for button in buttons:
-        if button.is_hovered(mouse_pos):
-            hovering_any = True
-            break
-        hovering_any = False
-
-        for button in buttons:
-            if button.is_hovered(mouse_pos):
-                hovering_any = True
-                break
-
-        if hovering_any:
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
-        else:
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
-    pygame.display.update()
-
-pygame.quit()
