@@ -1,12 +1,20 @@
 import pygame
 import time
+import os 
 
 pygame.init()
+
+
+BASE_DIR = os.path.dirname(__file__)
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+
+exit_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "exit_button.png"))
+icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon","puzzle_icon.png"))
 #===============================
 # Main Menu
 #===============================
 display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
-exit_icon = pygame.image.load("exit_button.png")
+# exit_icon = pygame.image.load("exit_button.png")
 exit_icon = pygame.transform.scale(exit_icon, (110, 75))
 pygame.display.flip()
 
@@ -14,7 +22,7 @@ pygame.display.flip()
 # Set up the display screen
 #===============================
 pygame.display.set_caption("The Puzzle House")
-icon = pygame.image.load("puzzle_icon.png")
+icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "puzzle_icon.png"))
 pygame.display.set_icon(icon)
 
 #===============================
@@ -40,15 +48,17 @@ class Button:
 # Picture class
 #===============================
 class picture:
-    def __init__(self, image_name, x, y):
-        self.name = pygame.image.load(image_name)
+    def __init__(self, path_parts, x, y):
+        path = os.path.join(ASSETS_DIR, *path_parts)
+        self.name = pygame.image.load(path)
         self.x = x
         self.y = y
 
-brg = picture("menu_brg.jpg", 0, 0)
+brg = picture(("Menu_interface", "menu_brg.jpg"), 0, 0)
 display.blit(brg.name, (brg.x, brg.y))
 
 exit_button = Button(1125, 587, exit_icon)
+
 
 default_cursor = pygame.SYSTEM_CURSOR_ARROW
 hand_cursor = pygame.SYSTEM_CURSOR_HAND
@@ -81,28 +91,28 @@ pygame.quit()
 
 
 # # Load images
-# wall = pygame.image.load("wall.png")
-# data = open("puzzle_00.png")
-# puzzle = pygame.image.load(data, '.png')
+    # wall = pygame.image.load("wall.png")
+    # data = open("puzzle_00.png")
+    # puzzle = pygame.image.load(data, '.png')
 
 
 # # Background and objects
-# display.blit(wall, (0, 0))
-# display.blit(puzzle, (100, 100))
+    # display.blit(wall, (0, 0))
+    # display.blit(puzzle, (100, 100))
 
 # font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
 # text = font.render("Hello, World!", True, (0,0,0))
 # display.blit(text, (400, 300))
 
 # # Update the display
-# pygame.display.flip()
+    # pygame.display.flip()
 
-# time.sleep(2)
-# text_1 = font.render("This is other screen", True, (0,0,0))
-# display.blit(text_1, (0,0))
-# wall2 = pygame.image.load("background.png")
-# wall2 = pygame.transform.scale(wall2, (1000, 650))
-# display.blit(wall2, (0, 0))
-# pygame.display.flip()
+    # time.sleep(2)
+    # text_1 = font.render("This is other screen", True, (0,0,0))
+    # display.blit(text_1, (0,0))
+    # wall2 = pygame.image.load("background.png")
+    # wall2 = pygame.transform.scale(wall2, (1000, 650))
+    # display.blit(wall2, (0, 0))
+    # pygame.display.flip()
 
-# time.sleep(2)
+    # time.sleep(2)
