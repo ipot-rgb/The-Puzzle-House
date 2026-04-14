@@ -2,29 +2,6 @@ import pygame
 import time
 import os 
 
-pygame.init()
-
-
-BASE_DIR = os.path.dirname(__file__)
-ASSETS_DIR = os.path.join(BASE_DIR, "assets")
-
-exit_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "exit_button.png"))
-icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon","puzzle_icon.png"))
-#===============================
-# Main Menu
-#===============================
-display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
-# exit_icon = pygame.image.load("exit_button.png")
-exit_icon = pygame.transform.scale(exit_icon, (110, 75))
-pygame.display.flip()
-
-#===============================
-# Set up the display screen
-#===============================
-pygame.display.set_caption("The Puzzle House")
-icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "puzzle_icon.png"))
-pygame.display.set_icon(icon)
-
 #===============================
 # Button class
 #===============================
@@ -47,6 +24,7 @@ class Button:
 #===============================
 # Picture class
 #===============================
+
 class picture:
     def __init__(self, path_parts, x, y):
         path = os.path.join(ASSETS_DIR, *path_parts)
@@ -54,38 +32,82 @@ class picture:
         self.x = x
         self.y = y
 
+pygame.init()
+
+BASE_DIR = os.path.dirname(__file__)
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+
+
+#===============================
+# Set up the display screen
+#===============================
+display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
+pygame.display.set_caption("The Puzzle House")
+icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon","puzzle_icon.png"))
+pygame.display.set_icon(icon)
+
 brg = picture(("Menu_interface", "menu_brg.jpg"), 0, 0)
 display.blit(brg.name, (brg.x, brg.y))
 
-exit_button = Button(1125, 587, exit_icon)
-
-
 default_cursor = pygame.SYSTEM_CURSOR_ARROW
 hand_cursor = pygame.SYSTEM_CURSOR_HAND
+
+#===============================
+# Main Menu
+#===============================
+
+exit_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "exit_button.png"))
+exit_icon = pygame.transform.scale(exit_icon, (110, 75))
+exit_button = Button(1125, 587, exit_icon)
+exit_button.update(display)
+
+start_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "start_button.png"))
+start_icon = pygame.transform.scale(start_icon, (145, 115))
+start_button = Button(600, 305, start_icon)
+start_button.update(display)
+pygame.display.flip()
 
 
 #===============================
 # Game loop
 #===============================
 running = True
+current_screen = "menu"
 while running:
-    exit_button.update(display)
-
-    #cursor changing
     mouse_pos = pygame.mouse.get_pos()
-    if exit_button.is_hovered(mouse_pos):
-        pygame.mouse.set_cursor(hand_cursor)
-    else:
+
+    # ~~ Display Main Menu
+    if current_screen == "menu":
+        display.blit(brg.name, (brg.x, brg.y))
+        exit_button.update(display)
+        start_button.update(display)
+        if exit_button.is_hovered(mouse_pos):
+            pygame.mouse.set_cursor(hand_cursor)
+        elif start_button.is_hovered(mouse_pos):
+            pygame.mouse.set_cursor(hand_cursor)
+        else:
+            pygame.mouse.set_cursor(default_cursor)
+
+    # ~~ Display Game Screen
+    elif current_screen == "game":
         pygame.mouse.set_cursor(default_cursor)
+        display.fill((255, 255, 255))
+        font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
+        text = font.render("Hello, World!", True, (0,0,0))
+        display.blit(text, (400, 300))
+        pygame.display.flip()
 
     # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             if exit_button.is_clicked(event.pos):
                 running = False
-
+            if start_button.is_clicked(event.pos):
+                current_screen = "game"
+                
     pygame.display.update()
 pygame.quit()
 
