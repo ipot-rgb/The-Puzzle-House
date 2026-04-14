@@ -92,7 +92,7 @@ while running:
     elif current_screen == "game":
         pygame.mouse.set_cursor(default_cursor)
         display.fill((255, 255, 255))
-        font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
+        font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\GideonRoman-Regular.ttf', 36)
         text = font.render("Hello, World!", True, (0,0,0))
         display.blit(text, (400, 300))
         pygame.display.flip()
