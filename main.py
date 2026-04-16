@@ -62,10 +62,47 @@ exit_button = Button(1125, 587, exit_icon)
 exit_button.update(display)
 
 start_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "start_button.png"))
-start_icon = pygame.transform.scale(start_icon, (145, 115))
-start_button = Button(600, 305, start_icon)
+start_icon = pygame.transform.scale(start_icon, (175, 75))
+start_button = Button(600, 265, start_icon)
 start_button.update(display)
 pygame.display.flip()
+
+
+# --Game Class--
+def tuto():
+    pygame.mouse.set_cursor(default_cursor)
+    pygame.display.set_caption("The Puzzle House - Tutorial")
+    while True:
+        display.fill((255, 255, 255))
+        font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\GideonRoman-Regular.ttf', 36)
+        text = font.render("Hello, World!", True, (0,0,0))
+        display.blit(text, (400, 300))
+        pygame.display.flip()
+
+def level_1():
+    pygame.mouse.set_cursor(default_cursor)
+    while True:
+        pass
+
+def level_2():
+    pygame.mouse.set_cursor(default_cursor)
+    while True:
+        pass
+
+def level_3():
+    pygame.mouse.set_cursor(default_cursor)
+    while True:
+        pass
+
+def level_4():
+    pygame.mouse.set_cursor(default_cursor)
+    while True:
+        pass
+
+def level_5():
+    pygame.mouse.set_cursor(default_cursor)
+    while True:
+        pass
 
 
 #===============================
@@ -90,18 +127,14 @@ while running:
 
     # ~~ Display Game Screen
     elif current_screen == "game":
-        pygame.mouse.set_cursor(default_cursor)
-        display.fill((255, 255, 255))
-        font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\GideonRoman-Regular.ttf', 36)
-        text = font.render("Hello, World!", True, (0,0,0))
-        display.blit(text, (400, 300))
-        pygame.display.flip()
+        tuto()
 
     # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+        # ~~~~~ Handle button clicks ~~~~~
         if event.type == pygame.MOUSEBUTTONDOWN:
             if exit_button.is_clicked(event.pos):
                 running = False
