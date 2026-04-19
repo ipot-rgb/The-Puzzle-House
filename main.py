@@ -30,7 +30,9 @@ pygame.init()
 # time.sleep(2)
 
 # Main Menu
-display = pygame.display.set_mode((1200, 650), pygame.SCALED) 
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 650
+display = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED)
 brg = pygame.image.load("menu_brg.jpg")
 brg = pygame.transform.scale(brg, (1200, 650))
 exit_icon = pygame.image.load("exit_button.png")
