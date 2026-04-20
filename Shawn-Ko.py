@@ -66,6 +66,70 @@ enter_button_x = screen_width // 2 - enter_button_width // 2
 enter_button_y = screen_height - 100
 enter_button = [enter_button_x, enter_button_y, enter_button_width, enter_button_height, "ENTER", False]
 
+# Placeholder for puzzles' logics
+def check_puzzle_solution(level, password):
+    if level == 1:
+        return password == "123"
+    elif level == 2:
+        return password == "456"
+    elif level == 3:
+        return password == "789"
+    elif level == 4:
+        return password == "111"
+    elif level == 5:
+        return password == "999"
+    return False
+
+
+def load_level(level):
+    global password_input, message, message_timer
+    password_input = ""
+    print(f"Loading Level {level}...")
+
+    #Placeholder for puzzle setup
+    #Puzzle initialization code will be put here
+    if level == 1:
+        pass
+    elif level == 2:
+        pass
+    elif level == 3:
+        pass
+    elif level == 4:
+        pass
+    elif level == 5:
+        pass
+
+
+def complete_level():
+    global current_level, level_complete, game_complete, message, message_timer, password_input
+
+    if current_level < total_levels:
+        current_level += 1
+        level_complete = False
+        password_input = ""
+        message = f"Level {current_level - 1} Complete! Moving to Level {current_level}"
+        message_timer = 90
+        load_level(current_level)  # Load next level's puzzle
+    else:
+        game_complete = True
+        message = "Congratulations! You completed all levels!"
+        message_timer = 180
+
+
+def reset_current_level():
+    #Reset password when wrong
+    global password_input, message, message_timer
+    password_input = ""
+    message = f"Wrong password! Level {current_level} reset. Try again!"
+    message_timer = 90
+
+    # ===== RESET PUZZLE FOR CURRENT LEVEL =====
+    load_level(current_level)
+
+
+# Load first level
+load_level(1)
+
 running = True
 while running:
     mouse_x, mouse_y = pygame.mouse.get_pos()
