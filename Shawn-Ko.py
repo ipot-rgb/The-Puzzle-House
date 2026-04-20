@@ -177,5 +177,57 @@ while running:
         if hovered:
             pygame.draw.rect(screen, YELLOW, (x, y, width, height), 3)
 
+    # Draw Level Display
+    level_text = font_large.render(f"Level {current_level}/{total_levels}", True, YELLOW)
+    screen.blit(level_text, (20, 20))
+
+    # Draw Password Display Box
+    password_box = pygame.Rect(screen_width // 2 - 200, 100, 400, 60)
+    pygame.draw.rect(screen, GRAY, password_box)
+    pygame.draw.rect(screen, BLACK, password_box, 3)
+
+    # Show the entered password
+    password_surface = font_large.render(password_input if password_input else "_____", True, BLACK)
+    screen.blit(password_surface, (password_box.x + 20, password_box.y + 10))
+
+    # Instruction text
+    instruction1 = font_small.render("Click the numbered buttons to enter your password", True, GREEN)
+    instruction2 = font_small.render("Then click ENTER to submit", True, GREEN)
+    screen.blit(instruction1, (screen_width // 2 - instruction1.get_width() // 2, 180))
+    screen.blit(instruction2, (screen_width // 2 - instruction2.get_width() // 2, 200))
+
+    # Draw ENTER button
+    ex, ey, ew, eh, etext, ehovered = enter_button
+    enter_color = GREEN if ehovered else BLUE
+    pygame.draw.rect(screen, enter_color, (ex, ey, ew, eh))
+    pygame.draw.rect(screen, BLACK, (ex, ey, ew, eh), 3)
+    enter_surface = font_medium.render(etext, True, WHITE)
+    screen.blit(enter_surface,
+                    (ex + ew // 2 - enter_surface.get_width() // 2, ey + eh // 2 - enter_surface.get_height() // 2))
+
+    # Show message
+    if message_timer > 0:
+        msg_color = GREEN if "Complete" in message or "Congratulations" in message else RED
+        msg_surface = font_medium.render(message, True, msg_color)
+        msg_x = (screen_width - msg_surface.get_width()) // 2
+        msg_y = screen_width - 60
+        screen.blit(msg_surface, (msg_x, msg_y))
+        message_timer -= 1
+
+    # Show game complete overlay
+    if game_complete:
+        overlay = pygame.Surface((screen_width, screen_height))
+        overlay.set_alpha(200)
+        overlay.fill(WHITE)
+        screen.blit(overlay, (0, 0))
+
+        complete_text1 = font_large.render("GAME COMPLETE!", True, GREEN)
+        complete_text2 = font_medium.render("You've completed all levels!", True, BLUE)
+        complete_text3 = font_small.render("Close the window to quit", True, BLACK)
+
+        screen.blit(complete_text1, (screen_width // 2 - complete_text1.get_width() // 2, screen_height // 2 - 50))
+        screen.blit(complete_text2, (screen_width // 2 - complete_text2.get_width() // 2, screen_height // 2))
+        screen.blit(complete_text3, (screen_width // 2 - complete_text3.get_width() // 2, screen_height // 2 + 50))
+
     pygame.display.flip()
 pygame.quit()
