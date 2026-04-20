@@ -59,6 +59,13 @@ password_input = ""
 message = ""
 message_timer = 0
 
+#Enter button
+enter_button_width = 120
+enter_button_height = 50
+enter_button_x = screen_width // 2 - enter_button_width // 2
+enter_button_y = screen_height - 100
+enter_button = [enter_button_x, enter_button_y, enter_button_width, enter_button_height, "ENTER", False]
+
 running = True
 while running:
     mouse_x, mouse_y = pygame.mouse.get_pos()
