@@ -48,6 +48,17 @@ for row in range(3):
         button_y = image_y + (row * cell_height)
         buttons.append([button_x, button_y, cell_width, cell_height, number, False])
 
+#Level system
+current_level = 1
+total_levels = 5
+level_complete = False
+game_complete = False
+
+# Password input system
+password_input = ""
+message = ""
+message_timer = 0
+
 running = True
 while running:
     mouse_x, mouse_y = pygame.mouse.get_pos()
