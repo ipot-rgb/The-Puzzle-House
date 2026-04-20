@@ -171,5 +171,11 @@ while running:
 
     screen.blit(bck_img, (0,0))
     screen.blit(grid_img, grid_img_rect)
+
+    for button in buttons:
+        x, y, width, height, number, hovered = button
+        if hovered:
+            pygame.draw.rect(screen, YELLOW, (x, y, width, height), 3)
+
     pygame.display.flip()
 pygame.quit()
