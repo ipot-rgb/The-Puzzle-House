@@ -8,6 +8,21 @@ screen_height = 650
 screen = pygame.display.set_mode((screen_width, screen_height))
 screen_rect = screen.get_rect()
 
+#colours
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+GRAY = (200, 200, 200)
+YELLOW = (255, 255, 0)
+DARK_GRAY = (100, 100, 100)
+
+# Fonts
+font_large = pygame.font.Font(None, 48)
+font_medium = pygame.font.Font(None, 36)
+font_small = pygame.font.Font(None, 24)
+
 #Background Image
 bck_img = pygame.image.load('SK-Assets/SK-background.png').convert()
 bck_img = pygame.transform.scale(bck_img, (screen_width, screen_height))
