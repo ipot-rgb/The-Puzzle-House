@@ -7,6 +7,7 @@ screen_width = 1200
 screen_height = 650
 screen = pygame.display.set_mode((screen_width, screen_height))
 screen_rect = screen.get_rect()
+clock = pygame.time.Clock()
 
 #colours
 WHITE = (255, 255, 255)
@@ -230,4 +231,5 @@ while running:
         screen.blit(complete_text3, (screen_width // 2 - complete_text3.get_width() // 2, screen_height // 2 + 50))
 
     pygame.display.flip()
+    clock.tick(60)
 pygame.quit()
