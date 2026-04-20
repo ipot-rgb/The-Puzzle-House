@@ -48,6 +48,12 @@ pygame.display.set_icon(icon)
 
 brg = picture(("Menu_interface", "menu_brg.jpg"), 0, 0)
 display.blit(brg.name, (brg.x, brg.y))
+font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
+text = font.render("Hello, World!", True, (0,0,0))
+display.blit(text, (400, 300))
+
+# Update the display
+pygame.display.flip()
 
 default_cursor = pygame.SYSTEM_CURSOR_ARROW
 hand_cursor = pygame.SYSTEM_CURSOR_HAND
