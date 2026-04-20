@@ -139,14 +139,35 @@ while running:
             button[5] = True
         else:
             button[5] = False
+
+    ex, ey, ew, eh, etext, ehovered = enter_button
+    if (ex < mouse_x < ex + ew) and (ey < mouse_y < ey + eh):
+        enter_button[5] = True
+    else:
+        enter_button[5] = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and not game_complete and not level_complete:
+            # Check grid button clicks
             for button in buttons:
                 x, y, width, height, number, hovered = button
                 if (x < mouse_x < x + width) and (y < mouse_y < y + height):
-                    print(f"Button {number} clicked!")
+                    password_input += str(number)
+                    if len(password_input) > 10:
+                        password_input = password_input[:10]
+                    print(f"Added {number} to password. Current: {password_input}")
+                    break
+
+            # Check ENTER button click
+            if (ex < mouse_x < ex + ew) and (ey < mouse_y < ey + eh):
+                print(f"ENTER pressed with password: {password_input}")
+                if check_puzzle_solution(current_level, password_input):
+                    level_complete = True
+                    complete_level()
+                else:
+                    reset_current_level()
 
     screen.blit(bck_img, (0,0))
     screen.blit(grid_img, grid_img_rect)
