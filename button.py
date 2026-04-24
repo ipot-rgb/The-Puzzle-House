@@ -30,7 +30,7 @@ pygame.display.set_caption("The Puzzle House")
 # Screen background color
 LIGHT_BLUE = (202, 228, 241)
 
-screen.fill(LIGHT_BLUE)
+screen.fill(LIGHT_BLUE, rect=(0, 0, screen_width, screen_height))
 
 # ========== Button Configuration ==========
 # Right section dimensions
