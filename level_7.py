@@ -27,14 +27,17 @@ screen_width = 1200
 screen_height = 650
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Puzzle House")
-red = (91, 14, 45)
+red = (207, 177, 177)
 
+board = pygame.image.load("assets/Level_15/board.png")
 
 # ========== Button Configuration ==========
 # Right section dimensions
 right_section_width = screen_width // 3
 button_area_start_x = screen_width - right_section_width
+
 # Picture loading
+
 images = {}
 letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
@@ -78,22 +81,26 @@ buttons.append(enter_btn)
 
 # Passcode variables
 passcode = []
-correct_passcode = ['a', 'b', 'c', 'd']
+correct_passcode = ['i', 'h', 'b', 'a', 'd', 'g', 'f', 'e', 'c']
 
 # Button Drawing
 for btn in buttons:
     btn.draw()
 
-
-
 brg = pygame.image.load("assets/Level_15/brg_15.png")
 brg = pygame.transform.scale(brg, (screen_width, screen_height))
 puzzles = []
+
 for i in range(1, 10):
     img = pygame.image.load(f"assets/Level_15/num_{i}.png")
-    img = pygame.transform.scale(img, (100, 100))
+    if i == 2:
+        img = pygame.transform.scale(img, (110, 150))
+    elif i == 4:
+        img = pygame.transform.scale(img, (80, 100))
+    else:
+        img = pygame.transform.scale(img, (100, 100))
 
-    rect = img.get_rect(topleft=(80 * i, 75))
+    rect = img.get_rect(topleft=(80 * i, 56))
     puzzles.append({"img": img, "rect": rect})
 
 active_puzzle = None
@@ -104,7 +111,6 @@ while run:
             run = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            # 按钮点击
             if (clicked_btn := next((btn for btn in buttons 
                 if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                 
@@ -116,7 +122,10 @@ while run:
                 
                 if passcode == correct_passcode:
                     print("✅ You passed!")
+                    for btn in buttons:
+                        btn.visible = False
                 else:
+                    print("❌ Incorrect passcode, try again.")
                     for btn in buttons:
                         if btn.letter != "ENTER":
                             btn.visible = True
@@ -135,9 +144,11 @@ while run:
                     puzzles[active_puzzle]["rect"].move_ip(event.rel)
 
     screen.blit(brg, (0, 0))
+    screen.blit(board, (55, 200))
     pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
     for btn in buttons:
         btn.draw()
+
     for p in puzzles:
         screen.blit(p["img"], p["rect"])
     pygame.display.flip()
