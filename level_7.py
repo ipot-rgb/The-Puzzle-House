@@ -29,7 +29,6 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Puzzle House")
 red = (207, 177, 177)
 
-board = pygame.image.load("assets/Level_15/board.png")
 
 # ========== Button Configuration ==========
 # Right section dimensions
@@ -37,11 +36,14 @@ right_section_width = screen_width // 3
 button_area_start_x = screen_width - right_section_width
 
 # Picture loading
+board = pygame.image.load("assets/Level_15/board.png")
+paper = pygame.image.load("assets/Level_15/paper.png")
+brg = pygame.image.load("assets/Level_15/brg_15.png")
+enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 
 images = {}
 letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
-enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 enter_img = pygame.transform.scale(enter_img, (45, 45))
 
 for letter in letters:
@@ -87,10 +89,14 @@ correct_passcode = ['i', 'h', 'b', 'a', 'd', 'g', 'f', 'e', 'c']
 for btn in buttons:
     btn.draw()
 
-brg = pygame.image.load("assets/Level_15/brg_15.png")
+paper = pygame.transform.scale(paper, (400, 400))
 brg = pygame.transform.scale(brg, (screen_width, screen_height))
 puzzles = []
 
+for i in range(1, 2):
+    rect_paper = paper.get_rect(topleft=(450, 200))
+    puzzles.append({"img": paper, "rect": rect_paper})
+    
 for i in range(1, 10):
     img = pygame.image.load(f"assets/Level_15/num_{i}.png")
     if i == 2:
@@ -102,8 +108,10 @@ for i in range(1, 10):
 
     rect = img.get_rect(topleft=(80 * i, 56))
     puzzles.append({"img": img, "rect": rect})
-
+    
 active_puzzle = None
+active_paper = None
+
 run = True
 while run:
     for event in pygame.event.get():
@@ -111,6 +119,7 @@ while run:
             run = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            # Button Click Detection
             if (clicked_btn := next((btn for btn in buttons 
                 if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                 
@@ -131,20 +140,25 @@ while run:
                             btn.visible = True
                     passcode = []
 
+            # Puzzle Dragging Detection
             elif event.button == 1:
                 for i, p in enumerate(puzzles):
                     if p["rect"].collidepoint(event.pos):
                         active_puzzle = i
 
+
         elif event.type == pygame.MOUSEBUTTONUP:
                 active_puzzle = None
+                active_paper = None
 
         elif event.type == pygame.MOUSEMOTION:
                 if active_puzzle is not None:
                     puzzles[active_puzzle]["rect"].move_ip(event.rel)
+                elif active_paper is not None:
+                    puzzles[active_paper]["rect_paper"].move_ip(event.rel)
 
     screen.blit(brg, (0, 0))
-    screen.blit(board, (55, 200))
+    screen.blit(board, (35, 200))
     pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
     for btn in buttons:
         btn.draw()
