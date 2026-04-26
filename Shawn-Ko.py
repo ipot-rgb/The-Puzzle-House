@@ -129,6 +129,10 @@ def load_level(level):
     global password_input, message, message_timer
     password_input = []
     print(f"Loading Level {level}...")
+    for btn in buttons:
+        if btn.letter != "ENTER":
+            btn.visible = True
+            btn.clicked = False
 
     #Placeholder for puzzle setup
     #Puzzle initialization code will be put here
