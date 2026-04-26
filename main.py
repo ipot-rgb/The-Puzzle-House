@@ -1,6 +1,7 @@
 import pygame
 import time
 import os 
+from level_7 import run_level_7
 
 #===============================
 # Button class
@@ -56,6 +57,7 @@ display.blit(text, (400, 300))
 # Update the display
 pygame.display.flip()
 
+# Cursors
 default_cursor = pygame.SYSTEM_CURSOR_ARROW
 hand_cursor = pygame.SYSTEM_CURSOR_HAND
 
@@ -74,16 +76,6 @@ start_button = Button(600, 265, start_icon)
 start_button.update(display)
 pygame.display.flip()
 
-
-# --Game Functions--
-def tuto():
-    pygame.mouse.set_cursor(default_cursor)
-    display.fill((255, 255, 255))
-    pygame.display.set_caption("The Puzzle House - Tutorial Level")
-
-    font = pygame.font.Font(r"C:\Users\HP\OneDrive\Documents\PythonGame\OpenSans-VariableFont_wdth,wght.ttf" , 36)
-    text_1 = Text(font, 'Welcome to the Tutorial Level!', (0, 0, 0), 600, 325)
-
 #===============================
 # Game loop
 #===============================
@@ -94,8 +86,8 @@ while running:
 
     # ~~ Display Main Menu
     if current_screen == "menu":
-        text_title = Text(font, "The Puzzle House", (0, 0, 0), 600, 150)
-        text_title.draw(display)
+        text_title = font.render("The Puzzle House", True, (0, 0, 0))
+        display.blit(text_title, (600 - text_title.get_width() // 2, 150))
         display.blit(brg.name, (brg.x, brg.y))
         exit_button.update(display)
         start_button.update(display)
@@ -105,10 +97,13 @@ while running:
             pygame.mouse.set_cursor(hand_cursor)
         else:
             pygame.mouse.set_cursor(default_cursor)
-
-    # ~~ Display Game Screen
-    elif current_screen == "game":
-        tuto()
+            
+    elif current_screen == "level_7":
+        result = run_level_7(display)
+        if result == "menu":
+            current_screen = "menu"
+        elif result == "quit":
+            running = False
 
     # Event handling
     for event in pygame.event.get():
@@ -119,8 +114,9 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if exit_button.is_clicked(event.pos):
                 running = False
+                
             if start_button.is_clicked(event.pos):
-                current_screen = "game"
+                current_screen = "level_7"
                 
     pygame.display.update()
 pygame.quit()
