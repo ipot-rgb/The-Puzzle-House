@@ -29,7 +29,6 @@ pygame.display.set_caption("The Puzzle House")
 
 # Screen background color
 LIGHT_BLUE = (202, 228, 241)
-
 screen.fill(LIGHT_BLUE)
 
 # ========== Button Configuration ==========

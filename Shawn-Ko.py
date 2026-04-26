@@ -18,6 +18,7 @@ BLUE = (0, 0, 255)
 GRAY = (200, 200, 200)
 YELLOW = (255, 255, 0)
 DARK_GRAY = (100, 100, 100)
+LIGHT_BLUE = (202, 228, 241)
 
 # Fonts
 font_large = pygame.font.Font(None, 48)
@@ -28,26 +29,75 @@ font_small = pygame.font.Font(None, 24)
 bck_img = pygame.image.load('SK-Assets/SK-background.png').convert()
 bck_img = pygame.transform.scale(bck_img, (screen_width, screen_height))
 
-#grid image
-grid_img = pygame.image.load('SK-Assets/SK-grid.png').convert()
-grid_img = pygame.transform.scale(grid_img, (screen_width//3, screen_height//2))
-grid_img_rect = grid_img.get_rect()
-grid_img_rect.bottomright = screen_rect.bottomright
-grid_img_width = grid_img.get_width()
-grid_img_height = grid_img.get_height()
 
-#creating button for each alphabet
-image_x = screen_width - grid_img_width
-image_y = screen_height - grid_img_height
-cell_width = grid_img_width // 3
-cell_height = grid_img_height // 3
+class Letter_Button:
+    def __init__(self, x, y, image):
+        self.image = image
+        self.x = x
+        self.y = y
+        self.rect = self.image.get_rect(topleft=(x, y))
+        self.letter = None
+        self.visible = True
+        self.clicked = False
+
+    def draw(self):
+        if self.visible:
+            screen.blit(self.image, self.rect)
+
+    def hide(self):
+        self.visible = False
+        self.clicked = True
+
+# ========== Button Configuration ==========
+# Right section dimensions
+right_section_width = screen_width // 3
+button_area_start_x = screen_width - right_section_width
+
+# Picture loading
+images = {}
+letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
+
+enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
+enter_img = pygame.transform.scale(enter_img, (45, 45))
+
+for letter in letters:
+    img = pygame.image.load(f"assets/Button_alphabet/letter_{letter}.png")
+    images[letter] = pygame.transform.scale(img, (45, 45))
+
+# Configure button grid
+button_size = 45
+button_gap = 80
+buttons_per_row = 3
+rows = 3
+
+total_grid_width = buttons_per_row * button_gap
+total_grid_height = rows * button_gap
+
+# Letters grid start position (centered in the right section)
+grid_start_x = button_area_start_x + (right_section_width - total_grid_width) // 2
+grid_start_y = (screen_height - total_grid_height) // 2
+
+# Create letter buttons
 buttons = []
-for row in range(3):
-    for col in range(3):
-        number = row * 3 + col + 1
-        button_x = image_x + (col * cell_width)
-        button_y = image_y + (row * cell_height)
-        buttons.append([button_x, button_y, cell_width, cell_height, number, False])
+for i, letter in enumerate(letters):
+    row = i // buttons_per_row
+    col = i % buttons_per_row
+    x = grid_start_x + col * button_gap
+    y = grid_start_y + row * button_gap
+    btn = Letter_Button(x, y, images[letter])
+    btn.letter = letter
+    buttons.append(btn)
+
+# ENTER Button
+enter_btn_x = grid_start_x + (total_grid_width // 2) - 22
+enter_btn_y = grid_start_y + total_grid_height + 30
+enter_btn = Letter_Button(enter_btn_x, enter_btn_y, enter_img)
+enter_btn.letter = "ENTER"
+buttons.append(enter_btn)
+
+# Button Drawing
+for btn in buttons:
+    btn.draw()
 
 #Level system
 current_level = 1
@@ -56,35 +106,28 @@ level_complete = False
 game_complete = False
 
 # Password input system
-password_input = ""
+password_input = []
 message = ""
 message_timer = 0
-
-#Enter button
-enter_button_width = 120
-enter_button_height = 50
-enter_button_x = screen_width // 2 - enter_button_width // 2
-enter_button_y = screen_height - 100
-enter_button = [enter_button_x, enter_button_y, enter_button_width, enter_button_height, "ENTER", False]
 
 # Placeholder for puzzles' logics
 def check_puzzle_solution(level, password):
     if level == 1:
-        return password == "123"
+        return password == ["a","b","c"]
     elif level == 2:
-        return password == "456"
+        return password == ["d","e","f"]
     elif level == 3:
-        return password == "789"
+        return password == ["g","h","i"]
     elif level == 4:
-        return password == "111"
+        return password == ['g','b','f']
     elif level == 5:
-        return password == "999"
+        return password == ['f','a','d']
     return False
 
 
 def load_level(level):
     global password_input, message, message_timer
-    password_input = ""
+    password_input = []
     print(f"Loading Level {level}...")
 
     #Placeholder for puzzle setup
@@ -107,7 +150,7 @@ def complete_level():
     if current_level < total_levels:
         current_level += 1
         level_complete = False
-        password_input = ""
+        password_input = []
         message = f"Level {current_level - 1} Complete! Moving to Level {current_level}"
         message_timer = 90
         load_level(current_level)  # Load next level's puzzle
@@ -119,10 +162,14 @@ def complete_level():
 
 def reset_current_level():
     #Reset password when wrong
-    global password_input, message, message_timer
-    password_input = ""
+    global password_input, message, message_timer, buttons
+    password_input = []
     message = f"Wrong password! Level {current_level} reset. Try again!"
     message_timer = 90
+    for btn in buttons:
+        if btn.letter != "ENTER":
+            btn.visible = True
+            btn.clicked = False
 
     # ===== RESET PUZZLE FOR CURRENT LEVEL =====
     load_level(current_level)
@@ -133,78 +180,55 @@ load_level(1)
 
 running = True
 while running:
-    mouse_x, mouse_y = pygame.mouse.get_pos()
-    for button in buttons:
-        x, y, width, height, number, hovered = button
-        if (x < mouse_x < x + width) and (y < mouse_y < y + height):
-            button[5] = True
-        else:
-            button[5] = False
-
-    ex, ey, ew, eh, etext, ehovered = enter_button
-    if (ex < mouse_x < ex + ew) and (ey < mouse_y < ey + eh):
-        enter_button[5] = True
-    else:
-        enter_button[5] = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and not game_complete and not level_complete:
-            # Check grid button clicks
-            for button in buttons:
-                x, y, width, height, number, hovered = button
-                if (x < mouse_x < x + width) and (y < mouse_y < y + height):
-                    password_input += str(number)
-                    if len(password_input) > 10:
-                        password_input = password_input[:10]
-                    print(f"Added {number} to password. Current: {password_input}")
-                    break
+            # == Check LETTER button click ==
+            if (clicked_btn := next((btn for btn in buttons if
+                                     btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),
+                                    None)):
+                if True:
+                    password_input.append(clicked_btn.letter)
+                    print(f"Clicked: {clicked_btn.letter}, passcode: {password_input}")
+                    clicked_btn.hide()
 
-            # Check ENTER button click
-            if (ex < mouse_x < ex + ew) and (ey < mouse_y < ey + eh):
-                print(f"ENTER pressed with password: {password_input}")
-                if check_puzzle_solution(current_level, password_input):
-                    level_complete = True
-                    complete_level()
-                else:
-                    reset_current_level()
+            # == Check ENTER button click ==
+            # Checking if the click is on the ENTER button and if it's visible (not hidden)
+            elif (enter_clicked := next(
+                    (btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"), None)):
+                if True:
+                    if check_puzzle_solution(current_level, password_input):
+                        level_complete = True
+                        complete_level()
+                        print("✅ You passed!")
 
-    screen.blit(bck_img, (0,0))
-    screen.blit(grid_img, grid_img_rect)
+                    else:
+                        reset_current_level()
+                        # Reset buttons
+                        print("Game reset. Try again.")
 
-    for button in buttons:
-        x, y, width, height, number, hovered = button
-        if hovered:
-            pygame.draw.rect(screen, YELLOW, (x, y, width, height), 3)
+    screen.fill(LIGHT_BLUE)
+
+    # Button drawing
+    for btn in buttons:
+        btn.draw()
+
+    # Disappearing buttons
+    for btn in buttons:
+        if not btn.visible and btn.letter != "ENTER":
+            font = pygame.font.Font(None, 36)
+            check = font.render("", True, (0, 255, 0))
+            screen.blit(check, (btn.rect.centerx - 15, btn.rect.centery - 15))
 
     # Draw Level Display
     level_text = font_large.render(f"Level {current_level}/{total_levels}", True, YELLOW)
     screen.blit(level_text, (20, 20))
 
-    # Draw Password Display Box
-    password_box = pygame.Rect(screen_width // 2 - 200, 100, 400, 60)
-    pygame.draw.rect(screen, GRAY, password_box)
-    pygame.draw.rect(screen, BLACK, password_box, 3)
 
-    # Show the entered password
-    password_surface = font_large.render(password_input if password_input else "_____", True, BLACK)
-    screen.blit(password_surface, (password_box.x + 20, password_box.y + 10))
 
-    # Instruction text
-    instruction1 = font_small.render("Click the numbered buttons to enter your password", True, GREEN)
-    instruction2 = font_small.render("Then click ENTER to submit", True, GREEN)
-    screen.blit(instruction1, (screen_width // 2 - instruction1.get_width() // 2, 180))
-    screen.blit(instruction2, (screen_width // 2 - instruction2.get_width() // 2, 200))
 
-    # Draw ENTER button
-    ex, ey, ew, eh, etext, ehovered = enter_button
-    enter_color = GREEN if ehovered else BLUE
-    pygame.draw.rect(screen, enter_color, (ex, ey, ew, eh))
-    pygame.draw.rect(screen, BLACK, (ex, ey, ew, eh), 3)
-    enter_surface = font_medium.render(etext, True, WHITE)
-    screen.blit(enter_surface,
-                    (ex + ew // 2 - enter_surface.get_width() // 2, ey + eh // 2 - enter_surface.get_height() // 2))
 
     # Show message
     if message_timer > 0:
