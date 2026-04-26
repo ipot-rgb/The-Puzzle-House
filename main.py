@@ -50,9 +50,7 @@ pygame.display.set_icon(icon)
 
 brg = picture(("Menu_interface", "menu_brg.jpg"), 0, 0)
 display.blit(brg.name, (brg.x, brg.y))
-font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
-text = font.render("Hello, World!", True, (0,0,0))
-display.blit(text, (400, 300))
+font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\Notable-Regular.ttf', 60)
 
 # Update the display
 pygame.display.flip()
@@ -86,9 +84,9 @@ while running:
 
     # ~~ Display Main Menu
     if current_screen == "menu":
-        text_title = font.render("The Puzzle House", True, (0, 0, 0))
-        display.blit(text_title, (600 - text_title.get_width() // 2, 150))
         display.blit(brg.name, (brg.x, brg.y))
+        text_title = font.render("The Puzzle House", True, (0, 0, 0))
+        display.blit(text_title, (250, 100))
         exit_button.update(display)
         start_button.update(display)
         if exit_button.is_hovered(mouse_pos):
