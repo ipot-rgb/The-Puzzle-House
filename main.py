@@ -2,7 +2,7 @@ import pygame
 import time
 import os 
 from level_7 import run_level_7
-
+from level_1 import run_level_1
 #===============================
 # Button class
 #===============================
@@ -74,6 +74,68 @@ start_button = Button(600, 265, start_icon)
 start_button.update(display)
 pygame.display.flip()
 
+#Level system
+current_level = 1
+total_levels = 9
+level_complete = False
+game_complete = False
+
+# Password input system
+
+message = ""
+message_timer = 0
+
+
+def load_level(level):
+    global message, message_timer, current_screen
+    print(f"Loading Level {level}...")
+
+    # Fixed logic - this will work correctly
+    if level == 1:
+        current_screen = "level_1"
+    elif level == 2:
+        current_screen = "level_7"  # You'll need to create level_2
+    elif level == 3:
+        current_screen = "level_3"  # Create level_3
+    elif level == 4:
+        current_screen = "level_4"  # Create level_4
+    elif level == 5:
+        current_screen = "level_5"  # Create level_5
+    elif level == 6:
+        current_screen = "level_6"  # Create level_6
+    elif level == 7:
+        current_screen = "level_2"
+    elif level == 8:
+        current_screen = "level_8"  # Create level_8
+    elif level == 9:
+        current_screen = "level_9"  # Create level_9
+    else:
+        current_screen = "menu"
+
+    return current_screen
+
+
+def complete_level():
+    global current_level, level_complete, game_complete, message, message_timer, current_screen
+
+    if current_level < total_levels:
+        current_level += 1
+        level_complete = False
+        message = f"Level {current_level - 1} Complete! Moving to Level {current_level}"
+        message_timer = 90
+        load_level(current_level)  # Load next level's puzzle
+        print(f"Moving to level {current_level}")
+    else:
+        game_complete = True
+        message = "Congratulations! You completed all levels!"
+        message_timer = 180
+        current_screen = "menu"
+        print("Game complete!")
+        time.sleep(2)
+def Game_Status(gamestatus) :
+    if gamestatus :
+        complete_level()
+
 #===============================
 # Game loop
 #===============================
@@ -96,12 +158,22 @@ while running:
         else:
             pygame.mouse.set_cursor(default_cursor)
             
+    elif current_screen == "level_1":
+        result = run_level_1(display)
+        if result == "menu":
+            current_screen = "menu"
+        elif result == "quit":
+            running = False
+        elif result == "complete":  # Add this
+            complete_level()
     elif current_screen == "level_7":
         result = run_level_7(display)
         if result == "menu":
             current_screen = "menu"
         elif result == "quit":
             running = False
+        elif result == "complete":  # Add this
+            complete_level()
 
     # Event handling
     for event in pygame.event.get():
@@ -114,8 +186,9 @@ while running:
                 running = False
                 
             if start_button.is_clicked(event.pos):
-                current_screen = "level_7"
-                
+                load_level(current_level)
+
+
     pygame.display.update()
 pygame.quit()
 
