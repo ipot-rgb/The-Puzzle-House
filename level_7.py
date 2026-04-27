@@ -88,9 +88,9 @@ def run_level_7(screen):
         buttons.append(btn)
 
     # ENTER Button
-    enter_x = grid_x + (grid_width // 2) - 22 # 680 + ()
-    enter_y = grid_y + grid_height + 30
-    enter_btn = Letter_Button(enter_x, enter_y, enter_img)
+    enter_x = grid_x + (grid_width // 2) - 22 # 680 + (240 // 2) - 22 = 738
+    enter_y = grid_y + grid_height + 30      # 205 + 240 + 30 = 475
+    enter_btn = Letter_Button(enter_x, enter_y, enter_img) 
     enter_btn.letter = "ENTER"
     buttons.append(enter_btn)
 
