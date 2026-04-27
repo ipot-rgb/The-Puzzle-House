@@ -50,7 +50,7 @@ pygame.display.set_icon(icon)
 
 brg = picture(("Menu_interface", "menu_brg.jpg"), 0, 0)
 display.blit(brg.name, (brg.x, brg.y))
-font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\Notable-Regular.ttf', 60)
+font = pygame.font.Font('Notable-Regular.ttf', 60)
 
 # Update the display
 pygame.display.flip()
