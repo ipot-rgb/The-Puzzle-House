@@ -3,6 +3,7 @@ import time
 import os 
 from level_7 import run_level_7
 from level_1 import run_level_1
+from level_8 import run_level_8
 #===============================
 # Button class
 #===============================
@@ -96,7 +97,7 @@ def load_level(level):
     elif level == 2:
         current_screen = "level_7"  # You'll need to create level_2
     elif level == 3:
-        current_screen = "level_3"  # Create level_3
+        current_screen = "level_8"  # Create level_3
     elif level == 4:
         current_screen = "level_4"  # Create level_4
     elif level == 5:
@@ -105,7 +106,7 @@ def load_level(level):
         current_screen = "level_6"  # Create level_6
     elif level == 7:
         current_screen = "level_2"
-        
+
     elif level == 8:
         current_screen = "level_8"  # Create level_8
     elif level == 9:
@@ -167,8 +168,18 @@ while running:
             running = False
         elif result == "complete":  # Add this
             complete_level()
+
     elif current_screen == "level_7":
         result = run_level_7(display)
+        if result == "menu":
+            current_screen = "menu"
+        elif result == "quit":
+            running = False
+        elif result == "complete":  # Add this
+            complete_level()
+
+    elif current_screen == "level_8":
+        result = run_level_8(display)
         if result == "menu":
             current_screen = "menu"
         elif result == "quit":

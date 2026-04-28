@@ -1,4 +1,4 @@
-def run_level_7(screen):
+def run_level_8(screen):
     level_complete = False
     while not level_complete:
         import pygame
@@ -31,20 +31,17 @@ def run_level_7(screen):
         #===============================
         # Screen Setup
         #===============================
-        # screen = pygame.display.set_mode((screen_width, screen_height))
         pygame.display.set_caption("The Puzzle House")
-        red = (207, 177, 177)
 
         # Cursors
         default_cursor = pygame.SYSTEM_CURSOR_ARROW
         hand_cursor = pygame.SYSTEM_CURSOR_HAND
 
         # ========== Button Configuration ==========
-
         # Picture loading
-        board = pygame.image.load("assets/Level_15/board.png")
-        paper = pygame.image.load("assets/Level_15/paper.png")
-        brg = pygame.image.load("assets/Level_15/brg_15.png")
+        fish = pygame.image.load("assets/Level_14/fish.png")
+
+        blue = (173, 216, 230)
         enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 
         # A-I button setup
@@ -98,34 +95,19 @@ def run_level_7(screen):
 
         # Passcode variables
         passcode = []
-        correct_passcode = ['i', 'h', 'b', 'a', 'd', 'g', 'f', 'e', 'c']
+        correct_passcode = ['a', 'i', 'g', 'b']
+        puzzles = []
 
         # Button Drawing
         for btn in buttons:
             btn.draw()
 
-        paper = pygame.transform.scale(paper, (400, 400))
-        brg = pygame.transform.scale(brg, (screen_width, screen_height))
-        puzzles = []
-
-        for i in range(1, 2):
-            rect_paper = paper.get_rect(topleft=(450, 200))
-            puzzles.append({"img": paper, "rect": rect_paper})
-
         for i in range(1, 10):
-            img = pygame.image.load(f"assets/Level_15/num_{i}.png")
-            if i == 2:
-                img = pygame.transform.scale(img, (110, 150))
-            elif i == 4:
-                img = pygame.transform.scale(img, (80, 100))
-            else:
-                img = pygame.transform.scale(img, (100, 100))
-
+            img = pygame.image.load(f"assets/Level_14/bone_{i}.png")
             rect = img.get_rect(topleft=(80 * i, 56))
             puzzles.append({"img": img, "rect": rect})
 
         active_puzzle = None
-        active_paper = None
 
         run = True
         while run:
@@ -153,8 +135,8 @@ def run_level_7(screen):
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
-                            return "complete"
                             time.sleep(3)
+                            return "complete"
                         else:
                             print("❌ Incorrect passcode, try again.")
                             for btn in buttons:
@@ -170,17 +152,12 @@ def run_level_7(screen):
 
                 elif event.type == pygame.MOUSEBUTTONUP:
                         active_puzzle = None
-                        active_paper = None
 
                 elif event.type == pygame.MOUSEMOTION:
                         if active_puzzle is not None:
                             puzzles[active_puzzle]["rect"].move_ip(event.rel)
-                        elif active_paper is not None:
-                            puzzles[active_paper]["rect_paper"].move_ip(event.rel)
-
-            screen.blit(brg, (0, 0))
-            screen.blit(board, (35, 200))
-            pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
+            screen.fill(blue)
+            screen.blit(fish, (60, 200))
             for btn in buttons:
                 btn.draw()
 
