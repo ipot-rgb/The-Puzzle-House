@@ -45,6 +45,28 @@ def run_level_7(screen):
             def is_hovered(self, pos):
                 return self.rect.collidepoint(pos)
 
+        class Hint:
+            def __init__(self, text, pos, duration=3):
+                self.text = text
+                self.pos = pos
+                self.duration = duration
+                self.start_time = None
+                self.active = False
+
+            def trigger(self):
+                self.start_time = time.time()
+                self.active = True
+
+            def draw(self, screen, font):
+                if not self.active:
+                    return
+                
+                if time.time() - self.start_time < self.duration:
+                    text_surface = font.render(self.text, True, (255, 255, 255))
+                    screen.blit(text_surface, self.pos)
+                else:
+                    self.active = False
+
         #===============================
         # Screen Setup
         #===============================
@@ -149,10 +171,9 @@ def run_level_7(screen):
         active_puzzle = None
         active_paper = None
 
-        font = pygame.font.SysFont(None,48)
-        hint_text = "This is a hint"
-        hint_start_time = time.time()
-        hint_duration = 3
+        font = pygame.font.SysFont(None, 40)
+        hint = Hint("Check the seasons...", (250, 200)) 
+
         run = True
         while run:
             mouse_pos = pygame.mouse.get_pos()
@@ -196,12 +217,8 @@ def run_level_7(screen):
 
                     current_time = time.time()
                     if hint_button.is_clicked(event.pos):
-                        print('CLicked hint')
-                        if current_time - hint_start_time < hint_duration:
-                            text_surface = font.render(hint_text, True, (255, 255, 255))
-                            screen.blit(text_surface, (300, 250))
-                            pygame.display.flip()
-
+                        hint.trigger()
+                        pygame.display.flip()
 
                 elif event.type == pygame.MOUSEBUTTONUP:
                         active_puzzle = None
@@ -216,6 +233,7 @@ def run_level_7(screen):
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
             hint_button.update(screen)
+            hint.draw(screen, font)
             pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
             for btn in buttons:
                 btn.draw()

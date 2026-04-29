@@ -164,7 +164,6 @@ while running:
             
     # REMEMBER CHANGE IT TO READABLE LEVEL NAMES LATER
     elif current_screen == "level_1":
-        pass
         result = run_level_1(display)
         if result == "menu":
             current_screen = "menu"
