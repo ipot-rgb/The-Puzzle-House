@@ -1,8 +1,25 @@
 def run_level_7(screen):
     level_complete = False
     while not level_complete:
+
         import pygame
         import time
+
+        class Button:
+            def __init__(self, x, y, image):
+                self.image = image
+                self.x = x
+                self.y = y
+                self.rect = self.image.get_rect(center=(x, y))
+
+            def update(self, display):
+                display.blit(self.image, self.rect)
+            
+            def is_clicked(self, pos):
+                return self.rect.collidepoint(pos)
+
+            def is_hovered(self, pos):
+                return self.rect.collidepoint(pos)
 
         class Letter_Button:
             def __init__(self, x, y, image):
@@ -45,13 +62,11 @@ def run_level_7(screen):
         board = pygame.image.load("assets/Level_15/board.png")
         paper = pygame.image.load("assets/Level_15/paper.png")
         brg = pygame.image.load("assets/Level_15/brg_15.png")
-        enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 
         # A-I button setup
         images = {}
         letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
-        enter_img = pygame.transform.scale(enter_img, (45, 45))
 
         for letter in letters:
             img = pygame.image.load(f"assets/Button_alphabet/letter_{letter}.png")
@@ -89,20 +104,27 @@ def run_level_7(screen):
             buttons.append(btn)
 
         # ENTER Button
-        enter_x = grid_x + (grid_width // 2) - 22 # 680 + ()
-        enter_y = grid_y + grid_height + 30
+        enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
+        enter_img = pygame.transform.scale(enter_img, (45, 45))
+        enter_x = grid_x + (grid_width // 2) - 22       # 680 + (240 // 2) - 22 = 798
+        enter_y = grid_y + grid_height + 30             # 205 + 240 + 30 = 475
         enter_btn = Letter_Button(enter_x, enter_y, enter_img)
         enter_btn.letter = "ENTER"
         buttons.append(enter_btn)
 
+        # Hint Button
+        hint_img = pygame.image.load("assets/Icon/hint_button.png")
+        hint_img = pygame.transform.scale(hint_img, (100, 50))
+        hint_button = Button(100, 50, hint_img)
+        # hint_button.update(display)
 
         # Passcode variables
         passcode = []
         correct_passcode = ['i', 'h', 'b', 'a', 'd', 'g', 'f', 'e', 'c']
 
-        # Button Drawing
-        for btn in buttons:
-            btn.draw()
+        # # Button Drawing
+        # for btn in buttons:
+        #     btn.draw()
 
         paper = pygame.transform.scale(paper, (400, 400))
         brg = pygame.transform.scale(brg, (screen_width, screen_height))
@@ -127,6 +149,10 @@ def run_level_7(screen):
         active_puzzle = None
         active_paper = None
 
+        font = pygame.font.SysFont(None,48)
+        hint_text = "This is a hint"
+        hint_start_time = time.time()
+        hint_duration = 3
         run = True
         while run:
             mouse_pos = pygame.mouse.get_pos()
@@ -153,8 +179,8 @@ def run_level_7(screen):
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
-                            return "complete"
                             time.sleep(3)
+                            return "complete"
                         else:
                             print("❌ Incorrect passcode, try again.")
                             for btn in buttons:
@@ -168,6 +194,15 @@ def run_level_7(screen):
                             if p["rect"].collidepoint(event.pos):
                                 active_puzzle = i
 
+                    current_time = time.time()
+                    if hint_button.is_clicked(event.pos):
+                        print('CLicked hint')
+                        if current_time - hint_start_time < hint_duration:
+                            text_surface = font.render(hint_text, True, (255, 255, 255))
+                            screen.blit(text_surface, (300, 250))
+                            pygame.display.flip()
+
+
                 elif event.type == pygame.MOUSEBUTTONUP:
                         active_puzzle = None
                         active_paper = None
@@ -180,6 +215,7 @@ def run_level_7(screen):
 
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
+            hint_button.update(screen)
             pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
             for btn in buttons:
                 btn.draw()

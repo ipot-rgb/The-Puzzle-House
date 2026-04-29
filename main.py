@@ -1,9 +1,10 @@
 import pygame
 import time
 import os 
-from level_7 import run_level_7
 from level_1 import run_level_1
+from level_7 import run_level_7
 from level_8 import run_level_8
+
 #===============================
 # Button class
 #===============================
@@ -134,6 +135,7 @@ def complete_level():
         current_screen = "menu"
         print("Game complete!")
         time.sleep(2)
+
 def Game_Status(gamestatus) :
     if gamestatus :
         complete_level()
@@ -160,7 +162,9 @@ while running:
         else:
             pygame.mouse.set_cursor(default_cursor)
             
+    # REMEMBER CHANGE IT TO READABLE LEVEL NAMES LATER
     elif current_screen == "level_1":
+        pass
         result = run_level_1(display)
         if result == "menu":
             current_screen = "menu"
