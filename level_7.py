@@ -1,72 +1,81 @@
 def run_level_7(screen):
     level_complete = False
+
+    class Button:
+        def __init__(self, x, y, image):
+            self.image = image
+            self.x = x
+            self.y = y
+            self.rect = self.image.get_rect(center=(x, y))
+
+        def update(self, display):
+                    display.blit(self.image, self.rect)
+                
+        def is_clicked(self, pos):
+            return self.rect.collidepoint(pos)
+
+        def is_hovered(self, pos):
+            return self.rect.collidepoint(pos)
+
+    class Letter_Button:
+        def __init__(self, x, y, image):
+            self.image = image
+            self.x = x
+            self.y = y
+            self.rect = self.image.get_rect(topleft=(x, y))
+            self.letter = None
+            self.visible = True
+            self.clicked = False
+
+        def draw(self):
+            if self.visible:
+                screen.blit(self.image, self.rect)
+
+        def hide(self):
+            self.visible = False
+            self.clicked = True
+
+        def is_clicked(self, pos):
+            return self.rect.collidepoint(pos)
+
+        def is_hovered(self, pos):
+            return self.rect.collidepoint(pos)
+
+    class Hint:
+        def __init__(self, texts, duration=5):
+            self.texts = texts
+            self.duration = duration
+            self.start_time = None
+            self.active = False
+
+        def trigger(self):
+            self.start_time = time.time()
+            self.active = True
+
+        def draw(self, screen, font):
+            if not self.active:
+                return
+                    
+            if time.time() - self.start_time < self.duration:
+                overlay = pygame.Surface(screen.get_size())
+                overlay.set_alpha(180)
+                overlay.fill((0, 0, 0))
+                screen.blit(overlay, (0, 0))
+
+                for i, line in enumerate(self.texts):
+                    text_surface = font.render(line, True, (255, 255, 255))
+                    rect = text_surface.get_rect(
+                        center=(screen.get_width()//2, 250 + i * 80)
+                    )
+                    screen.blit(text_surface, rect)
+
+            else:
+                self.active = False
+
     while not level_complete:
 
         import pygame
         import time
-
-        class Button:
-            def __init__(self, x, y, image):
-                self.image = image
-                self.x = x
-                self.y = y
-                self.rect = self.image.get_rect(center=(x, y))
-
-            def update(self, display):
-                display.blit(self.image, self.rect)
-            
-            def is_clicked(self, pos):
-                return self.rect.collidepoint(pos)
-
-            def is_hovered(self, pos):
-                return self.rect.collidepoint(pos)
-
-        class Letter_Button:
-            def __init__(self, x, y, image):
-                self.image = image
-                self.x = x
-                self.y = y
-                self.rect = self.image.get_rect(topleft=(x, y))
-                self.letter = None
-                self.visible = True
-                self.clicked = False
-
-            def draw(self):
-                if self.visible:
-                    screen.blit(self.image, self.rect)
-
-            def hide(self):
-                self.visible = False
-                self.clicked = True
-
-            def is_clicked(self, pos):
-                return self.rect.collidepoint(pos)
-
-            def is_hovered(self, pos):
-                return self.rect.collidepoint(pos)
-
-        class Hint:
-            def __init__(self, text, pos, duration=3):
-                self.text = text
-                self.pos = pos
-                self.duration = duration
-                self.start_time = None
-                self.active = False
-
-            def trigger(self):
-                self.start_time = time.time()
-                self.active = True
-
-            def draw(self, screen, font):
-                if not self.active:
-                    return
-                
-                if time.time() - self.start_time < self.duration:
-                    text_surface = font.render(self.text, True, (255, 255, 255))
-                    screen.blit(text_surface, self.pos)
-                else:
-                    self.active = False
-
         #===============================
         # Screen Setup
         #===============================
@@ -136,8 +145,8 @@ def run_level_7(screen):
 
         # Hint Button
         hint_img = pygame.image.load("assets/Icon/hint_button.png")
-        hint_img = pygame.transform.scale(hint_img, (100, 50))
-        hint_button = Button(100, 50, hint_img)
+        hint_img = pygame.transform.scale(hint_img, (70, 90))
+        hint_button = Button(1150, 100, hint_img)
         # hint_button.update(display)
 
         # Passcode variables
@@ -172,7 +181,11 @@ def run_level_7(screen):
         active_paper = None
 
         font = pygame.font.SysFont(None, 40)
-        hint = Hint("Check the seasons...", (250, 200)) 
+        hint = Hint([
+            "Hint 1: The numbers on the board are a clue.",
+            "Hint 2: Try to arrange the letters in the order of the numbers.",
+            "Hint 3: The correct passcode is a permutation of the letters a-i."
+        ])
 
         run = True
         while run:
@@ -218,6 +231,7 @@ def run_level_7(screen):
                     current_time = time.time()
                     if hint_button.is_clicked(event.pos):
                         hint.trigger()
+                        hint.visible = False
                         pygame.display.flip()
 
                 elif event.type == pygame.MOUSEBUTTONUP:
@@ -232,12 +246,12 @@ def run_level_7(screen):
 
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
-            hint_button.update(screen)
-            hint.draw(screen, font)
             pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
             for btn in buttons:
                 btn.draw()
 
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
+            hint_button.update(screen)
+            hint.draw(screen, font)
             pygame.display.flip()
