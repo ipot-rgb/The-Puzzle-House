@@ -158,7 +158,7 @@ puzzle = puzzle(os.path.join("materials", "puzzle", "puzzle.png"), puzzle_width,
 
 ppo_width = int(puzzle_width * 0.35)
 ppo_height = int(puzzle_height * 0.35)
-ppo = puzzle_piece_one(os.path.join("materials", "puzzle", "puzzle piece(1).png"), ppo_width, ppo_height, puzzle.rect.right + 40, puzzle.rect.top + 80)
+ppo = puzzle_piece_one(os.path.join("materials", "puzzle", "puzzle piece(1).png"), ppo_width, ppo_height, puzzle.rect.right -40, puzzle.rect.top - 30)
 
 ppt_width = int(puzzle_width * 0.35)
 ppt_height = int(puzzle_height * 0.35)
@@ -168,8 +168,8 @@ ppth_width = int(puzzle_width * 0.30)
 ppth_height = int(puzzle_height * 0.30)
 ppth = puzzle_piece_three(os.path.join("materials", "puzzle", "puzzle piece(3).png"), ppth_width, ppth_height, ppt.rect.x , ppt.rect.y + offset_y)
 
-ppf_width = int(puzzle_width * 0.55)
-ppf_height = int(puzzle_height * 0.55)
+ppf_width = int(puzzle_width * 0.35)
+ppf_height = int(puzzle_height * 0.35)
 ppf= puzzle_piece_four(os.path.join("materials", "puzzle", "puzzle piece(4).png"), ppf_width, ppf_height, ppth.rect.x , ppth.rect.y + offset_y)
 
 all_sprites = pygame.sprite.Group()
@@ -233,22 +233,52 @@ for btn in buttons:
     btn.draw()
 
 running = True
-
 while running:
     clock.tick(60)
-    events = pygame.event.get()
 
+    # ========== 事件处理 ==========
+    events = pygame.event.get()
     for event in events:
         if event.type == pygame.QUIT:
             running = False
 
-    screen.blit(background_img, (0, 0))
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            # letter buttons
+            clicked_btn = next(
+                (btn for btn in buttons
+                 if btn.rect.collidepoint(event.pos)
+                 and btn.visible
+                 and btn.letter != "ENTER"),
+                None
+            )
+            if clicked_btn:
+                passcode.append(clicked_btn.letter)
+                clicked_btn.hide()
+
+            # ENTER
+            enter_clicked = next(
+                (btn for btn in buttons
+                 if btn.rect.collidepoint(event.pos)
+                 and btn.letter == "ENTER"),
+                None
+            )
+            if enter_clicked:
+                if passcode == correct_passcode:
+                    print("✅ You passed!")
+                else:
+                    print("❌ Invalid password")
+                    passcode.clear()
+                    for btn in buttons:
+                        if btn.letter != "ENTER":
+                            btn.visible = True
     all_sprites.update(events)
+
+    screen.blit(background_img, (0, 0))
     all_sprites.draw(screen)
 
     for btn in buttons:
         btn.draw()
 
-    pygame.display.update()
+    pygame.display.flip()
 
 pygame.quit()
