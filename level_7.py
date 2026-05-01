@@ -124,7 +124,7 @@ def run_level_7(screen):
         grid_y = (screen_height - grid_height) // 2                        # (650 - 240) //2 = 205
 
         # Create letter buttons
-        buttons = []
+        buttons = []    
         for i, letter in enumerate(letters):
             row = i // rows
             col = i % rows      # 3x3
@@ -145,17 +145,13 @@ def run_level_7(screen):
 
         # Hint Button
         hint_img = pygame.image.load("assets/Icon/hint_button.png")
-        hint_img = pygame.transform.scale(hint_img, (70, 90))
-        hint_button = Button(1150, 100, hint_img)
-        # hint_button.update(display)
+        hint_img = pygame.transform.scale(hint_img, (60, 65))
+        hint_button = Button(1150, 80, hint_img)
 
         # Passcode variables
         passcode = []
         correct_passcode = ['i', 'h', 'b', 'a', 'd', 'g', 'f', 'e', 'c']
 
-        # # Button Drawing
-        # for btn in buttons:
-        #     btn.draw()
 
         paper = pygame.transform.scale(paper, (400, 400))
         brg = pygame.transform.scale(brg, (screen_width, screen_height))
@@ -182,9 +178,9 @@ def run_level_7(screen):
 
         font = pygame.font.SysFont(None, 40)
         hint = Hint([
-            "Hint 1: The numbers on the board are a clue.",
-            "Hint 2: Try to arrange the letters in the order of the numbers.",
-            "Hint 3: The correct passcode is a permutation of the letters a-i."
+            "Hint 1: This level has 9 letters",
+            "Hint 2: Try arranging these numbers alphabetically.",
+            "Hint 3: Follow the 9 pattern grid to find the correct order."
         ])
 
         run = True
@@ -213,7 +209,7 @@ def run_level_7(screen):
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
-                            time.sleep(3)
+                            time.sleep(1)
                             return "complete"
                         else:
                             print("❌ Incorrect passcode, try again.")
@@ -231,7 +227,7 @@ def run_level_7(screen):
                     current_time = time.time()
                     if hint_button.is_clicked(event.pos):
                         hint.trigger()
-                        hint.visible = False
+                        hint_button.visible = False
                         pygame.display.flip()
 
                 elif event.type == pygame.MOUSEBUTTONUP:
