@@ -6,17 +6,30 @@ BLACK = (5, 5, 15)
 WHITE = (255, 255, 255)
 GOLD  = (255, 215, 0)
 CYAN  = (0, 255, 255)
-#stars
-stars = [
-    # Y
-    [-250, -100, 40], [-200, -50, -60], [-150, -100, 20], [-200, 0, 50], [-200, 80, -30],
-    # O
-    [-50, -80, 10], [50, -80, -40], [50, 80, 60], [-50, 80, -20], [-50, -80, 10], 
-    # N
-    [150, 80, 30], [150, -80, -50], [250, 80, 10], [250, -80, 40],
-    # G
-    [450, -80, -20], [350, -80, 50], [350, 80, -40], [450, 80, 10], [450, 0, -60], [400, 0, 30]
-]
+
+pygame.init()
+screen = pygame.display.set_mode((1200,650), pygame.SCALED)
+clock = pygame.time.Clock()
+info = pygame.display.Info()
+WIDTH, HEIGHT = 1200, 650
+
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+
+class Constellation(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.stars = [
+            # Y
+            [-250, -100, 40], [-200, -50, -60], [-150, -100, 20], [-200, 0, 50], [-200, 80, -30],
+            # O
+            [-50, -80, 10], [50, -80, -40], [50, 80, 60], [-50, 80, -20], [-50, -80, 10], 
+            # N
+            [150, 80, 30], [150, -80, -50], [250, 80, 10], [250, -80, 40],
+            # G
+            [450, -80, -20], [350, -80, 50], [350, 80, -40], [450, 80, 10], [450, 0, -60], [400, 0, 30]]
+
 
 # Specific connections to draw the letters clearly
 connections = [
@@ -53,6 +66,7 @@ def main():
     # Starting messy rotation
     angle_x, angle_y = 1.0, 1.0
     solved = False
+    constellation = Constellation()
 
     while True:
         screen.fill(BLACK)
@@ -73,7 +87,7 @@ def main():
         solved = dist_x < 0.12 and dist_y < 0.12
 
         # Logic & Drawing
-        rotated = [rotate_point(p, angle_x, angle_y) for p in stars]
+        rotated = [rotate_point(p, angle_x, angle_y) for p in constellation.stars]
         projected = [project(p) for p in rotated]
         color = GOLD if solved else WHITE
         line_color = (60, 60, 100) if not solved else (100, 100, 200)
@@ -94,9 +108,9 @@ def main():
         msg = "Rotate to align the stars..." if not solved else "PASSWORD UNLOCKED: YONG"
         text = font.render(msg, True, CYAN if solved else WHITE)
         screen.blit(text, (WIDTH//2 - text.get_width()//2, 30))
-
         pygame.display.flip()
         clock.tick(60)
 
 if __name__ == "__main__":
     main()
+    pygame.quit()
