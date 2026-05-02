@@ -135,9 +135,6 @@ def complete_level():
         print("Game complete!")
         time.sleep(2)
 
-def Game_Status(gamestatus) :
-    if gamestatus :
-        complete_level()
 
 #===============================
 # Game loop
