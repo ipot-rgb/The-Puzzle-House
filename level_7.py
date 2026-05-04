@@ -9,12 +9,14 @@ def run_level_7(screen,hint_manager):
             self.x = x
             self.y = y
             self.rect = self.image.get_rect(center=(x, y))
+            self.visible = True
 
         def update(self, display):
-                    display.blit(self.image, self.rect)
-                
+            if self.visible:
+                display.blit(self.image, self.rect)
+
         def is_clicked(self, pos):
-            return self.rect.collidepoint(pos)
+            return self.rect.collidepoint(pos) and self.visible
 
         def is_hovered(self, pos):
             return self.rect.collidepoint(pos)
@@ -47,7 +49,8 @@ def run_level_7(screen,hint_manager):
         #===============================
         # Screen Setup
         #===============================
-        # screen = pygame.display.set_mode((screen_width, screen_height))
+        screen_width = 1200
+        screen_height = 650
         pygame.display.set_caption("The Puzzle House")
         red = (207, 177, 177)
 
@@ -56,11 +59,19 @@ def run_level_7(screen,hint_manager):
         hand_cursor = pygame.SYSTEM_CURSOR_HAND
 
         # ========== Button Configuration ==========
-
-        # Picture loading
         board = pygame.image.load("assets/Level_15/board.png")
+
+        # Paper images
         paper = pygame.image.load("assets/Level_15/paper.png")
+        paper = pygame.transform.scale(paper, (400, 400))
+
+        # Background image
         brg = pygame.image.load("assets/Level_15/brg_15.png")
+        brg = pygame.transform.scale(brg, (screen_width, screen_height))
+
+        # Tutorial image
+        steps = pygame.image.load("assets/Menu_interface/steps.png")
+        steps = pygame.transform.scale(steps, (250, 350))
 
         # A-I button setup
         images = {}
@@ -72,8 +83,6 @@ def run_level_7(screen,hint_manager):
             images[letter] = pygame.transform.scale(img, (45, 45))
 
         # Right section dimensions
-        screen_width = 1200
-        screen_height = 650
 
         right_section_width = screen_width // 3     # 800
         button_start_x = screen_width - right_section_width     # 400
@@ -122,8 +131,6 @@ def run_level_7(screen,hint_manager):
         correct_passcode = ['i', 'h', 'b', 'a', 'd', 'g', 'f', 'e', 'c']
 
 
-        paper = pygame.transform.scale(paper, (400, 400))
-        brg = pygame.transform.scale(brg, (screen_width, screen_height))
         puzzles = []
 
         for i in range(1, 2):
@@ -146,6 +153,17 @@ def run_level_7(screen,hint_manager):
         active_paper = None
 
         font = pygame.font.SysFont(None, 40)
+
+        overlay = pygame.Surface(screen.get_size())
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+
+        tutorial_start_time = pygame.time.get_ticks()
+        tutorial_duration = 3000   # 3秒（毫秒）
+        tutorial_active = True
+        tutorial_active_2 = True
+
+        clock = pygame.time.Clock()
 
         run = True
         while run:
@@ -201,7 +219,7 @@ def run_level_7(screen,hint_manager):
                             puzzles[active_puzzle]["rect"].move_ip(event.rel)
                         elif active_paper is not None:
                             puzzles[active_paper]["rect_paper"].move_ip(event.rel)
-
+                            
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
             pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
