@@ -1,18 +1,21 @@
 def run_level_7(screen):
+    import pygame
+    import time
     level_complete = False
-
     class Button:
         def __init__(self, x, y, image):
             self.image = image
             self.x = x
             self.y = y
             self.rect = self.image.get_rect(center=(x, y))
+            self.visible = True
 
         def update(self, display):
-                    display.blit(self.image, self.rect)
-                
+            if self.visible:
+                display.blit(self.image, self.rect)
+
         def is_clicked(self, pos):
-            return self.rect.collidepoint(pos)
+            return self.rect.collidepoint(pos) and self.visible
 
         def is_hovered(self, pos):
             return self.rect.collidepoint(pos)
@@ -49,14 +52,14 @@ def run_level_7(screen):
             self.active = False
 
         def trigger(self):
-            self.start_time = time.time()
+            self.start_time = pygame.time.get_ticks()
             self.active = True
 
         def draw(self, screen, font):
             if not self.active:
                 return
                     
-            if time.time() - self.start_time < self.duration:
+            if pygame.time.get_ticks() - self.start_time < self.duration * 1000:
                 overlay = pygame.Surface(screen.get_size())
                 overlay.set_alpha(180)
                 overlay.fill((0, 0, 0))
@@ -73,9 +76,6 @@ def run_level_7(screen):
                 self.active = False
 
     while not level_complete:
-
-        import pygame
-        import time
         #===============================
         # Screen Setup
         #===============================
@@ -183,6 +183,16 @@ def run_level_7(screen):
             "Hint 3: Follow the 9 pattern grid to find the correct order."
         ])
 
+        overlay = pygame.Surface(screen.get_size())
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+
+        tutorial_start_time = pygame.time.get_ticks()
+        tutorial_duration = 3000   # 3秒（毫秒）
+        tutorial_active = True
+
+        clock = pygame.time.Clock()
+
         run = True
         while run:
             mouse_pos = pygame.mouse.get_pos()
@@ -226,6 +236,7 @@ def run_level_7(screen):
 
                     current_time = time.time()
                     if hint_button.is_clicked(event.pos):
+                        print("Hint button clicked")
                         hint.trigger()
                         hint_button.visible = False
                         pygame.display.flip()
@@ -240,6 +251,11 @@ def run_level_7(screen):
                         elif active_paper is not None:
                             puzzles[active_paper]["rect_paper"].move_ip(event.rel)
 
+            current_time = pygame.time.get_ticks()
+            if tutorial_active and current_time - tutorial_start_time > tutorial_duration:
+                tutorial_active = False
+
+
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
             pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
@@ -248,6 +264,18 @@ def run_level_7(screen):
 
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
+
             hint_button.update(screen)
             hint.draw(screen, font)
+
+            if tutorial_active:
+                screen.blit(overlay, (0, 0))
+                text_surface = font.render("Arrange the numbers in alphabetical order!", True, (255, 255, 255))
+                rect = text_surface.get_rect(center=(screen.get_width()//2, 250))
+                screen.blit(text_surface, rect)
+                pygame.display.flip()
+                time.sleep(3)
+
             pygame.display.flip()
+
+            

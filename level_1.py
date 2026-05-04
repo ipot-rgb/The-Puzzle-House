@@ -1,5 +1,6 @@
 def run_level_1(screen):
     import pygame
+    import time
     import os
     level_complete = False
     class Letter_Button:
@@ -28,8 +29,6 @@ def run_level_1(screen):
             self.rect = self.image.get_rect()
             self.rect.topleft = (x, y)
 
-
-
     class Bookmark(pygame.sprite.Sprite):
         def __init__(self, image_path, width, height, x, y):
             super().__init__()
@@ -57,16 +56,12 @@ def run_level_1(screen):
                 self.rect.y = mouse_y + self.offset_y
 
 
-
     while not level_complete:
 
 
         screen_width = 1200
         screen_height = 650
-        # # background
-        # background_img = pygame.image.load(os.path.join("materials", "lv1 background.png")).convert()
-        # background_img = pygame.transform.scale(background_img, (screen_width, screen_height))
-
+        
         # sprite class for the note
 
         pygame.display.set_caption("The Puzzle House")
@@ -130,8 +125,6 @@ def run_level_1(screen):
         for btn in buttons:
             btn.draw()
 
-
-
         note_width = int(screen_width * 0.65)
         note_height = int(screen_height + 40)   # ← 改这里
         note_x = 0
@@ -147,7 +140,6 @@ def run_level_1(screen):
         all_sprites = pygame.sprite.Group()
         all_sprites.add(note)
         all_sprites.add(bm)
-
         running = True
         while running:
             events = pygame.event.get()

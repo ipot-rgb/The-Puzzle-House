@@ -1,8 +1,25 @@
 def run_level_8(screen):
+    import pygame
+    import time
     level_complete = False
     while not level_complete:
-        import pygame
-        import time
+        class Button:
+            def __init__(self, x, y, image):
+                self.image = image
+                self.x = x
+                self.y = y
+                self.rect = self.image.get_rect(center=(x, y))
+                self.visible = True
+
+            def update(self, display):
+                if self.visible:
+                    display.blit(self.image, self.rect)
+
+            def is_clicked(self, pos):
+                return self.rect.collidepoint(pos) and self.visible
+
+            def is_hovered(self, pos):
+                return self.rect.collidepoint(pos)
 
         class Letter_Button:
             def __init__(self, x, y, image):
@@ -28,6 +45,36 @@ def run_level_8(screen):
             def is_hovered(self, pos):
                 return self.rect.collidepoint(pos)
 
+        class Hint:
+            def __init__(self, texts, duration=5):
+                self.texts = texts
+                self.duration = duration
+                self.start_time = None
+                self.active = False
+
+            def trigger(self):
+                self.start_time = time.time()
+                self.active = True
+
+            def draw(self, screen, font):
+                if not self.active:
+                    return
+                        
+                if time.time() - self.start_time < self.duration:
+                    overlay = pygame.Surface(screen.get_size())
+                    overlay.set_alpha(180)
+                    overlay.fill((0, 0, 0))
+                    screen.blit(overlay, (0, 0))
+
+                    for i, line in enumerate(self.texts):
+                        text_surface = font.render(line, True, (255, 255, 255))
+                        rect = text_surface.get_rect(
+                            center=(screen.get_width()//2, 250 + i * 80)
+                        )
+                        screen.blit(text_surface, rect)
+
+                else:
+                    self.active = False
         #===============================
         # Screen Setup
         #===============================
@@ -92,7 +139,14 @@ def run_level_8(screen):
         enter_btn.letter = "ENTER"
         buttons.append(enter_btn)
 
-
+        # Hint Button
+        hint_img = pygame.image.load("assets/Icon/hint_button.png")
+        hint_img = pygame.transform.scale(hint_img, (60, 65))
+        hint_button = Button(1150, 80, hint_img)
+        hint = Hint([
+            "Hint: The bones are numbered 1-9.",
+            "Try arranging them in a specific order to reveal the passcode."
+        ])
         # Passcode variables
         passcode = []
         correct_passcode = ['a', 'i', 'g', 'b']
@@ -149,6 +203,11 @@ def run_level_8(screen):
                         for i, p in enumerate(puzzles):
                             if p["rect"].collidepoint(event.pos):
                                 active_puzzle = i
+                    current_time = time.time()
+                    if hint_button.is_clicked(event.pos):
+                        hint.trigger()
+                        hint_button.visible = False
+                        pygame.display.flip()
 
                 elif event.type == pygame.MOUSEBUTTONUP:
                         active_puzzle = None
@@ -160,7 +219,8 @@ def run_level_8(screen):
             screen.blit(fish, (60, 200))
             for btn in buttons:
                 btn.draw()
-
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
+            hint_button.update(screen)
+            hint.draw(screen, pygame.font.SysFont(None, 30))
             pygame.display.flip()

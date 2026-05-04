@@ -108,7 +108,7 @@ def load_level(level):
     elif level == 7:
         current_screen = "level_2"
     elif level == 8:
-        current_screen = "level_8"  # Create level_8
+        current_screen = "level_0"  # Create level_8
     elif level == 9:
         current_screen = "level_9"  # Create level_9
     else:
