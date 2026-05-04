@@ -82,8 +82,6 @@ pygame.display.flip()
 
 hint_manager = HintManager()
 
-#level system
-current_level = 1
 #Level system
 current_level = 0
 total_levels = 9
@@ -171,28 +169,6 @@ while running:
             pygame.mouse.set_cursor(hand_cursor)
         else:
             pygame.mouse.set_cursor(default_cursor)
-            
-    # REMEMBER CHANGE IT TO READABLE LEVEL NAMES LATER
-    elif current_screen == "level_1":
-        result = run_level_1(display, hint_manager)
-        if result == "menu":
-            current_screen = "menu"
-        elif result == "quit":
-            running = False
-        elif result == "complete":  # Add this
-            complete_level()
-
-    elif current_screen == "level_7":
-        result = run_level_7(display, hint_manager)
-        if result == "menu":
-            current_screen = "menu"
-        elif result == "quit":
-            running = False
-        elif result == "complete":  # Add this
-            complete_level()
-
-    elif current_screen == "level_8":
-        result = run_level_8(display, hint_manager)
 
     # ===============================
     # LEVEL HANDLER
@@ -202,7 +178,7 @@ while running:
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display)
+                result = func(display,hint_manager)
                 break
         else:
             result = None

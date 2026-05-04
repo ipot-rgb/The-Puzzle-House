@@ -8,6 +8,11 @@ class HintManager:
                 "Hint 2 for Level 1: Try dragging the bookmark and see which line where the letters fit the dots",
                 "Hint 3 for Level 1: The answer is 'c','d','h','b','a'"
             ],
+            2: [
+                "Hint 1 for Level 7: Placeholder_1",
+                "Hint 2 for Level 7: Placeholder_2",
+                "Hint 3 for Level 7: Placeholder_3",
+            ],
             7: [
                 "Hint 1 for Level 7: This level has 9 letters.",
                 "Hint 2 for Level 7: Try arranging these numbers alphabetically.",
