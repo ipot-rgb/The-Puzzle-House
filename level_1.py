@@ -1,6 +1,7 @@
-def run_level_1(screen):
+def run_level_1(screen, hint_manager):
     import pygame
     import os
+    from hints_system import show_hint_popup
     level_complete = False
     class Letter_Button:
         def __init__(self, x, y, image):
@@ -76,6 +77,13 @@ def run_level_1(screen):
         hand_cursor = pygame.SYSTEM_CURSOR_HAND
 
         # ========== Button Configuration ==========
+
+        #hint button
+        ui_font = pygame.font.Font(None, 36)
+        hint_img = pygame.image.load("assets/Icon/hint_button.png")
+        hint_img = pygame.transform.scale(hint_img, (60, 65))
+        hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
+
         enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 
         # A-I button setup
@@ -160,6 +168,9 @@ def run_level_1(screen):
                         return "menu"
                         
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    # --- check hint button click ---
+                    if hint_button_rect.collidepoint(event.pos):
+                        show_hint_popup(screen, hint_manager, 1, ui_font)
                     # == Check LETTER button click ==
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
                         if True:
@@ -201,6 +212,8 @@ def run_level_1(screen):
                     screen.blit(check, (btn.rect.centerx - 15, btn.rect.centery - 15))
 
             bm.update(events)
+            #draw the hint button
+            screen.blit(hint_img, hint_button_rect)
 
             all_sprites.draw(screen)
             for btn in buttons:

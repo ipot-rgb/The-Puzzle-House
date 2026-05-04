@@ -1,9 +1,9 @@
-def run_level_8(screen):
+def run_level_8(screen, hint_manager):
+    import pygame
+    import time
+    from hints_system import show_hint_popup
     level_complete = False
     while not level_complete:
-        import pygame
-        import time
-
         class Letter_Button:
             def __init__(self, x, y, image):
                 self.image = image
@@ -92,6 +92,11 @@ def run_level_8(screen):
         enter_btn.letter = "ENTER"
         buttons.append(enter_btn)
 
+        # Hint Button
+        ui_font = pygame.font.Font(None, 36)
+        hint_img = pygame.image.load("assets/Icon/hint_button.png")
+        hint_img = pygame.transform.scale(hint_img, (60, 65))
+        hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
 
         # Passcode variables
         passcode = []
@@ -122,6 +127,9 @@ def run_level_8(screen):
                         return "menu"
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # --- check hint button click ---
+                    if hint_button_rect.collidepoint(event.pos):
+                        show_hint_popup(screen, hint_manager, 8, ui_font)
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                         passcode.append(clicked_btn.letter)
@@ -163,4 +171,8 @@ def run_level_8(screen):
 
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
+
+            #draw the hint button
+            screen.blit(hint_img, hint_button_rect)
+
             pygame.display.flip()
