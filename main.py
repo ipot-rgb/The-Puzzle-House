@@ -1,8 +1,12 @@
 import pygame
 import time
 import os 
-from level_7 import run_level_7
 from level_1 import run_level_1
+from level_7 import run_level_7
+from level_8 import run_level_8
+from instruction import show_instruction
+from hints_system import HintManager
+
 #===============================
 # Button class
 #===============================
@@ -74,13 +78,15 @@ start_button = Button(600, 265, start_icon)
 start_button.update(display)
 pygame.display.flip()
 
-#Level system
+hint_manager = HintManager()
+
+#level system
 current_level = 1
 total_levels = 9
 level_complete = False
 game_complete = False
 
-# Password input system
+#password input system
 
 message = ""
 message_timer = 0
@@ -96,7 +102,7 @@ def load_level(level):
     elif level == 2:
         current_screen = "level_7"  # You'll need to create level_2
     elif level == 3:
-        current_screen = "level_3"  # Create level_3
+        current_screen = "level_8"  # Create level_3
     elif level == 4:
         current_screen = "level_4"  # Create level_4
     elif level == 5:
@@ -132,6 +138,7 @@ def complete_level():
         current_screen = "menu"
         print("Game complete!")
         time.sleep(2)
+
 def Game_Status(gamestatus) :
     if gamestatus :
         complete_level()
@@ -158,16 +165,27 @@ while running:
         else:
             pygame.mouse.set_cursor(default_cursor)
             
+    # REMEMBER CHANGE IT TO READABLE LEVEL NAMES LATER
     elif current_screen == "level_1":
-        result = run_level_1(display)
+        result = run_level_1(display, hint_manager)
         if result == "menu":
             current_screen = "menu"
         elif result == "quit":
             running = False
         elif result == "complete":  # Add this
             complete_level()
+
     elif current_screen == "level_7":
-        result = run_level_7(display)
+        result = run_level_7(display, hint_manager)
+        if result == "menu":
+            current_screen = "menu"
+        elif result == "quit":
+            running = False
+        elif result == "complete":  # Add this
+            complete_level()
+
+    elif current_screen == "level_8":
+        result = run_level_8(display, hint_manager)
         if result == "menu":
             current_screen = "menu"
         elif result == "quit":
@@ -186,6 +204,8 @@ while running:
                 running = False
                 
             if start_button.is_clicked(event.pos):
+                instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                show_instruction(display, instruction_font)
                 load_level(current_level)
 
 
