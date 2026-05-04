@@ -42,7 +42,6 @@ def show_instruction(screen, font):
 
     running = True
     while running:
-        # Handle events (allow quitting with ESC or window close)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -61,3 +60,37 @@ def show_instruction(screen, font):
             time.sleep(final_pause)
             running = False
             break
+
+        screen.blit(background, (0, 0))
+
+        #split displayed text into lines (to handle wrapping)
+        #split by newline and render each line
+        display_lines = displayed_text.split("\n")
+        y_offset = 100
+        line_spacing = font.get_height() + 10
+        for i, line in enumerate(display_lines):
+            if line.strip() == "":
+                y_offset += line_spacing
+                continue
+            text_surf = font.render(line, True, text_color)
+            # Center the text horizontally
+            x = (screen_width - text_surf.get_width()) // 2
+            screen.blit(text_surf, (x, y_offset))
+            y_offset += line_spacing
+
+        pygame.display.flip()
+        clock.tick(60)
+
+    # ---- White flash effect ----
+    flash_start = time.time()
+    flash_surf = pygame.Surface((screen_width, screen_height))
+    flash_surf.fill((255, 255, 255))
+    while time.time() - flash_start < flash_duration:
+        alpha = int(255 * (1 - (time.time() - flash_start) / flash_duration))
+        flash_surf.set_alpha(alpha)
+        screen.blit(flash_surf, (0, 0))
+        pygame.display.flip()
+        clock.tick(60)
+
+    # Final short pause (optional)
+    time.sleep(0.2)
