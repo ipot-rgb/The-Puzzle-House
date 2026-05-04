@@ -1,7 +1,9 @@
 import pygame
 import time
 import os 
+from level_0 import run_level_0
 from level_1 import run_level_1
+from level_2 import run_level_2
 from level_7 import run_level_7
 from level_8 import run_level_8
 
@@ -77,7 +79,7 @@ start_button.update(display)
 pygame.display.flip()
 
 #Level system
-current_level = 1
+current_level = 0
 total_levels = 9
 level_complete = False
 game_complete = False
@@ -87,30 +89,24 @@ game_complete = False
 message = ""
 message_timer = 0
 
+# ===============================
+# LEVEL FUNCTION MAP
+# ===============================
+levels = {
+    0: ("level_0", run_level_0),
+    1: ("level_1", run_level_1),
+    2: ("level_2", run_level_2),
+    7: ("level_7", run_level_7),
+    8: ("level_8", run_level_8),
+
+}
 
 def load_level(level):
     global message, message_timer, current_screen
     print(f"Loading Level {level}...")
 
-    # Fixed logic - this will work correctly
-    if level == 1:
-        current_screen = "level_1"
-    elif level == 2:
-        current_screen = "level_7"  # You'll need to create level_2
-    elif level == 3:
-        current_screen = "level_8"  # Create level_3
-    elif level == 4:
-        current_screen = "level_4"  # Create level_4
-    elif level == 5:
-        current_screen = "level_5"  # Create level_5
-    elif level == 6:
-        current_screen = "level_6"  # Create level_6
-    elif level == 7:
-        current_screen = "level_2"
-    elif level == 8:
-        current_screen = "level_0"  # Create level_8
-    elif level == 9:
-        current_screen = "level_9"  # Create level_9
+    if level in levels:
+        current_screen = levels[level][0]   # "level_x"
     else:
         current_screen = "menu"
 
@@ -118,20 +114,26 @@ def load_level(level):
 
 
 def complete_level():
-    global current_level, level_complete, game_complete, message, message_timer, current_screen
+    global current_level, level_complete, game_complete
+    global message, message_timer, current_screen
 
     if current_level < total_levels:
+        message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
+        message_timer = 90
+
         current_level += 1
         level_complete = False
-        message = f"Level {current_level - 1} Complete! Moving to Level {current_level}"
-        message_timer = 90
-        load_level(current_level)  # Load next level's puzzle
+
+        load_level(current_level)
+
         print(f"Moving to level {current_level}")
+
     else:
         game_complete = True
         message = "Congratulations! You completed all levels!"
         message_timer = 180
         current_screen = "menu"
+
         print("Game complete!")
         time.sleep(2)
 
@@ -144,49 +146,52 @@ def Game_Status(gamestatus) :
 #===============================
 running = True
 current_screen = "menu"
+menu_list = [1,2,3,4,5,6,7,8,9,0]
 while running:
     mouse_pos = pygame.mouse.get_pos()
 
-    # ~~ Display Main Menu
+    # ===============================
+    # MENU
+    # ===============================
     if current_screen == "menu":
         display.blit(brg.name, (brg.x, brg.y))
+
         text_title = font.render("The Puzzle House", True, (0, 0, 0))
         display.blit(text_title, (250, 100))
+
         exit_button.update(display)
         start_button.update(display)
+
         if exit_button.is_hovered(mouse_pos):
             pygame.mouse.set_cursor(hand_cursor)
         elif start_button.is_hovered(mouse_pos):
             pygame.mouse.set_cursor(hand_cursor)
         else:
             pygame.mouse.set_cursor(default_cursor)
-            
-    # REMEMBER CHANGE IT TO READABLE LEVEL NAMES LATER
-    elif current_screen == "level_1":
-        result = run_level_1(display)
-        if result == "menu":
-            current_screen = "menu"
-        elif result == "quit":
-            running = False
-        elif result == "complete":  # Add this
-            complete_level()
 
-    elif current_screen == "level_7":
-        result = run_level_7(display)
-        if result == "menu":
-            current_screen = "menu"
-        elif result == "quit":
-            running = False
-        elif result == "complete":  # Add this
-            complete_level()
+    # ===============================
+    # LEVEL HANDLER
+    # ===============================
+    elif current_screen.startswith("level_"):
 
-    elif current_screen == "level_8":
-        result = run_level_8(display)
+        # level function
+        for lvl, (name, func) in levels.items():
+            if name == current_screen:
+                result = func(display)
+                break
+        else:
+            result = None
+
+        # ===============================
+        # RESULT HANDLING
+        # ===============================
         if result == "menu":
             current_screen = "menu"
+
         elif result == "quit":
             running = False
-        elif result == "complete":  # Add this
+
+        elif result == "complete":
             complete_level()
 
     # Event handling
