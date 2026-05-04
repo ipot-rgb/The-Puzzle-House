@@ -93,5 +93,5 @@ def show_instruction(screen, font):
         pygame.display.flip()
         clock.tick(60)
 
-    # Final short pause (optional)
+    #final short pause
     time.sleep(0.2)
