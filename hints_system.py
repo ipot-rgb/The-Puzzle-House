@@ -42,3 +42,32 @@ class HintManager:
         remaining = 3 - (used + 1)
         return (hint_text, remaining)
 
+    def show_hint_popup(screen, hint_manager, level, font):
+        background = screen.copy()
+        popup_width, popup_height = 500, 300
+        popup_rect = pygame.Rect(
+            screen.get_width() // 2 - popup_width // 2,
+            screen.get_height() // 2 - popup_height // 2,
+            popup_width, popup_height
+        )
+
+        #buttons
+        get_hint_rect = pygame.Rect(popup_rect.x + 50, popup_rect.y + popup_height - 60, 180, 40)
+        close_rect = pygame.Rect(popup_rect.x + popup_width - 230, popup_rect.y + popup_height - 60, 180, 40)
+
+        colors = {
+            "bg": (50, 50, 70),
+            "border": (200, 200, 200),
+            "button": (100, 150, 200),
+            "button_hover": (150, 200, 250),
+            "text": (255, 255, 255)
+        }
+
+        hint_text = ""
+        remaining = 0
+
+
+        clock = pygame.time.Clock()
+        running = True
+
+
