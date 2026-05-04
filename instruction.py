@@ -41,6 +41,7 @@ def show_instruction(screen, font):
     current_line_index = 0
     lines_rendered = lines.copy()
 
+    skip = False
     running = True
     while running:
         for event in pygame.event.get():
@@ -48,11 +49,12 @@ def show_instruction(screen, font):
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                    running = False
-                    break
+                skip = True
+                break
+        if skip:
+            break
 
-        # Typewriter effect: add characters over time
+        #typewriter effect: add characters over time
         if len(displayed_text) < len(full_text):
             if time.time() - last_char_time >= char_delay:
                 displayed_text += full_text[len(displayed_text)]
@@ -74,7 +76,7 @@ def show_instruction(screen, font):
                 y_offset += line_spacing
                 continue
             text_surf = font.render(line, True, text_color)
-            # Center the text horizontally
+            #center the text horizontally
             x = (screen_width - text_surf.get_width()) // 2
             screen.blit(text_surf, (x, y_offset))
             y_offset += line_spacing
@@ -87,6 +89,11 @@ def show_instruction(screen, font):
     flash_surf = pygame.Surface((screen_width, screen_height))
     flash_surf.fill((255, 255, 255))
     while time.time() - flash_start < flash_duration:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    exit()
         alpha = int(255 * (1 - (time.time() - flash_start) / flash_duration))
         flash_surf.set_alpha(alpha)
         screen.blit(flash_surf, (0, 0))
