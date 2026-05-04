@@ -27,17 +27,13 @@ screen_height = 650
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("The Puzzle House")
 
-# Screen background color
 LIGHT_BLUE = (202, 228, 241)
 
 screen.fill(LIGHT_BLUE)
 
-# ========== Button Configuration ==========
-# Right section dimensions
 right_section_width = screen_width // 3
 button_area_start_x = screen_width - right_section_width
 
-# Picture loading
 images = {}
 letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i"]
 
@@ -48,7 +44,6 @@ for letter in letters:
     img = pygame.image.load(f"assets/Button_alphabet/letter_{letter}.png")
     images[letter] = pygame.transform.scale(img, (45, 45))
 
-# Configure button grid
 button_size = 45
 button_gap = 80
 buttons_per_row = 3
@@ -57,11 +52,9 @@ rows = 3
 total_grid_width = buttons_per_row * button_gap
 total_grid_height = rows * button_gap
 
-# Letters grid start position (centered in the right section)
 grid_start_x = button_area_start_x + (right_section_width - total_grid_width) // 2
 grid_start_y = (screen_height - total_grid_height) // 2
 
-# Create letter buttons
 buttons = []
 for i, letter in enumerate(letters):
     row = i // buttons_per_row
@@ -72,14 +65,12 @@ for i, letter in enumerate(letters):
     btn.letter = letter
     buttons.append(btn)
 
-# ENTER Button
 enter_btn_x = grid_start_x + (total_grid_width // 2) - 22
 enter_btn_y = grid_start_y + total_grid_height + 30
 enter_btn = Letter_Button(enter_btn_x, enter_btn_y, enter_img)
 enter_btn.letter = "ENTER"
 buttons.append(enter_btn)
 
-# Passcode variables
 passcode = []
 correct_passcode = ['a', 'b', 'c', 'd']
 
@@ -95,23 +86,18 @@ while running:
             running = False
         
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # == Check LETTER button click ==
             if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
                 if True:
                     passcode.append(clicked_btn.letter)
                     print(f"Clicked: {clicked_btn.letter}, passcode: {passcode}")
                     clicked_btn.hide()
-
-            # == Check ENTER button click ==
-            # Checking if the click is on the ENTER button and if it's visible (not hidden)
             elif (enter_clicked := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"),None)):
                 if True:
                     if passcode == correct_passcode:
                         print("✅ You passed!")
                         
                     else:
-                        print(f"❌ Invalid password: {correct_passcode}")
-                        # Reset buttons
+                        print(f"❌ Invalid password: {passcode}")
                         for btn in buttons:
                             if btn.letter != "ENTER":
                                 btn.visible = True
@@ -122,11 +108,9 @@ while running:
     # Srcreen refresh
     screen.fill(LIGHT_BLUE)
     
-    # Button drawing
     for btn in buttons:
         btn.draw()
-    
-    # Disappearing buttons 
+        
     for btn in buttons:
         if not btn.visible and btn.letter != "ENTER":
             font = pygame.font.Font(None, 36)
