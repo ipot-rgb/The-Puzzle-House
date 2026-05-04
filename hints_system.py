@@ -83,3 +83,46 @@ def show_hint_popup(screen, hint_manager, level, font):
                     return
                 if get_hint_rect.collidepoint(pos):
                     hint_text, remaining = hint_manager.get_next_hint(level)
+
+        #mouse
+        mouse_pos = pygame.mouse.get_pos()
+        get_hover = get_hint_rect.collidepoint(mouse_pos)
+        close_hover = close_rect.collidepoint(mouse_pos)
+
+        # Overlay and popup
+        overlay = pygame.Surface(screen.get_size())
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+        screen.blit(background, (0, 0))
+        screen.blit(overlay, (0, 0))
+
+        pygame.draw.rect(screen, colors["bg"], popup_rect, border_radius=10)
+        pygame.draw.rect(screen, colors["border"], popup_rect, 3, border_radius=10)
+
+        #draw hint text
+        if hint_text:
+            words = hint_text.split(' ')
+            lines = []
+            current_line = []
+            for w in words:
+                test_line = ' '.join(current_line + [w])
+                test_surf = font.render(test_line, True, colors["text"])
+                if test_surf.get_width() < popup_width - 40:
+                    current_line.append(w)
+                else:
+                    lines.append(' '.join(current_line))
+                    current_line = [w]
+            if current_line:
+                lines.append(' '.join(current_line))
+
+            y = popup_rect.y + 30
+            for line in lines:
+                surf = font.render(line, True, colors["text"])
+                screen.blit(surf, (popup_rect.x + 20, y))
+                y += font.get_height() + 5
+        else:
+            msg = font.render("Press 'Get New Hint' to receive a hint.", True, colors["text"])
+            screen.blit(msg, (popup_rect.x + 20, popup_rect.y + 30))
+
+
+
