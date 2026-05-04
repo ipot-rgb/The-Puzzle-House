@@ -39,3 +39,25 @@ def show_instruction(screen, font):
     last_char_time = time.time()
     current_line_index = 0
     lines_rendered = lines.copy()
+
+    running = True
+    while running:
+        # Handle events (allow quitting with ESC or window close)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
+                    break
+
+        # Typewriter effect: add characters over time
+        if len(displayed_text) < len(full_text):
+            if time.time() - last_char_time >= char_delay:
+                displayed_text += full_text[len(displayed_text)]
+                last_char_time = time.time()
+        else:
+            time.sleep(final_pause)
+            running = False
+            break
