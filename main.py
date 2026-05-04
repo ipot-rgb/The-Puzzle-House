@@ -5,7 +5,7 @@ from level_1 import run_level_1
 from level_7 import run_level_7
 from level_8 import run_level_8
 from instruction import show_instruction
-
+from hints_system import HintManager
 
 #===============================
 # Button class
@@ -78,13 +78,15 @@ start_button = Button(600, 265, start_icon)
 start_button.update(display)
 pygame.display.flip()
 
-#Level system
+hint_manager = HintManager()
+
+#level system
 current_level = 1
 total_levels = 9
 level_complete = False
 game_complete = False
 
-# Password input system
+#password input system
 
 message = ""
 message_timer = 0
