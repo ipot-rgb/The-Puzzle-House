@@ -16,3 +16,13 @@ def show_instruction(screen, font):
         "",
         "Good luck!",
     ]
+
+    # Configuration
+    char_delay = 0.05  # seconds per character
+    line_pause = 0.5  # seconds after each full line
+    final_pause = 1.0  # seconds after all lines before white flash
+    flash_duration = 0.5
+
+    screen_width, screen_height = screen.get_size()
+    text_color = (255, 255, 255)
+    bg_color = (0, 0, 0)
