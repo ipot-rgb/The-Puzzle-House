@@ -6,6 +6,8 @@ from level_1 import run_level_1
 from level_2 import run_level_2
 from level_7 import run_level_7
 from level_8 import run_level_8
+from instruction import show_instruction
+from hints_system import HintManager
 
 #===============================
 # Button class
@@ -78,13 +80,15 @@ start_button = Button(600, 265, start_icon)
 start_button.update(display)
 pygame.display.flip()
 
+hint_manager = HintManager()
+
 #Level system
 current_level = 0
 total_levels = 9
 level_complete = False
 game_complete = False
 
-# Password input system
+#password input system
 
 message = ""
 message_timer = 0
@@ -137,9 +141,6 @@ def complete_level():
         print("Game complete!")
         time.sleep(2)
 
-def Game_Status(gamestatus) :
-    if gamestatus :
-        complete_level()
 
 #===============================
 # Game loop
@@ -177,7 +178,7 @@ while running:
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display)
+                result = func(display,hint_manager)
                 break
         else:
             result = None
@@ -205,6 +206,8 @@ while running:
                 running = False
                 
             if start_button.is_clicked(event.pos):
+                instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                show_instruction(display, instruction_font)
                 load_level(current_level)
 
 

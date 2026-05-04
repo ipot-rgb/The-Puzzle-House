@@ -1,4 +1,4 @@
-def run_level_0(screen):
+def run_level_0(screen, hint_manager):
     import pygame
     import os
     import time

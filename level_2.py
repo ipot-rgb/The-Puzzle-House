@@ -1,9 +1,9 @@
-def run_level_2(screen):
+def run_level_2(screen, hint_manager):
     import pygame
     import os
     import math
     import time
-    
+    from hints_system import show_hint_popup
     level_complete = False
 
     clock = pygame.time.Clock()
@@ -190,6 +190,12 @@ def run_level_2(screen):
         enter_btn.letter = "ENTER"
         buttons.append(enter_btn)
 
+        # hint button
+        ui_font = pygame.font.Font(None, 36)
+        hint_img = pygame.image.load("assets/Icon/hint_button.png")
+        hint_img = pygame.transform.scale(hint_img, (60, 65))
+        hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
+
         passcode = []
         correct_passcode = ['b', 'c', 'f', 'i']
 
@@ -215,6 +221,10 @@ def run_level_2(screen):
 
                 constellation.handle_event(event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    # --- check hint button click ---
+                    if hint_button_rect.collidepoint(event.pos):
+                        show_hint_popup(screen, hint_manager, 2, ui_font)
+
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
                         if True:
                             passcode.append(clicked_btn.letter)
@@ -259,5 +269,8 @@ def run_level_2(screen):
 
             for btn in buttons:
                 btn.draw()
+
+            # draw the hint button
+            screen.blit(hint_img, hint_button_rect)
 
             pygame.display.flip()
