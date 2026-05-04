@@ -7,15 +7,11 @@ screen = pygame.display.set_mode((1200,650), pygame.SCALED)
 clock = pygame.time.Clock()
 info = pygame.display.Info()
 WIDTH, HEIGHT = 1200, 650
- 
-
-
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 CYAN = (0, 255, 255)
 
-background_img = pygame.image.load(
-    os.path.join("materials", "lv1 background.png")).convert()
+background_img = pygame.image.load(os.path.join("materials", "lv1 background.png")).convert()
 background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
 
 
