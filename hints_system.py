@@ -42,32 +42,44 @@ class HintManager:
         remaining = 3 - (used + 1)
         return (hint_text, remaining)
 
-    def show_hint_popup(screen, hint_manager, level, font):
-        background = screen.copy()
-        popup_width, popup_height = 500, 300
-        popup_rect = pygame.Rect(
-            screen.get_width() // 2 - popup_width // 2,
-            screen.get_height() // 2 - popup_height // 2,
-            popup_width, popup_height
-        )
+def show_hint_popup(screen, hint_manager, level, font):
+    background = screen.copy()
+    popup_width, popup_height = 500, 300
+    popup_rect = pygame.Rect(
+        screen.get_width() // 2 - popup_width // 2,
+        screen.get_height() // 2 - popup_height // 2,
+        popup_width, popup_height
+    )
 
-        #buttons
-        get_hint_rect = pygame.Rect(popup_rect.x + 50, popup_rect.y + popup_height - 60, 180, 40)
-        close_rect = pygame.Rect(popup_rect.x + popup_width - 230, popup_rect.y + popup_height - 60, 180, 40)
+    #buttons
+    get_hint_rect = pygame.Rect(popup_rect.x + 50, popup_rect.y + popup_height - 60, 180, 40)
+    close_rect = pygame.Rect(popup_rect.x + popup_width - 230, popup_rect.y + popup_height - 60, 180, 40)
 
-        colors = {
-            "bg": (50, 50, 70),
-            "border": (200, 200, 200),
-            "button": (100, 150, 200),
-            "button_hover": (150, 200, 250),
-            "text": (255, 255, 255)
-        }
+    colors = {
+        "bg": (50, 50, 70),
+        "border": (200, 200, 200),
+        "button": (100, 150, 200),
+        "button_hover": (150, 200, 250),
+        "text": (255, 255, 255)
+    }
 
-        hint_text = ""
-        remaining = 0
+    hint_text = ""
+    remaining = 0
+    clock = pygame.time.Clock()
+    running = True
 
-
-        clock = pygame.time.Clock()
-        running = True
-
-
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                running = False
+                return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = event.pos
+                if close_rect.collidepoint(pos):
+                    running = False
+                    return
+                if get_hint_rect.collidepoint(pos):
+                    hint_text, remaining = hint_manager.get_next_hint(level)
