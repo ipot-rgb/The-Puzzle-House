@@ -167,7 +167,7 @@ while running:
             
     # REMEMBER CHANGE IT TO READABLE LEVEL NAMES LATER
     elif current_screen == "level_1":
-        result = run_level_1(display)
+        result = run_level_1(display, hint_manager)
         if result == "menu":
             current_screen = "menu"
         elif result == "quit":
