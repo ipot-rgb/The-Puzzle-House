@@ -256,13 +256,7 @@ def run_level_7(screen):
                             puzzles[active_puzzle]["rect"].move_ip(event.rel)
                         elif active_paper is not None:
                             puzzles[active_paper]["rect_paper"].move_ip(event.rel)
-
-            current_time = pygame.time.get_ticks()
-            if tutorial_active and current_time - tutorial_start_time > tutorial_duration:
-                tutorial_active = False
-            if tutorial_active_2 and current_time - tutorial_start_time > tutorial_duration:
-                tutorial_active_2 = False
-
+                            
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
             pygame.draw.rect(screen, red, (830, 0, screen_width - 830, screen_height))
@@ -275,22 +269,4 @@ def run_level_7(screen):
             hint_button.update(screen)
             hint.draw(screen, font)
 
-            if tutorial_active:
-                screen.blit(overlay, (0, 0))
-                text_surface = font.render("Arrange the numbers in alphabetical order!", True, (255, 255, 255))
-                rect = text_surface.get_rect(center=(screen.get_width()//2, 250))
-                screen.blit(text_surface, rect)
-                pygame.display.flip()
-                time.sleep(3)
-
-
-            if tutorial_active_2:
-                screen.blit(overlay, (-370, 0))
-                screen.blit(steps, (915, 190))
-                pygame.display.flip()
-                time.sleep(3)
-
-
             pygame.display.flip()
-
-            

@@ -2,7 +2,7 @@ def run_level_0(screen):
     import pygame
     import os
     import time
-    
+
     level_complete = False
     screen = pygame.display.set_mode((1200,650), pygame.SCALED)
     clock = pygame.time.Clock()
@@ -150,6 +150,7 @@ def run_level_0(screen):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.rect.x = mouse_x + self.offset_x
                 self.rect.y = mouse_y + self.offset_y
+            
 
     while not level_complete:
         puzzle_width = int(WIDTH * 0.6)  
@@ -230,15 +231,28 @@ def run_level_0(screen):
         passcode = []
         correct_passcode = ['i', 'c', 'e']
 
-        # Button Drawing
-        for btn in buttons:
-            btn.draw()
+        font = pygame.font.SysFont(None, 40)
+
+        # Tutorial image
+        steps = pygame.image.load("assets/Menu_interface/steps.png")
+        steps = pygame.transform.scale(steps, (250, 350))
+        overlay = pygame.Surface(screen.get_size())
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+
+        tutorial_duration = 3000
+        tutorial_active = True
+        tutorial_active_2 = False
+
+        tutorial_start_time = pygame.time.get_ticks()
+        tutorial_2_start_time = pygame.time.get_ticks()
+        clock = pygame.time.Clock()
 
         running = True
         while running:
             clock.tick(60)
 
-            # ========== 事件处理 ==========
+            # ========== Event Handling ==========
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
@@ -250,13 +264,7 @@ def run_level_0(screen):
 
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # letter buttons
-                    clicked_btn = next(
-                        (btn for btn in buttons
-                        if btn.rect.collidepoint(event.pos)
-                        and btn.visible
-                        and btn.letter != "ENTER"),
-                        None
-                    )
+                    clicked_btn = next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)
                     if clicked_btn:
                         passcode.append(clicked_btn.letter)
                         clicked_btn.hide()
@@ -267,7 +275,7 @@ def run_level_0(screen):
                         if passcode == correct_passcode:
                             for btn in buttons:
                                 btn.visible = False
-                            congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 128, 0))
+                            congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 148, 0))
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
@@ -279,12 +287,37 @@ def run_level_0(screen):
                             for btn in buttons:
                                 if btn.letter != "ENTER":
                                     btn.visible = True
+                                        
             all_sprites.update(events)
+
+            current_time = pygame.time.get_ticks()
+            if tutorial_active and current_time - tutorial_start_time > tutorial_duration:
+                tutorial_active = False
+                tutorial_active_2 = True
+                tutorial_2_start_time = current_time
+
+            if tutorial_active_2 and current_time - tutorial_2_start_time > tutorial_duration:
+                tutorial_active_2 = False
 
             screen.blit(background_img, (0, 0))
             all_sprites.draw(screen)
 
             for btn in buttons:
                 btn.draw()
+
+            if tutorial_active:
+                screen.blit(overlay, (0, 0))
+                text_surface = font.render("Arrange the numbers in alphabetical order!", True, (255, 255, 255))
+                rect = text_surface.get_rect(center=(screen.get_width()//2, 250))
+                screen.blit(text_surface, rect)
+                pygame.display.flip()
+
+            elif tutorial_active_2:
+                screen.blit(overlay, (-480, 0))
+                screen.blit(steps, (918,190))
+                text_surface = font.render("""Click And Drag all the puzzle!!""", True, (255, 255, 255))
+                rect = text_surface.get_rect(center=(screen.get_width()//4, 250))
+                screen.blit(text_surface, rect)
+                pygame.display.flip()
 
             pygame.display.flip()
