@@ -26,3 +26,9 @@ def show_instruction(screen, font):
     screen_width, screen_height = screen.get_size()
     text_color = (255, 255, 255)
     bg_color = (0, 0, 0)
+
+    #backgound colours
+    background = pygame.Surface((screen_width, screen_height))
+    background.fill(bg_color)
+
+    clock = pygame.time.Clock()
