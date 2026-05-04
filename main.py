@@ -4,6 +4,8 @@ import os
 from level_1 import run_level_1
 from level_7 import run_level_7
 from level_8 import run_level_8
+from instruction import show_instruction
+
 
 #===============================
 # Button class
@@ -200,6 +202,8 @@ while running:
                 running = False
                 
             if start_button.is_clicked(event.pos):
+                instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                show_instruction(display, instruction_font)
                 load_level(current_level)
 
 
