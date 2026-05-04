@@ -32,3 +32,10 @@ def show_instruction(screen, font):
     background.fill(bg_color)
 
     clock = pygame.time.Clock()
+
+    #typewriter state
+    full_text = "\n".join(lines)
+    displayed_text = ""
+    last_char_time = time.time()
+    current_line_index = 0
+    lines_rendered = lines.copy()
