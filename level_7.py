@@ -1,6 +1,8 @@
-def run_level_7(screen):
+def run_level_7(screen,hint_manager):
+    import pygame
+    import time
+    from hints_system import show_hint_popup
     level_complete = False
-
     class Button:
         def __init__(self, x, y, image):
             self.image = image
@@ -41,41 +43,7 @@ def run_level_7(screen):
         def is_hovered(self, pos):
             return self.rect.collidepoint(pos)
 
-    class Hint:
-        def __init__(self, texts, duration=5):
-            self.texts = texts
-            self.duration = duration
-            self.start_time = None
-            self.active = False
-
-        def trigger(self):
-            self.start_time = time.time()
-            self.active = True
-
-        def draw(self, screen, font):
-            if not self.active:
-                return
-                    
-            if time.time() - self.start_time < self.duration:
-                overlay = pygame.Surface(screen.get_size())
-                overlay.set_alpha(180)
-                overlay.fill((0, 0, 0))
-                screen.blit(overlay, (0, 0))
-
-                for i, line in enumerate(self.texts):
-                    text_surface = font.render(line, True, (255, 255, 255))
-                    rect = text_surface.get_rect(
-                        center=(screen.get_width()//2, 250 + i * 80)
-                    )
-                    screen.blit(text_surface, rect)
-
-            else:
-                self.active = False
-
     while not level_complete:
-
-        import pygame
-        import time
         #===============================
         # Screen Setup
         #===============================
@@ -144,9 +112,10 @@ def run_level_7(screen):
         buttons.append(enter_btn)
 
         # Hint Button
+        ui_font = pygame.font.Font(None, 36)
         hint_img = pygame.image.load("assets/Icon/hint_button.png")
         hint_img = pygame.transform.scale(hint_img, (60, 65))
-        hint_button = Button(1150, 80, hint_img)
+        hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
 
         # Passcode variables
         passcode = []
@@ -177,11 +146,6 @@ def run_level_7(screen):
         active_paper = None
 
         font = pygame.font.SysFont(None, 40)
-        hint = Hint([
-            "Hint 1: This level has 9 letters",
-            "Hint 2: Try arranging these numbers alphabetically.",
-            "Hint 3: Follow the 9 pattern grid to find the correct order."
-        ])
 
         run = True
         while run:
@@ -196,6 +160,9 @@ def run_level_7(screen):
                         return "menu"
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # --- check hint button click ---
+                    if hint_button_rect.collidepoint(event.pos):
+                        show_hint_popup(screen, hint_manager, 1, ui_font)
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                         passcode.append(clicked_btn.letter)
@@ -225,11 +192,6 @@ def run_level_7(screen):
                                 active_puzzle = i
 
                     current_time = time.time()
-                    if hint_button.is_clicked(event.pos):
-                        hint.trigger()
-                        hint_button.visible = False
-                        pygame.display.flip()
-
                 elif event.type == pygame.MOUSEBUTTONUP:
                         active_puzzle = None
                         active_paper = None
@@ -248,6 +210,5 @@ def run_level_7(screen):
 
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
-            hint_button.update(screen)
-            hint.draw(screen, font)
+            screen.blit(hint_img, hint_button_rect)
             pygame.display.flip()

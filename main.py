@@ -176,7 +176,7 @@ while running:
             complete_level()
 
     elif current_screen == "level_7":
-        result = run_level_7(display)
+        result = run_level_7(display, hint_manager)
         if result == "menu":
             current_screen = "menu"
         elif result == "quit":
