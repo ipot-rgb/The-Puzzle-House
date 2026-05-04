@@ -33,7 +33,7 @@ class HintManager:
         self._used = {level: 0 for level in range(1, 10)}
 
     def get_next_hint(self, level):
-        #return (hint_text, remaining_hints). If no hints left, return (message, 0)."""
+        #return (hint_text, remaining_hints). If no hints left, return (message, 0)
         used = self._used.get(level, 0)
         if used >= 3:
             return ("No more hints available for this level.", 0)
