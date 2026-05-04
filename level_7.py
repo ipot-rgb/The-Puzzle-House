@@ -210,5 +210,8 @@ def run_level_7(screen,hint_manager):
 
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
+
+            #draw the hint button
             screen.blit(hint_img, hint_button_rect)
+
             pygame.display.flip()
