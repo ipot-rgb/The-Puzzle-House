@@ -4,9 +4,10 @@ import time
 def show_instruction(screen, font):
     #lines showed in instruction page
     lines = [
-        "Welcome to The Puzzle House!",
+        "Welcome to The Puzzle House",
         "",
         "In each level, you must find the correct passcode.",
+        "The number of character in each passcode ranges from 1-9",
         "Click on the letter buttons to enter your answer.",
         "Press 'ENTER' button to submit.",
         "",
