@@ -240,7 +240,7 @@ def run_level_0(screen, hint_manager):
         overlay.set_alpha(180)
         overlay.fill((0, 0, 0))
 
-        tutorial_duration = 3000
+        tutorial_duration = 4000
         tutorial_active = True
         tutorial_active_2 = False
 
@@ -248,6 +248,8 @@ def run_level_0(screen, hint_manager):
         tutorial_2_start_time = pygame.time.get_ticks()
         clock = pygame.time.Clock()
 
+        text = "Click And Drag all the puzzle!!"
+        text2 = "After that click the button on the right side"
         running = True
         while running:
             clock.tick(60)
@@ -294,6 +296,7 @@ def run_level_0(screen, hint_manager):
             if tutorial_active and current_time - tutorial_start_time > tutorial_duration:
                 tutorial_active = False
                 tutorial_active_2 = True
+                current_time += 1000
                 tutorial_2_start_time = current_time
 
             if tutorial_active_2 and current_time - tutorial_2_start_time > tutorial_duration:
@@ -307,17 +310,24 @@ def run_level_0(screen, hint_manager):
 
             if tutorial_active:
                 screen.blit(overlay, (0, 0))
-                text_surface = font.render("Arrange the numbers in alphabetical order!", True, (255, 255, 255))
+                text_surface = font.render("Tutorial Level", True, (255, 255, 255))
+                text_surface2 = font.render("Click and Drag the puzzle to the blank space !", True, (255, 255, 255))
                 rect = text_surface.get_rect(center=(screen.get_width()//2, 250))
+                rect2 = text_surface2.get_rect(center=(screen.get_width()//2, 300))
                 screen.blit(text_surface, rect)
+                screen.blit(text_surface2, rect2)
                 pygame.display.flip()
 
             elif tutorial_active_2:
                 screen.blit(overlay, (-480, 0))
                 screen.blit(steps, (918,190))
-                text_surface = font.render("""Click And Drag all the puzzle!!""", True, (255, 255, 255))
+                text_surface = font.render(text, True, (255, 255, 255))
+                text_surface2 = font.render(text2, True, (255, 255, 255))
                 rect = text_surface.get_rect(center=(screen.get_width()//4, 250))
+                rect2 = text_surface2.get_rect(center=(screen.get_width()//4 + 50, 300))
                 screen.blit(text_surface, rect)
+                screen.blit(text_surface2, rect2)
+                time.sleep(1)
                 pygame.display.flip()
 
             pygame.display.flip()

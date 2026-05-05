@@ -4,24 +4,24 @@ class HintManager:
     def __init__(self):
         self._hints_db = {
             1: [
-                "Hint 1 for Level 1: The passcode contains 5 characters.",
+                "Hint 1 for Level 1: The passcode contains 5 characters",
                 "Hint 2 for Level 1: Try dragging the bookmark and see which line where the letters fit the dots",
-                "Hint 3 for Level 1: The answer is 'c','d','h','b','a'"
+                "Hint 3 for Level 1: The answer is 'C','D','H','B','A'"
             ],
             2: [
-                "Hint 1 for Level 7: Placeholder_1",
-                "Hint 2 for Level 7: Placeholder_2",
-                "Hint 3 for Level 7: Placeholder_3",
+                "Hint 1 for Level 2: Hold and drag your mouse cursor",
+                "Hint 2 for Level 2: The passcode contains 4 characters",
+                "Hint 3 for Level 2: The answer is 'B' 'C' 'F' 'I' ",
             ],
             7: [
-                "Hint 1 for Level 7: This level has 9 letters.",
-                "Hint 2 for Level 7: Try arranging these numbers alphabetically.",
-                "Hint 3 for Level 7: Follow the 9 pattern grid to find the correct order."
+                "Hint 1 for Level 7: Follow the 9 pattern grid to find the correct order",
+                "Hint 2 for Level 7: The paper is the last steps for reviewing the answer",
+                "Hint 3 for Level 7: The final passcode is 'I' 'H' 'B' 'A' 'D' 'G' 'F' 'E' 'C' "
             ],
             8: [
-                "Hint 1 for Level 8: Placeholder_1",
-                "Hint 2 for Level 8: Placeholder_2",
-                "Hint 3 for Level 8: Placeholder_3"
+                "Hint 1 for Level 8: This level include 4 characters",
+                "Hint 2 for Level 8: The fish head and tail is apart of puzzle",
+                "Hint 3 for Level 8: The answer is 'A' 'I' 'G' 'B'"
             ]
         }
 
@@ -67,9 +67,9 @@ def show_hint_popup(screen, hint_manager, level, font):
         "button_hover": (150, 200, 250),
         "text": (255, 255, 255)
     }
-
+    used = hint_manager._used.get(level, 0)
+    remaining = 3 - used
     hint_text = ""
-    remaining = 0
     clock = pygame.time.Clock()
     running = True
 

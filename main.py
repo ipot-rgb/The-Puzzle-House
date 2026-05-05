@@ -100,8 +100,8 @@ levels = {
     0: ("level_0", run_level_0),
     1: ("level_1", run_level_1),
     2: ("level_2", run_level_2),
-    7: ("level_7", run_level_7),
-    8: ("level_8", run_level_8),
+    3: ("level_7", run_level_7),
+    4: ("level_8", run_level_8),
 
 }
 
