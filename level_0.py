@@ -67,6 +67,9 @@ def run_level_0(screen, hint_manager):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.rect.x = mouse_x + self.offset_x
                 self.rect.y = mouse_y + self.offset_y
+                screen_width, screen_height = pygame.display.get_surface().get_size()
+                self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
+                self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
 
 
     class puzzle_piece_two(pygame.sprite.Sprite):
@@ -95,6 +98,9 @@ def run_level_0(screen, hint_manager):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.rect.x = mouse_x + self.offset_x
                 self.rect.y = mouse_y + self.offset_y
+                screen_width, screen_height = pygame.display.get_surface().get_size()
+                self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
+                self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
 
 
     class puzzle_piece_three(pygame.sprite.Sprite):
@@ -123,6 +129,9 @@ def run_level_0(screen, hint_manager):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.rect.x = mouse_x + self.offset_x
                 self.rect.y = mouse_y + self.offset_y
+                screen_width, screen_height = pygame.display.get_surface().get_size()
+                self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
+                self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
 
     class puzzle_piece_four(pygame.sprite.Sprite):
         def __init__(self, image_path, width, height, x, y):
@@ -150,7 +159,9 @@ def run_level_0(screen, hint_manager):
                 mouse_x, mouse_y = pygame.mouse.get_pos()
                 self.rect.x = mouse_x + self.offset_x
                 self.rect.y = mouse_y + self.offset_y
-            
+                screen_width, screen_height = pygame.display.get_surface().get_size()
+                self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
+                self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
 
     while not level_complete:
         puzzle_width = int(WIDTH * 0.6)  
