@@ -5,6 +5,7 @@ from level_0 import run_level_0
 from level_1 import run_level_1
 from level_2 import run_level_2
 from level_3 import run_level_3
+from level_5 import run_level_5
 from level_7 import run_level_7
 from level_8 import run_level_8
 from instruction import show_instruction
@@ -103,7 +104,8 @@ levels = {
     2: ("level_2", run_level_2),
     3: ("level_3", run_level_3),
     4: ("level_7", run_level_7),
-    5: ("level_8", run_level_8),
+    5: ("level_5", run_level_5),
+    6: ("level_8", run_level_8),
 
 }
 
