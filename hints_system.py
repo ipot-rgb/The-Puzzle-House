@@ -13,6 +13,12 @@ class HintManager:
                 "Hint 2 for Level 2: The passcode contains 4 characters",
                 "Hint 3 for Level 2: The answer is 'B' 'C' 'F' 'I' ",
             ],
+            3: [
+                "Hint 1 for level 3: This level solution is a guide line",
+                "Hint 2 for level 3: All the puzzle will not overlay to each other",
+                "Hint 3 for level 3: The answer is 'C' 'F' 'I' 'H' 'E' 'B' 'A'",
+
+            ],
             7: [
                 "Hint 1 for Level 7: Follow the 9 pattern grid to find the correct order",
                 "Hint 2 for Level 7: The paper is the last steps for reviewing the answer",
@@ -29,9 +35,9 @@ class HintManager:
         for level in range(1, 10):
             if level not in self._hints_db:
                 self._hints_db[level] = [
-                    f"Level {level} – First hint (customize in hint_system.py)",
-                    f"Level {level} – Second hint",
-                    f"Level {level} – Third hint"
+                    f"Level {level}: First hint (customize in hint_system.py)",
+                    f"Level {level}: Second hint",
+                    f"Level {level}: Third hint"
                 ]
 
         #track how many hints have been used per level
