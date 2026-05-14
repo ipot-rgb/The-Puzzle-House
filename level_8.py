@@ -46,6 +46,10 @@ def run_level_8(screen, hint_manager):
             def is_hovered(self, pos):
                 return self.rect.collidepoint(pos)
 
+        def clamp_rect_to_bounds(rect, bounds):
+            rect.x = max(bounds.x, min(rect.x, bounds.right - rect.width))
+            rect.y = max(bounds.y, min(rect.y, bounds.bottom - rect.height))
+
         #===============================
         # Screen Setup
         #===============================
@@ -183,6 +187,9 @@ def run_level_8(screen, hint_manager):
                 elif event.type == pygame.MOUSEMOTION:
                         if active_puzzle is not None:
                             puzzles[active_puzzle]["rect"].move_ip(event.rel)
+                            rect = puzzles[active_puzzle]["rect"]
+                            rect.x = max(0, min(rect.x, screen_width - rect.width))
+                            rect.y = max(0, min(rect.y, screen_height - rect.height))
             screen.fill(blue)
             screen.blit(fish, (60, 200))
             for btn in buttons:
