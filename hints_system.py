@@ -156,7 +156,7 @@ def show_hint_popup(screen, hint_manager, level, font):
         #draw buttons
         pygame.draw.rect(screen, colors["button_hover"] if get_hover else colors["button"], get_hint_rect, border_radius=5)
         pygame.draw.rect(screen, colors["button_hover"] if close_hover else colors["button"], close_rect, border_radius=5)
-        get_text = font.render("Get New Hint", True, (0, 0, 0))
+        get_text = font.render("Get Hint", True, (0, 0, 0))
         close_text = font.render("Close", True, (0, 0, 0))
         screen.blit(get_text, (get_hint_rect.x + 30, get_hint_rect.y + 10))
         screen.blit(close_text, (close_rect.x + 60, close_rect.y + 10))
