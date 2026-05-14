@@ -45,6 +45,10 @@ def run_level_7(screen,hint_manager):
         def is_hovered(self, pos):
             return self.rect.collidepoint(pos)
 
+    def clamp_rect_to_bounds(rect, bounds):
+        rect.x = max(bounds.x, min(rect.x, bounds.right - rect.width))
+        rect.y = max(bounds.y, min(rect.y, bounds.bottom - rect.height))
+
     while not level_complete:
         #===============================
         # Screen Setup
@@ -217,8 +221,14 @@ def run_level_7(screen,hint_manager):
                 elif event.type == pygame.MOUSEMOTION:
                         if active_puzzle is not None:
                             puzzles[active_puzzle]["rect"].move_ip(event.rel)
+                            rect = puzzles[active_puzzle]["rect"]
+                            rect.x = max(0, min(rect.x, screen_width - rect.width))
+                            rect.y = max(0, min(rect.y, screen_height - rect.height))
                         elif active_paper is not None:
                             puzzles[active_paper]["rect_paper"].move_ip(event.rel)
+                            paper_rect = puzzles[active_paper]["rect_paper"]
+                            paper_rect.x = max(0, min(paper_rect.x, screen_width - paper_rect.width))
+                            paper_rect.y = max(0, min(paper_rect.y, screen_height - paper_rect.height))
                             
             screen.blit(brg, (0, 0))
             screen.blit(board, (35, 200))
