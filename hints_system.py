@@ -26,6 +26,11 @@ class HintManager:
                 "Hint 2 for level 5: There are two cats are looking each other",
                 "Hint 3 for level 5: The smallest cat should be on the bottom of them",
             ],
+            6: [
+                "Hint 1 for Level 6: Ignore the arrows on the chest board",
+                "Hint 2 for Level 6: Focus the dot above the 3D model",
+                "Hint 3 for Level 6: Cover the 3D model dot with the chest dot"
+            ],
 
             7: [
                 "Hint 1 for Level 7: Follow the 9 pattern grid to find the correct order",
