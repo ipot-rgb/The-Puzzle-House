@@ -207,6 +207,8 @@ def run_level_2(screen, hint_manager):
         for btn in buttons:
             btn.draw()
 
+        start_timer = pygame.time.get_ticks()
+
         running = True
         while running:
             clock.tick(60)
@@ -232,14 +234,13 @@ def run_level_2(screen, hint_manager):
                             clicked_btn.hide()
                     elif (enter_clicked := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"),None)):
                         if passcode == correct_passcode:
+                            timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
                             for btn in buttons:
                                 btn.visible = False
-                            congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 128, 0))
-                            screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
                             time.sleep(1)
-                            return "complete"
+                            return "complete", timer_sec
                         else:
                            print(f"❌ Invalid password: {passcode}")
                            for btn in buttons:
