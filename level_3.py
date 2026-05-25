@@ -202,6 +202,9 @@ def run_level_3(screen, hint_manager):
                 elif event.type == pygame.MOUSEMOTION:
                         if active_puzzle is not None:
                             puzzles[active_puzzle]["rect"].move_ip(event.rel)
+                            rect = puzzles[active_puzzle]["rect"]
+                            rect.x = max(0, min(rect.x, screen_width - rect.width))
+                            rect.y = max(0, min(rect.y, screen_height - rect.height))
             screen.blit(background, (0,0))
             for btn in buttons:
                 btn.draw()

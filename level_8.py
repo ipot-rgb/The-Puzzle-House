@@ -46,10 +46,6 @@ def run_level_8(screen, hint_manager):
             def is_hovered(self, pos):
                 return self.rect.collidepoint(pos)
 
-        def clamp_rect_to_bounds(rect, bounds):
-            rect.x = max(bounds.x, min(rect.x, bounds.right - rect.width))
-            rect.y = max(bounds.y, min(rect.y, bounds.bottom - rect.height))
-
         #===============================
         # Screen Setup
         #===============================
