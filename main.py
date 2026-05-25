@@ -97,6 +97,47 @@ message = ""
 message_timer = 0
 
 # ===============================
+# Level transition function
+# ===============================
+
+def show_level_complete_transition(screen, completion_time):
+    clock = pygame.time.Clock()
+    black_surf = pygame.Surface(screen.get_size())
+    black_surf.fill((0, 0, 0))
+
+    #Fonts
+    font_big = pygame.font.Font('Notable-Regular.ttf', 70)
+    font_small = pygame.font.Font('Notable-Regular.ttf', 40)
+
+    #Texts
+    congrats_text = font_big.render("Congratulations!", True, (0, 128, 0))
+    time_text = font_small.render(f"Level finished in {completion_time:.2f} s", True, (200, 200, 200))
+
+    #Positions
+    congrats_rect = congrats_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 50))
+    time_rect = time_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 + 50))
+
+    #Fade in "Congratulations!"
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        congrats_text.set_alpha(alpha)
+        screen.blit(congrats_text, congrats_rect)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.time.wait(1000)
+
+    #Fade in time text
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        congrats_text.set_alpha(255)
+        screen.blit(congrats_text, congrats_rect)
+        time_text.set_alpha(alpha)
+        screen.blit(time_text, time_rect)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.time.wait(2000)
+
+# ===============================
 # LEVEL FUNCTION MAP
 # ===============================
 levels = {
@@ -122,9 +163,14 @@ def load_level(level):
     return current_screen
 
 
-def complete_level():
+def complete_level(completion_time):
     global current_level, level_complete, game_complete
     global message, message_timer, current_screen
+
+    if completion_time is not None:
+        show_level_complete_transition(display, completion_time)
+    else :
+        pygame.time.wait(1000)
 
     if current_level < total_levels:
         message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
@@ -183,7 +229,7 @@ while running:
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display,hint_manager)
+                result = func(display, hint_manager)   # can be str or tuple
                 break
         else:
             result = None
@@ -191,14 +237,16 @@ while running:
         # ===============================
         # RESULT HANDLING
         # ===============================
-        if result == "menu":
+        if isinstance(result, tuple) and result[0] == "complete":
+            completion_time = result[1]
+            complete_level(completion_time)
+        elif result == "menu":
             current_screen = "menu"
-
         elif result == "quit":
             running = False
+        elif result == "complete":  # fallback for old levels without timer
+            complete_level(None)
 
-        elif result == "complete":
-            complete_level()
 
     # Event handling
     for event in pygame.event.get():

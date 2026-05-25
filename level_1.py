@@ -149,6 +149,9 @@ def run_level_1(screen, hint_manager):
         all_sprites.add(note)
         all_sprites.add(bm)
         running = True
+
+        start_timer = pygame.time.get_ticks()
+
         while running:
             events = pygame.event.get()
             for event in events:
@@ -176,11 +179,10 @@ def run_level_1(screen, hint_manager):
                         if True:
                             if passcode == correct_passcode:
                                 print("✅ You passed!")
-                                congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True,(0, 128, 0))
-                                screen.blit(congratulations, (400, 305))
+                                timer_sec = (pygame.time.get_ticks() - start_timer)/ 1000
                                 pygame.display.flip()
                                 level_completed = True
-                                return "complete"
+                                return "complete", timer_sec
                             else:
                                 print(f"❌ Invalid password: {passcode}")
                                 # Reset buttons

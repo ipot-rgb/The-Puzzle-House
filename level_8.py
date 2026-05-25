@@ -46,10 +46,6 @@ def run_level_8(screen, hint_manager):
             def is_hovered(self, pos):
                 return self.rect.collidepoint(pos)
 
-        def clamp_rect_to_bounds(rect, bounds):
-            rect.x = max(bounds.x, min(rect.x, bounds.right - rect.width))
-            rect.y = max(bounds.y, min(rect.y, bounds.bottom - rect.height))
-
         #===============================
         # Screen Setup
         #===============================
@@ -136,6 +132,8 @@ def run_level_8(screen, hint_manager):
 
         active_puzzle = None
 
+        start_timer = pygame.time.get_ticks()
+
         run = True
         while run:
             mouse_pos = pygame.mouse.get_pos()
@@ -159,14 +157,13 @@ def run_level_8(screen, hint_manager):
 
                     elif (enter_clicked := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"), None)):
                         if passcode == correct_passcode:
+                            timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
                             for btn in buttons:
                                 btn.visible = False
-                            congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 128, 0))
-                            screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
                             time.sleep(3)
-                            return "complete"
+                            return "complete", timer_sec
                         else:
                             print("❌ Incorrect passcode, try again.")
                             for btn in buttons:
