@@ -1,4 +1,4 @@
-def run_level_5(screen, hint_manager):
+def run_level_4(screen, hint_manager):
     import pygame
     import time
     from hints_system import show_hint_popup
@@ -59,7 +59,7 @@ def run_level_5(screen, hint_manager):
 
         # ========== Button Configuration ==========
         # Picture loading
-        background = pygame.image.load("assets/Level_16/back1.png")
+        background = pygame.image.load("assets/Level_12/wall.png")
         background = pygame.transform.scale(background, (screen_width, screen_height))
 
         enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
@@ -117,17 +117,25 @@ def run_level_5(screen, hint_manager):
 
         # Passcode variables
         passcode = []
-        correct_passcode = ['c','b','e','d','g','h','i','f']
+        correct_passcode = ['g','h','a','d']
         puzzles = []
 
         # Button Drawing
         for btn in buttons:
             btn.draw()
 
-        for i in range(1, 2):
-            img = pygame.image.load(f"assets/Level_16/puzzle.png")
-            img = pygame.transform.scale(img, (470,470))
-            rect = img.get_rect(topleft=(400, 80))
+        for i in range(1, 4):
+            img = pygame.image.load(f"assets/Level_12/cat_0{i}.png")
+            if i == 3:
+                img = pygame.transform.scale(img, (200, 400))
+                rect = img.get_rect(topleft=(200, 50))   # Changed Y to 50
+            elif i == 2:
+                img = pygame.transform.scale(img, (250, 550))
+                rect = img.get_rect(topleft=(50, 100))   # Changed position
+            else:
+                img = pygame.transform.scale(img, (205, 505))
+                rect = img.get_rect(topleft=(400, 80))   # Changed position
+
             puzzles.append({"img": img, "rect": rect})
 
         active_puzzle = None
