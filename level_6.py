@@ -154,6 +154,8 @@ def run_level_6(screen, hint_manager):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # --- check hint button click ---
                     if hint_button_rect.collidepoint(event.pos):
+                        sound_2 = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
+                        sound_2.play()
                         show_hint_popup(screen, hint_manager, 6, ui_font)
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
