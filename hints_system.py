@@ -21,10 +21,16 @@ class HintManager:
                 "Hint 3 for level 3: The answer is 'C' 'F' 'I' 'H' 'E' 'B' 'A'",
             ],
 
-            5: [ 
-                "Hint 1 for level 5: This level have 4 charecters",
-                "Hint 2 for level 5: There are two cats are looking each other",
-                "Hint 3 for level 5: The smallest cat should be on the bottom of them",
+            4: [ 
+                "Hint 1 for level 4: This level have 4 charecters",
+                "Hint 2 for level 4: There are two cats are looking each other",
+                "Hint 3 for level 4: The smallest cat should be on the bottom of them",
+            ],
+
+            5: [
+                "Hint 1 for level 5: This level have 8 characters",
+                "Hint 2 for level 5: This level is a guide line for the answer",
+                "Hint 3 for level 5: Start from 'C' end with 'F' ",
             ],
             6: [
                 "Hint 1 for Level 6: Ignore the arrows on the chest board",

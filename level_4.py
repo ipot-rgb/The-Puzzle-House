@@ -155,7 +155,7 @@ def run_level_4(screen, hint_manager):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # --- check hint button click ---
                     if hint_button_rect.collidepoint(event.pos):
-                        show_hint_popup(screen, hint_manager, 5, ui_font)
+                        show_hint_popup(screen, hint_manager, 4, ui_font)
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                         passcode.append(clicked_btn.letter)
