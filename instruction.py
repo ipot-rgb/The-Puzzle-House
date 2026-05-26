@@ -3,6 +3,8 @@ import time
 
 def show_instruction(screen, font):
     #lines showed in instruction page
+    sound = pygame.mixer.Sound("assets/sound_effect/typing_se.wav")
+    sound.play()
     lines = [
         "Welcome to The Puzzle House",
         "",

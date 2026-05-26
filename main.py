@@ -261,6 +261,8 @@ while running:
                 running = False
                 pygame.quit()
             if start_button.is_clicked(event.pos):
+                sound = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                sound.play()
                 instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
                 show_instruction(display, instruction_font)
                 load_level(current_level)
