@@ -242,13 +242,14 @@ def run_level_2(screen, hint_manager):
                             time.sleep(1)
                             return "complete", timer_sec
                         else:
-                           print(f"❌ Invalid password: {passcode}")
-                           for btn in buttons:
-                               if btn.letter != "ENTER":
-                                   btn.visible = True
-                                   btn.clicked = False
-                           passcode = []
-                           print("Game reset. Try again.")
+                            sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                            sound.play()
+                            for btn in buttons:
+                                if btn.letter != "ENTER":
+                                    btn.visible = True
+                                    btn.clicked = False
+                            passcode = []
+                            print("Game reset. Try again.")
                 constellation.handle_event(event)
 
             all_sprites.update()

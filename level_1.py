@@ -184,7 +184,8 @@ def run_level_1(screen, hint_manager):
                                 level_completed = True
                                 return "complete", timer_sec
                             else:
-                                print(f"❌ Invalid password: {passcode}")
+                                sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                                sound.play()
                                 # Reset buttons
                                 for btn in buttons:
                                     if btn.letter != "ENTER":

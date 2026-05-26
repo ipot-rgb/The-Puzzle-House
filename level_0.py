@@ -71,7 +71,6 @@ def run_level_0(screen, hint_manager):
                 self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
                 self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
 
-
     class puzzle_piece_two(pygame.sprite.Sprite):
         def __init__(self, image_path, width, height, x, y):
             super().__init__()
@@ -101,7 +100,6 @@ def run_level_0(screen, hint_manager):
                 screen_width, screen_height = pygame.display.get_surface().get_size()
                 self.rect.x = max(0, min(self.rect.x, screen_width - self.rect.width))
                 self.rect.y = max(0, min(self.rect.y, screen_height - self.rect.height))
-
 
     class puzzle_piece_three(pygame.sprite.Sprite):
         def __init__(self, image_path, width, height, x, y):
@@ -295,7 +293,8 @@ def run_level_0(screen, hint_manager):
                             time.sleep(1)
                             return "complete"
                         else:
-                            print("❌ Invalid password")
+                            sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                            sound.play()
                             passcode.clear()
                             for btn in buttons:
                                 if btn.letter != "ENTER":

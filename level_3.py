@@ -183,7 +183,8 @@ def run_level_3(screen, hint_manager):
                             time.sleep(1)
                             return "complete", timer_sec
                         else:
-                            print("❌ Incorrect passcode, try again.")
+                            sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                            sound.play()
                             for btn in buttons:
                                 if btn.letter != "ENTER":
                                     btn.visible = True
