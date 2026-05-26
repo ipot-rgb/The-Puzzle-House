@@ -164,6 +164,8 @@ def run_level_8(screen, hint_manager):
                                 btn.visible = False
                             pygame.display.flip()
                             level_completed = True
+                            sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
+                            sound3.play()
                             time.sleep(1)
                             return "complete", timer_sec
                         else:

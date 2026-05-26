@@ -171,6 +171,8 @@ def run_level_4(screen, hint_manager):
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
+                            sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
+                            sound3.play()
                             time.sleep(1)
                             return "complete"
                         else:

@@ -236,6 +236,8 @@ def run_level_2(screen, hint_manager):
                             clicked_btn.hide()
                     elif (enter_clicked := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"),None)):
                         if passcode == correct_passcode:
+                            sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
+                            sound3.play()
                             timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
                             for btn in buttons:
                                 btn.visible = False

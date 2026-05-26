@@ -181,6 +181,8 @@ def run_level_1(screen, hint_manager):
                         if True:
                             if passcode == correct_passcode:
                                 print("✅ You passed!")
+                                sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
+                                sound3.play()
                                 timer_sec = (pygame.time.get_ticks() - start_timer)/ 1000
                                 pygame.display.flip()
                                 level_completed = True
