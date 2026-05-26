@@ -126,7 +126,7 @@ def run_level_5(screen, hint_manager):
 
         for i in range(1, 2):
             img = pygame.image.load(f"assets/Level_16/puzzle.png")
-            img = pygame.transform.scale(img, (470,470))
+            img = pygame.transform.scale(img, (550,470))
             rect = img.get_rect(topleft=(400, 80))
             puzzles.append({"img": img, "rect": rect})
 
@@ -162,7 +162,7 @@ def run_level_5(screen, hint_manager):
                                 btn.visible = False
                             pygame.display.flip()
                             level_completed = True
-                            time.sleep(3)
+                            time.sleep(1)
                             return "complete", timer_sec
                         else:
                             print("❌ Incorrect passcode, try again.")

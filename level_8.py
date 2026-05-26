@@ -162,7 +162,7 @@ def run_level_8(screen, hint_manager):
                                 btn.visible = False
                             pygame.display.flip()
                             level_completed = True
-                            time.sleep(3)
+                            time.sleep(1)
                             return "complete", timer_sec
                         else:
                             print("❌ Incorrect passcode, try again.")

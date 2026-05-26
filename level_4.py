@@ -169,7 +169,7 @@ def run_level_4(screen, hint_manager):
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
-                            time.sleep(3)
+                            time.sleep(1)
                             return "complete"
                         else:
                             print("❌ Incorrect passcode, try again.")
