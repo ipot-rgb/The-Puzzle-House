@@ -1,10 +1,11 @@
 import pygame
 import time
 import os 
-import importlib
 from instruction import show_instruction
 from hints_system import HintManager
+
 # Import level modules
+import importlib
 levels = {}
 
 for i in range(9):
@@ -84,6 +85,14 @@ start_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "start_button.pn
 start_icon = pygame.transform.scale(start_icon, (175, 75))
 start_button = Button(600, 265, start_icon)
 start_button.update(display)
+
+setting_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "setting_button.png"))
+setting_icon = pygame.transform.scale(setting_icon, (55, 55))
+setting_button = Button(45, 45, setting_icon)
+setting_button.update(display)
+
+
+
 pygame.display.flip()
 
 hint_manager = HintManager()
@@ -204,10 +213,13 @@ while running:
 
         exit_button.update(display)
         start_button.update(display)
+        setting_button.update(display)
 
         if exit_button.is_hovered(mouse_pos):
             pygame.mouse.set_cursor(hand_cursor)
         elif start_button.is_hovered(mouse_pos):
+            pygame.mouse.set_cursor(hand_cursor)
+        elif setting_button.is_hovered(mouse_pos):
             pygame.mouse.set_cursor(hand_cursor)
         else:
             pygame.mouse.set_cursor(default_cursor)
@@ -257,6 +269,8 @@ while running:
                 instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
                 show_instruction(display, instruction_font)
                 load_level(current_level)
+            if setting_button.is_clicked(event.pos):
+                print("Setting button clicked - functionality not implemented yet")
 
     pygame.display.update()
 pygame.quit()
