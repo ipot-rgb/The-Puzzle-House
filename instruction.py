@@ -51,6 +51,7 @@ def show_instruction(screen, font):
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
+                sound.stop()
                 skip = True
                 break
         if skip:
