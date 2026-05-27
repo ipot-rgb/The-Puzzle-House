@@ -127,7 +127,7 @@ def run_level_5(screen, hint_manager):
         for i in range(1, 2):
             img = pygame.image.load(f"assets/Level_16/puzzle.png")
             img = pygame.transform.scale(img, (550,470))
-            rect = img.get_rect(topleft=(400, 80))
+            rect = img.get_rect(topleft=(0, 0))
             puzzles.append({"img": img, "rect": rect})
 
         active_puzzle = None

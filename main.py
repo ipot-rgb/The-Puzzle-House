@@ -1,17 +1,19 @@
 import pygame
 import time
 import os 
-from level_0 import run_level_0
-from level_1 import run_level_1
-from level_2 import run_level_2
-from level_3 import run_level_3
-from level_4 import run_level_4
-from level_5 import run_level_5
-from level_6 import run_level_6
-from level_7 import run_level_7
-from level_8 import run_level_8
+import importlib
 from instruction import show_instruction
 from hints_system import HintManager
+# Import level modules
+levels = {}
+
+for i in range(9):
+    module = importlib.import_module(f"level_{i}")
+
+    levels[i] = (
+        f"level_{i}",
+        getattr(module, f"run_level_{i}")
+    )
 
 #===============================
 # Button class
@@ -141,18 +143,6 @@ def show_level_complete_transition(screen, completion_time):
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
-levels = {
-    0: ("level_0", run_level_0),
-    1: ("level_1", run_level_1),
-    2: ("level_2", run_level_2),
-    3: ("level_3", run_level_3),
-    4: ("level_4", run_level_4),
-    5: ("level_5", run_level_5),
-    6: ("level_6", run_level_6),
-    7: ("level_7", run_level_7),
-    8: ("level_8", run_level_8),
-}
-
 def load_level(level):
     global message, message_timer, current_screen
     print(f"Loading Level {level}...")
@@ -163,7 +153,6 @@ def load_level(level):
         current_screen = "menu"
 
     return current_screen
-
 
 def complete_level(completion_time):
     global current_level, level_complete, game_complete
@@ -260,9 +249,8 @@ while running:
             if exit_button.is_clicked(event.pos):
                 sound2 = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
                 sound2.play()
-                time.sleep(1.75)
+                pygame.time.delay(1750)
                 running = False
-                pygame.quit()
             if start_button.is_clicked(event.pos):
                 sound = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
                 sound.play()
@@ -272,30 +260,3 @@ while running:
 
     pygame.display.update()
 pygame.quit()
-
-# # Load images
-    # wall = pygame.image.load("wall.png")
-    # data = open("puzzle_00.png")
-    # puzzle = pygame.image.load(data, '.png')
-
-
-# # Background and objects
-    # display.blit(wall, (0, 0))
-    # display.blit(puzzle, (100, 100))
-
-# font = pygame.font.Font('C:\\Users\\HP\\OneDrive\\Documents\\PythonGame\\OpenSans-VariableFont_wdth,wght.ttf', 36)
-# text = font.render("Hello, World!", True, (0,0,0))
-# display.blit(text, (400, 300))
-
-# # Update the display
-    # pygame.display.flip()
-
-    # time.sleep(2)
-    # text_1 = font.render("This is other screen", True, (0,0,0))
-    # display.blit(text_1, (0,0))
-    # wall2 = pygame.image.load("background.png")
-    # wall2 = pygame.transform.scale(wall2, (1000, 650))
-    # display.blit(wall2, (0, 0))
-    # pygame.display.flip()
-
-    # time.sleep(2)
