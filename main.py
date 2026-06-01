@@ -259,13 +259,13 @@ while running:
         # ~~~~~ Handle button clicks ~~~~~
         if event.type == pygame.MOUSEBUTTONDOWN:
             if exit_button.is_clicked(event.pos):
-                sound2 = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
-                sound2.play()
+                exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
+                exit_se.play()
                 pygame.time.delay(1750)
                 running = False
             if start_button.is_clicked(event.pos):
-                sound = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
-                sound.play()
+                whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
+                whoop.play()
                 instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
                 show_instruction(display, instruction_font)
                 load_level(current_level)
