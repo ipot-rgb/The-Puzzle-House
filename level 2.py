@@ -3,6 +3,7 @@ import os
 import math
 
 pygame.init()
+pygame.mixer.init()
 screen = pygame.display.set_mode((1200,650), pygame.SCALED)
 clock = pygame.time.Clock()
 info = pygame.display.Info()
@@ -14,6 +15,11 @@ CYAN = (0, 255, 255)
 background_img = pygame.image.load(os.path.join("materials", "lv1 background.png")).convert()
 background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
 
+MUSIC_VOLUME = 0.5  
+MUSIC_FILE = os.path.join("materials", "bgm", "lv2.mp3")
+pygame.mixer.music.load(MUSIC_FILE)
+pygame.mixer.music.set_volume(MUSIC_VOLUME)
+pygame.mixer.music.play(-1)
 
 STARS = [
    # B
