@@ -155,11 +155,13 @@ def run_level_4(screen, hint_manager):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # --- check hint button click ---
                     if hint_button_rect.collidepoint(event.pos):
-                        sound_2 = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
-                        sound_2.play()
+                        ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
+                        ding.play()
                         show_hint_popup(screen, hint_manager, 4, ui_font)
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
+                        pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                        pop.play()
                         passcode.append(clicked_btn.letter)
                         clicked_btn.hide()
 
@@ -171,13 +173,13 @@ def run_level_4(screen, hint_manager):
                             screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
-                            sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
-                            sound3.play()
+                            celebrate = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
+                            celebrate.play()
                             time.sleep(1)
                             return "complete"
                         else:
-                            sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
-                            sound.play()
+                            wrong = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                            wrong.play()
                             for btn in buttons:
                                 if btn.letter != "ENTER":
                                     btn.visible = True

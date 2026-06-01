@@ -165,12 +165,14 @@ def run_level_1(screen, hint_manager):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     # --- check hint button click ---
                     if hint_button_rect.collidepoint(event.pos):
-                        sound_2 = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
-                        sound_2.play()
+                        ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
+                        ding.play()
                         show_hint_popup(screen, hint_manager, 1, ui_font)
                     # == Check LETTER button click ==
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
                         if True:
+                            pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                            pop.play()
                             passcode.append(clicked_btn.letter)
                             print(f"Clicked: {clicked_btn.letter}, passcode: {passcode}")
                             clicked_btn.hide()
@@ -181,15 +183,15 @@ def run_level_1(screen, hint_manager):
                         if True:
                             if passcode == correct_passcode:
                                 print("✅ You passed!")
-                                sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
-                                sound3.play()
+                                celebrate = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
+                                celebrate.play()
                                 timer_sec = (pygame.time.get_ticks() - start_timer)/ 1000
                                 pygame.display.flip()
                                 level_completed = True
                                 return "complete", timer_sec
                             else:
-                                sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
-                                sound.play()
+                                wrong = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                                wrong.play()
                                 # Reset buttons
                                 for btn in buttons:
                                     if btn.letter != "ENTER":

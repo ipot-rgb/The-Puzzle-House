@@ -277,6 +277,8 @@ def run_level_0(screen, hint_manager):
                     # letter buttons
                     clicked_btn = next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)
                     if clicked_btn:
+                        pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                        pop.play()
                         passcode.append(clicked_btn.letter)
                         clicked_btn.hide()
 
@@ -295,8 +297,8 @@ def run_level_0(screen, hint_manager):
                             time.sleep(1)
                             return "complete"
                         else:
-                            sound = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
-                            sound.play()
+                            wrong = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
+                            wrong.play()
                             passcode.clear()
                             for btn in buttons:
                                 if btn.letter != "ENTER":
