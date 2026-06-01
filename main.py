@@ -52,7 +52,6 @@ pygame.init()
 BASE_DIR = os.path.dirname(__file__)
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
-
 #===============================
 # Set up the display screen
 #===============================
@@ -192,10 +191,10 @@ def complete_level(completion_time):
         print("Game complete!")
         time.sleep(2)
 
-
 #===============================
 # Game loop
 #===============================
+settings_open = False
 running = True
 current_screen = "menu"
 menu_list = [1,2,3,4,5,6,7,8,9,0]
@@ -223,6 +222,21 @@ while running:
             pygame.mouse.set_cursor(hand_cursor)
         else:
             pygame.mouse.set_cursor(default_cursor)
+
+        # Settings overlay
+        if settings_open:
+            overlay = pygame.Surface(display.get_size())
+            overlay.fill((0,0,0))
+            overlay.set_alpha(150)
+
+            display.blit(overlay, (0,0))
+            menu_rect = pygame.Rect(350,150,500,300)
+
+            pygame.draw.rect(display,(40,40,40),menu_rect)
+            pygame.draw.rect(display,(255,255,255),menu_rect,3)
+
+            settings_text = font.render("SETTINGS",True,(255,255,255))
+            display.blit(settings_text,(420,180))
 
     # ===============================
     # LEVEL HANDLER
@@ -270,7 +284,8 @@ while running:
                 show_instruction(display, instruction_font)
                 load_level(current_level)
             if setting_button.is_clicked(event.pos):
-                print("Setting button clicked - functionality not implemented yet")
+                settings_open = not settings_open
+                pygame.display.update()
 
     pygame.display.update()
 pygame.quit()
