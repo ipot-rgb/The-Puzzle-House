@@ -96,7 +96,17 @@ setting_icon = pygame.transform.scale(setting_icon, (55, 55))
 setting_button = Button(45, 45, setting_icon)
 setting_button.update(display)
 
+on_icon = pygame.image.load("assets/Icon/on_button.png")
+on_icon = pygame.transform.scale(on_icon, (75, 55))
+on_button = Button(700, 315, on_icon)
 
+off_icon = pygame.image.load("assets/Icon/off_button.png")  
+off_icon = pygame.transform.scale(off_icon, (75, 55))
+off_button = Button(700, 315, off_icon)
+
+close_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "close_icon.png"))
+close_icon = pygame.transform.scale(close_icon, (23, 23))
+close_button = Button(820, 170, close_icon)
 
 pygame.display.flip()
 
@@ -199,6 +209,7 @@ def complete_level(completion_time):
         print("Game complete!")
         time.sleep(2)
 
+
 #===============================
 # Game loop
 #===============================
@@ -206,6 +217,8 @@ settings_open = False
 running = True
 current_screen = "menu"
 menu_list = [1,2,3,4,5,6,7,8,9,0]
+
+music_on = True
 while running:
     mouse_pos = pygame.mouse.get_pos()
 
@@ -246,6 +259,17 @@ while running:
             settings_text = font.render("SETTINGS",True,(255,255,255))
             display.blit(settings_text,(420,180))
 
+            if music_on:
+                on_button.update(display)
+            else:
+                off_button.update(display)
+
+            music_text = pygame.font.Font('Notable-Regular.ttf', 25)
+            text = music_text.render("Music", True, (255,255,255))
+            display.blit(text, (450,300))
+
+            close_button.update(display)
+
     # ===============================
     # LEVEL HANDLER
     # ===============================
@@ -272,7 +296,6 @@ while running:
         elif result == "complete":  # fallback for old levels without timer
             complete_level(None)
 
-
     # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -286,13 +309,29 @@ while running:
                 settings_open = not settings_open
                 # pygame.display.update()
 
-            elif settings_open:
-                # if start_button.is_clicked(event.pos):
-                #     load_level(current_level)
-                # elif exit_button.is_clicked(event.pos):
-                #     running = False
-                pass
+            elif settings_open:    
+                if close_button.is_clicked(event.pos):
+                    settings_open = False
+
+                elif music_on and on_button.is_clicked(event.pos):
+                    music_on = False
+                    pygame.mixer.music.set_volume(0)
+
+                elif (not music_on) and off_button.is_clicked(event.pos):
+                    music_on = True
+                    pygame.mixer.music.set_volume(0.5)
                     
+                if close_button.is_hovered(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+
+                elif music_on and on_button.is_hovered(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+
+                elif (not music_on) and off_button.is_hovered(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
             else:
                 if exit_button.is_clicked(event.pos):
                     exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
