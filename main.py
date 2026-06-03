@@ -164,6 +164,17 @@ def show_level_complete_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
+def level_cleanup() :
+    import gc
+
+    #get all surfaces currently in memory
+    for surface in gc.get_objects():
+        if isinstance(surface, pygame.Surface):
+            #deletes the surface
+            pass
+    gc.collect()
+
+
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
@@ -188,6 +199,8 @@ def complete_level(completion_time):
         show_level_complete_transition(display, completion_time)
     else :
         pygame.time.wait(1000)
+
+    level_cleanup()
 
     if current_level < total_levels:
         message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
