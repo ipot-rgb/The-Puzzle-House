@@ -140,6 +140,8 @@ def run_level_4(screen, hint_manager):
 
         active_puzzle = None
 
+        start_timer = pygame.time.get_ticks()
+
         run = True
         while run:
             mouse_pos = pygame.mouse.get_pos()
@@ -169,14 +171,13 @@ def run_level_4(screen, hint_manager):
                         if passcode == correct_passcode:
                             for btn in buttons:
                                 btn.visible = False
-                            congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 128, 0))
-                            screen.blit(congratulations,(400,305))
                             pygame.display.flip()
                             level_completed = True
+                            timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
                             celebrate = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
                             celebrate.play()
                             time.sleep(1)
-                            return "complete"
+                            return "complete", timer_sec
                         else:
                             wrong = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
                             wrong.play()
