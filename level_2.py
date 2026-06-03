@@ -144,7 +144,7 @@ def run_level_2(screen, hint_manager):
     while not level_complete:
         screen_width = 1200
         screen_height = 650
-        pygame.display.set_caption("The Puzzle House")
+        pygame.display.set_caption("The Puzzle House - Level 2")
 
         LIGHT_BLUE = (202, 228, 241)
 

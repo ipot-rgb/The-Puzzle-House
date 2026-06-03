@@ -51,7 +51,7 @@ def run_level_4(screen, hint_manager):
         #===============================        
         screen_width = 1200
         screen_height = 650
-        pygame.display.set_caption("The Puzzle House")
+        pygame.display.set_caption("The Puzzle House - Level 4")
 
         # Cursors
         default_cursor = pygame.SYSTEM_CURSOR_ARROW

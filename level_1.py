@@ -65,7 +65,7 @@ def run_level_1(screen, hint_manager):
         
         # sprite class for the note
 
-        pygame.display.set_caption("The Puzzle House")
+        pygame.display.set_caption("The Puzzle House - Level 1")
 
         # Cursors
         default_cursor = pygame.SYSTEM_CURSOR_ARROW

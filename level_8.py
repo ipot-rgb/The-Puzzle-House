@@ -49,7 +49,7 @@ def run_level_8(screen, hint_manager):
         #===============================
         # Screen Setup
         #===============================
-        pygame.display.set_caption("The Puzzle House")
+        pygame.display.set_caption("The Puzzle House - Level 8")
 
         # Cursors
         default_cursor = pygame.SYSTEM_CURSOR_ARROW

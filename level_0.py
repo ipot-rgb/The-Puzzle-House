@@ -3,6 +3,7 @@ def run_level_0(screen, hint_manager):
     import os
     import time
 
+    pygame.display.set_caption("The Puzzle House - Tutorial Level")
     level_complete = False
     screen = pygame.display.set_mode((1200,650), pygame.SCALED)
     clock = pygame.time.Clock()

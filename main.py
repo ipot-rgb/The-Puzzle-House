@@ -272,20 +272,32 @@ while running:
 
         # ~~~~~ Handle button clicks ~~~~~
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if exit_button.is_clicked(event.pos):
-                exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
-                exit_se.play()
-                pygame.time.delay(1750)
-                running = False
-            if start_button.is_clicked(event.pos):
-                whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
-                whoop.play()
-                instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
-                show_instruction(display, instruction_font)
-                load_level(current_level)
             if setting_button.is_clicked(event.pos):
+                settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
+                settings_se.play()
                 settings_open = not settings_open
-                pygame.display.update()
+                # pygame.display.update()
+
+            elif settings_open:
+                # if start_button.is_clicked(event.pos):
+                #     load_level(current_level)
+                # elif exit_button.is_clicked(event.pos):
+                #     running = False
+                pass
+                    
+            else:
+                if exit_button.is_clicked(event.pos):
+                    exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
+                    exit_se.play()
+                    pygame.time.delay(1750)
+                    running = False
+
+                elif start_button.is_clicked(event.pos):
+                    whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
+                    whoop.play()
+                    instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                    show_instruction(display, instruction_font)
+                    load_level(current_level)
 
     pygame.display.update()
 pygame.quit()
