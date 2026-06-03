@@ -13,8 +13,15 @@ def run_level_2(screen, hint_manager):
     BLACK = (0, 0, 0)
     CYAN = (0, 255, 255)
 
-    background_img = pygame.image.load(os.path.join("materials", "lv1 background.png")).convert()
+    background_img = pygame.image.load(os.path.join("materials", "lv2_background.png")).convert()
     background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
+
+    
+    pygame.mixer.init()
+    pygame.mixer.music.load("materials/bgm/lv2.mp3")
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
 
 
     STARS = [

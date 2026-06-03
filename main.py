@@ -52,6 +52,12 @@ pygame.init()
 BASE_DIR = os.path.dirname(__file__)
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
+
+pygame.mixer.init()
+pygame.mixer.music.load(os.path.join("materials", "bgm", "menu_bgm.mp3"))
+pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.play(-1)
+
 #===============================
 # Set up the display screen
 #===============================
@@ -154,6 +160,8 @@ def show_level_complete_transition(screen, completion_time):
 def load_level(level):
     global message, message_timer, current_screen
     print(f"Loading Level {level}...")
+
+    pygame.mixer.music.stop()
 
     if level in levels:
         current_screen = levels[level][0]   # "level_x"
