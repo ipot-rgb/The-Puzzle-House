@@ -163,7 +163,6 @@ def show_level_complete_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
-
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
