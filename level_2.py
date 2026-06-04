@@ -1,10 +1,20 @@
-def run_level_2(screen, hint_manager):
+def run_level_2(screen, hint_manager, preserve_state=False):
     import pygame
     import os
     import math
     import time
     from hints_system import show_hint_popup
     level_complete = False
+
+    # timer management (for refresh)
+    if not hasattr(run_level_2, 'base_start_time'):
+        run_level_2.base_start_time = None
+
+    if preserve_state and run_level_2.base_start_time is not None:
+        start_timer = run_level_2.base_start_time
+    else:
+        start_timer = pygame.time.get_ticks()
+        run_level_2.base_start_time = start_timer
 
     clock = pygame.time.Clock()
     info = pygame.display.Info()
@@ -197,11 +207,17 @@ def run_level_2(screen, hint_manager):
         enter_btn.letter = "ENTER"
         buttons.append(enter_btn)
 
-        # hint button
+        #hint button
         ui_font = pygame.font.Font(None, 36)
         hint_img = pygame.image.load("assets/Icon/hint_button.png")
         hint_img = pygame.transform.scale(hint_img, (60, 65))
         hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
+
+        # refresh button
+        ui_font = pygame.font.Font(None, 36)
+        refresh_img = pygame.image.load("assets/Icon/refresh_button.png").convert_alpha()
+        refresh_img = pygame.transform.scale(refresh_img, (60, 65))
+        refresh_button_rect = refresh_img.get_rect(topleft=(1030, 25))
 
         passcode = []
         correct_passcode = ['b', 'c', 'f', 'i']
@@ -214,7 +230,6 @@ def run_level_2(screen, hint_manager):
         for btn in buttons:
             btn.draw()
 
-        start_timer = pygame.time.get_ticks()
 
         running = True
         while running:
@@ -235,7 +250,11 @@ def run_level_2(screen, hint_manager):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 2, ui_font)
-
+                    #refresh button
+                    if refresh_button_rect.collidepoint(event.pos):
+                        click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")  # or any sound
+                        click_se.play()
+                        return ("refresh",)
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
                         if True:
                             pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
@@ -285,7 +304,9 @@ def run_level_2(screen, hint_manager):
             for btn in buttons:
                 btn.draw()
 
-            # draw the hint button
+            #hint button
             screen.blit(hint_img, hint_button_rect)
+            #refresh button
+            screen.blit(refresh_img, refresh_button_rect)
 
             pygame.display.flip()

@@ -1,4 +1,4 @@
-def run_level_8(screen, hint_manager):
+def run_level_8(screen, hint_manager,preserve_state=False):
     import pygame
     import time
     from hints_system import show_hint_popup
