@@ -3,6 +3,17 @@ def run_level_3(screen, hint_manager, preserve_state=False):
     import time
     from hints_system import show_hint_popup
     level_complete = False
+
+    #timer management (for refresh)
+    if not hasattr(run_level_3, 'base_start_time'):
+        run_level_3.base_start_time = None
+
+    if preserve_state and run_level_3.base_start_time is not None:
+        start_timer = run_level_3.base_start_time
+    else:
+        start_timer = pygame.time.get_ticks()
+        run_level_3.base_start_time = start_timer
+
     while not level_complete:
         class Button:
             def __init__(self, x, y, image):
@@ -117,6 +128,12 @@ def run_level_3(screen, hint_manager, preserve_state=False):
         hint_img = pygame.transform.scale(hint_img, (60, 65))
         hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
 
+        #refresh button
+        ui_font = pygame.font.Font(None, 36)
+        refresh_img = pygame.image.load("assets/Icon/refresh_button.png").convert_alpha()
+        refresh_img = pygame.transform.scale(refresh_img, (60, 65))
+        refresh_button_rect = refresh_img.get_rect(topleft=(1030, 25))
+
         # Passcode variables
         passcode = []
         correct_passcode = ['c','f','i','h','e','b','a']
@@ -146,11 +163,10 @@ def run_level_3(screen, hint_manager, preserve_state=False):
             else:
                 img = pygame.transform.scale(img, (176, 136))
                 rect = img.get_rect(topleft=(176, 136))
-            puzzles.append({"img": img, "rect": rect})
+            puzzles.append({"img": img, "rect": rect, "original_rect": rect.copy()})
+
 
         active_puzzle = None
-
-        start_timer = pygame.time.get_ticks()
 
         run = True
         while run:
@@ -170,6 +186,18 @@ def run_level_3(screen, hint_manager, preserve_state=False):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 3, ui_font)
+                    #refresh button click
+                    if refresh_button_rect.collidepoint(event.pos):
+                        click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                        click_se.play()
+                        for puzzle in puzzles:
+                            puzzle["rect"].x = puzzle["original_rect"].x
+                            puzzle["rect"].y = puzzle["original_rect"].y
+                        for btn in buttons:
+                            if btn.letter != "ENTER":
+                                btn.visible = True
+                        passcode = []
+                        return ("refresh",)
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                         pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
@@ -218,6 +246,8 @@ def run_level_3(screen, hint_manager, preserve_state=False):
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
 
-            # draw the hint button
+            #hint button
             screen.blit(hint_img, hint_button_rect)
+            #refresh button
+            screen.blit(refresh_img, refresh_button_rect)
             pygame.display.flip()

@@ -185,8 +185,7 @@ def run_level_1(screen, hint_manager, preserve_state=False):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 1, ui_font)
-
-
+                    #refresh button click
                     if refresh_button_rect.collidepoint(event.pos):
                         click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")  # or any sound
                         click_se.play()

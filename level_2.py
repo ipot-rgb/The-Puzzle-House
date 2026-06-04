@@ -213,7 +213,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
         hint_img = pygame.transform.scale(hint_img, (60, 65))
         hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
 
-        # refresh button
+        #refresh button
         ui_font = pygame.font.Font(None, 36)
         refresh_img = pygame.image.load("assets/Icon/refresh_button.png").convert_alpha()
         refresh_img = pygame.transform.scale(refresh_img, (60, 65))
@@ -250,7 +250,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 2, ui_font)
-                    #refresh button
+                    #refresh button click
                     if refresh_button_rect.collidepoint(event.pos):
                         click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")  # or any sound
                         click_se.play()
