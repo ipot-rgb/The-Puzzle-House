@@ -119,14 +119,13 @@ level_complete = False
 game_complete = False
 
 #password input system
-
 message = ""
 message_timer = 0
+
 
 # ===============================
 # Level transition function
 # ===============================
-
 def show_level_complete_transition(screen, completion_time):
     clock = pygame.time.Clock()
     black_surf = pygame.Surface(screen.get_size())
@@ -163,6 +162,7 @@ def show_level_complete_transition(screen, completion_time):
         pygame.display.flip()
         clock.tick(60)
     pygame.time.wait(2000)
+
 
 # ===============================
 # LEVEL FUNCTION MAP
