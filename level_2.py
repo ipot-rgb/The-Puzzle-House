@@ -16,6 +16,17 @@ def run_level_2(screen, hint_manager, preserve_state=False):
         start_timer = pygame.time.get_ticks()
         run_level_2.base_start_time = start_timer
 
+    #music management (for refresh)
+    if not preserve_state:
+        pygame.mixer.music.stop() #stop any music from playing first
+        pygame.mixer.music.load("materials/bgm/lv2.mp3")
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
+        print("Level 2 music started")
+    else:
+        print("Refresh: Music continues")
+    # ======================================
+
     clock = pygame.time.Clock()
     info = pygame.display.Info()
     WIDTH, HEIGHT = 1200, 650
@@ -27,10 +38,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
     background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
 
     
-    pygame.mixer.init()
-    pygame.mixer.music.load("materials/bgm/lv2.mp3")
-    pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1)
+
 
 
 
