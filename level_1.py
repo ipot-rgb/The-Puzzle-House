@@ -1,9 +1,22 @@
-def run_level_1(screen, hint_manager):
+def run_level_1(screen, hint_manager, preserve_state=False):
     import pygame
     import time
     import os
     from hints_system import show_hint_popup
     level_complete = False
+
+    #timer management (for refresh)
+    if not hasattr(run_level_1, 'base_start_time'):
+        run_level_1.base_start_time = None
+
+    if preserve_state and run_level_1.base_start_time is not None:
+        start_timer = run_level_1.base_start_time
+        print(f"REFRESH: Keeping existing timer: {start_timer}")
+    else:
+        start_timer = pygame.time.get_ticks()
+        run_level_1.base_start_time = start_timer
+        print(f"NEW LEVEL: Starting timer at: {start_timer}")
+
     class Letter_Button:
         def __init__(self, x, y, image):
             self.image = image
@@ -79,6 +92,12 @@ def run_level_1(screen, hint_manager):
         hint_img = pygame.transform.scale(hint_img, (60, 65))
         hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
 
+        #refresh button
+        ui_font = pygame.font.Font(None, 36)
+        refresh_img = pygame.image.load("assets/Icon/refresh_button.png").convert_alpha()
+        refresh_img = pygame.transform.scale(refresh_img, (60, 65))
+        refresh_button_rect = refresh_img.get_rect(topleft=(1030, 25))
+
         enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 
         # A-I button setup
@@ -134,9 +153,9 @@ def run_level_1(screen, hint_manager):
             btn.draw()
 
         note_width = int(screen_width * 0.65)
-        note_height = int(screen_height + 40)   # ← 改这里
+        note_height = int(screen_height + 40)
         note_x = 0
-        note_y = (screen_height - note_height) // 2 - 20  # ← 调整位置
+        note_y = (screen_height - note_height) // 2 - 20
         note = Note(os.path.join("materials", "lv1 note.png"), note_width, note_height, note_x, note_y)
 
         bm_width = int(note_width * 0.9)
@@ -148,10 +167,8 @@ def run_level_1(screen, hint_manager):
         all_sprites = pygame.sprite.Group()
         all_sprites.add(note)
         all_sprites.add(bm)
+
         running = True
-
-        start_timer = pygame.time.get_ticks()
-
         while running:
             events = pygame.event.get()
             for event in events:
@@ -168,6 +185,12 @@ def run_level_1(screen, hint_manager):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 1, ui_font)
+                    #refresh button click
+                    if refresh_button_rect.collidepoint(event.pos):
+                        click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")  # or any sound
+                        click_se.play()
+                        return ("refresh",)
+
                     # == Check LETTER button click ==
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
                         if True:
@@ -213,8 +236,10 @@ def run_level_1(screen, hint_manager):
                     screen.blit(check, (btn.rect.centerx - 15, btn.rect.centery - 15))
 
             bm.update(events)
-            #draw the hint button
+            #hint button
             screen.blit(hint_img, hint_button_rect)
+            #refresh button
+            screen.blit(refresh_img, refresh_button_rect)
 
             all_sprites.draw(screen)
             for btn in buttons:
