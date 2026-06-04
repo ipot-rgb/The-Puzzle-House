@@ -79,6 +79,12 @@ def run_level_1(screen, hint_manager):
         hint_img = pygame.transform.scale(hint_img, (60, 65))
         hint_button_rect = hint_img.get_rect(topleft=(1100, 20))
 
+        #refresh button
+        ui_font = pygame.font.Font(None, 36)
+        refresh_img = pygame.image.load("assets/Icon/refresh_button.png").convert_alpha()
+        refresh_img = pygame.transform.scale(refresh_img, (60, 65))
+        refresh_button_rect = refresh_img.get_rect(topleft=(1030, 25))
+
         enter_img = pygame.image.load("assets/Button_alphabet/enter.png")
 
         # A-I button setup
@@ -213,8 +219,11 @@ def run_level_1(screen, hint_manager):
                     screen.blit(check, (btn.rect.centerx - 15, btn.rect.centery - 15))
 
             bm.update(events)
-            #draw the hint button
+            #hint button
             screen.blit(hint_img, hint_button_rect)
+
+            #refresh button
+            screen.blit(refresh_img, refresh_button_rect)
 
             all_sprites.draw(screen)
             for btn in buttons:
