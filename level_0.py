@@ -1,4 +1,4 @@
-def run_level_0(screen, hint_manager, preserve_state):
+def run_level_0(screen, hint_manager, preserve_state=False):
     import pygame
     import os
     import time
@@ -14,6 +14,17 @@ def run_level_0(screen, hint_manager, preserve_state):
 
     background_img = pygame.image.load(os.path.join("materials", "tutorial level background.png")).convert()
     background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
+
+    if not hasattr(run_level_0, 'base_start_time'):
+        run_level_0.base_start_time = None
+
+    if preserve_state and run_level_0.base_start_time is not None:
+        start_timer = run_level_0.base_start_time
+        print(f"REFRESH: Keeping existing timer: {start_timer}")
+    else:
+        start_timer = pygame.time.get_ticks()
+        run_level_0.base_start_time = start_timer
+        print(f"NEW LEVEL: Starting timer at: {start_timer}")
 
     class Button:
         def __init__(self, x, y, image):
