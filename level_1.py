@@ -17,6 +17,12 @@ def run_level_1(screen, hint_manager, preserve_state=False):
         run_level_1.base_start_time = start_timer
         print(f"NEW LEVEL: Starting timer at: {start_timer}")
 
+   
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv1.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
+
     class Letter_Button:
         def __init__(self, x, y, image):
             self.image = image
@@ -158,8 +164,8 @@ def run_level_1(screen, hint_manager, preserve_state=False):
         note_y = (screen_height - note_height) // 2 - 20
         note = Note(os.path.join("materials", "lv1 note.png"), note_width, note_height, note_x, note_y)
 
-        bm_width = int(note_width * 0.9)
-        bm_height = int(note_height * 1.0)
+        bm_width = int(note_width * 0.95)
+        bm_height = int(note_height * 0.95)
         bm = Bookmark(os.path.join("materials", "book mark.png"),
                       bm_width, bm_height,
                       note_x + int(note_width * 0.6), note_y + 50)

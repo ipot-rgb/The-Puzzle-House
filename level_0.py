@@ -1,4 +1,4 @@
-def run_level_0(screen, hint_manager, preserve_state):
+def run_level_0(screen, hint_manager, preserve_state=None):
     import pygame
     import os
     import time
@@ -14,6 +14,12 @@ def run_level_0(screen, hint_manager, preserve_state):
 
     background_img = pygame.image.load(os.path.join("materials", "tutorial level background.png")).convert()
     background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
+
+    
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
 
     class Button:
         def __init__(self, x, y, image):

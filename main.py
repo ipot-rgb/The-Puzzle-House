@@ -341,6 +341,7 @@ while running:
                 elif start_button.is_clicked(event.pos):
                     whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
                     whoop.play()
+                    pygame.mixer.music.stop()
                     instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
                     show_instruction(display, instruction_font)
                     load_level(current_level)
