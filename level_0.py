@@ -1,4 +1,4 @@
-def run_level_0(screen, hint_manager, preserve_state=False):
+def run_level_0(screen, hint_manager, preserve_state=None):
     import pygame
     import os
     import time
@@ -25,6 +25,10 @@ def run_level_0(screen, hint_manager, preserve_state=False):
         start_timer = pygame.time.get_ticks()
         run_level_0.base_start_time = start_timer
         print(f"NEW LEVEL: Starting timer at: {start_timer}")
+    
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
 
     class Button:
         def __init__(self, x, y, image):
