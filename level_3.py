@@ -168,9 +168,47 @@ def run_level_3(screen, hint_manager, preserve_state=False):
 
         active_puzzle = None
 
+        font = pygame.font.Font('Notable-Regular.ttf', 60)
+
+        setting_icon = pygame.image.load("assets/Icon/setting_button.png")
+        setting_icon = pygame.transform.scale(setting_icon, (55, 55))
+        setting_button = Button(45, 45, setting_icon)
+        setting_button.update(screen)
+
+        on_icon = pygame.image.load("assets/Icon/on_button.png")
+        on_icon = pygame.transform.scale(on_icon, (75, 55))
+        on_button = Button(700, 315, on_icon)
+
+        off_icon = pygame.image.load("assets/Icon/off_button.png")  
+        off_icon = pygame.transform.scale(off_icon, (75, 55))
+        off_button = Button(700, 315, off_icon)
+
+        close_icon = pygame.image.load("assets/Icon/close_icon.png")
+        close_icon = pygame.transform.scale(close_icon, (23, 23))
+        close_button = Button(820, 170, close_icon)
+
+        settings_open = False
+        music_on = True
+
         run = True
         while run:
-            mouse_pos = pygame.mouse.get_pos()
+            mouse_pos = pygame.mouse.get_pos()          
+            # Handle cursor changes based on mouse position
+            if settings_open:
+                if close_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                elif music_on and on_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                elif (not music_on) and off_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
+            else:
+                if setting_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
+                    
             pygame.mouse.set_cursor(default_cursor)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

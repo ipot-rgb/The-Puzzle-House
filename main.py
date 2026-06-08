@@ -331,6 +331,7 @@ while running:
 
                 else:
                     pygame.mouse.set_cursor(default_cursor)
+                    
             else:
                 if exit_button.is_clicked(event.pos):
                     exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")

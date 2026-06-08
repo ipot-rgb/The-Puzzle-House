@@ -69,6 +69,21 @@ def run_level_1(screen, hint_manager, preserve_state=False):
                 self.rect.x = mouse_x + self.offset_x
                 self.rect.y = mouse_y + self.offset_y
 
+    class Button:
+        def __init__(self, x, y, image):
+            self.image = image
+            self.x = x
+            self.y = y
+            self.rect = self.image.get_rect(center=(x, y))
+
+        def update(self, display):
+            display.blit(self.image, self.rect)
+        
+        def is_clicked(self, pos):
+            return self.rect.collidepoint(pos)
+
+        def is_hovered(self, pos):
+            return self.rect.collidepoint(pos)
 
     while not level_complete:
 
@@ -168,9 +183,47 @@ def run_level_1(screen, hint_manager, preserve_state=False):
         all_sprites.add(note)
         all_sprites.add(bm)
 
+        font = pygame.font.Font('Notable-Regular.ttf', 60)
+
+        setting_icon = pygame.image.load("assets/Icon/setting_button.png")
+        setting_icon = pygame.transform.scale(setting_icon, (55, 55))
+        setting_button = Button(45, 45, setting_icon)
+        setting_button.update(screen)
+
+        on_icon = pygame.image.load("assets/Icon/on_button.png")
+        on_icon = pygame.transform.scale(on_icon, (75, 55))
+        on_button = Button(700, 315, on_icon)
+
+        off_icon = pygame.image.load("assets/Icon/off_button.png")  
+        off_icon = pygame.transform.scale(off_icon, (75, 55))
+        off_button = Button(700, 315, off_icon)
+
+        close_icon = pygame.image.load("assets/Icon/close_icon.png")
+        close_icon = pygame.transform.scale(close_icon, (23, 23))
+        close_button = Button(820, 170, close_icon)
+
+        settings_open = False
+        music_on = True
         running = True
         while running:
             events = pygame.event.get()
+            mouse_pos = pygame.mouse.get_pos()
+            if settings_open:
+                if close_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                elif music_on and on_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                elif (not music_on) and off_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
+            else:
+                if setting_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
+            
+            # Event Handling 
             for event in events:
                 if event.type == pygame.QUIT:
                     return "quit"
@@ -180,6 +233,35 @@ def run_level_1(screen, hint_manager, preserve_state=False):
                         return "menu"
                         
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    # Settings button click (works regardless of settings_open state)
+                    if setting_button.is_clicked(event.pos):
+                        settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
+                        settings_se.play()
+                        settings_open = not settings_open
+                    
+                    # Settings menu buttons (only if settings is open)
+                    elif settings_open:    
+                        if close_button.is_clicked(event.pos):
+                            settings_open = False
+                        
+                        elif music_on and on_button.is_clicked(event.pos):
+                            music_on = False
+                            pygame.mixer.music.set_volume(0)
+                        
+                        elif (not music_on) and off_button.is_clicked(event.pos):
+                            music_on = True
+                            pygame.mixer.music.set_volume(0.5)
+                    
+                    # Letter buttons (only if settings is closed to prevent conflicts)
+                    elif not settings_open:
+                        clicked_btn = next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)
+                        if clicked_btn:
+                            pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                            pop.play()
+                            passcode.append(clicked_btn.letter)
+                            clicked_btn.hide()
+
+
                     # --- check hint button click ---
                     if hint_button_rect.collidepoint(event.pos):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
@@ -244,5 +326,33 @@ def run_level_1(screen, hint_manager, preserve_state=False):
             all_sprites.draw(screen)
             for btn in buttons:
                 btn.draw()
-            font = pygame.font.Font(None, 36)
+            
+            # Draw setting button (always on top)
+            setting_button.update(screen)
+
+            # Draw settings menu (if open)
+            if settings_open:
+                overlay = pygame.Surface(screen.get_size())
+                overlay.fill((0,0,0))
+                overlay.set_alpha(150)
+                screen.blit(overlay, (0,0))
+                
+                menu_rect = pygame.Rect(350,150,500,300)
+                pygame.draw.rect(screen,(40,40,40),menu_rect)
+                pygame.draw.rect(screen,(255,255,255),menu_rect,3)
+                
+                settings_text = font.render("SETTINGS",True,(255,255,255))
+                screen.blit(settings_text,(420,180))
+                
+                if music_on:
+                    on_button.update(screen)
+                else:
+                    off_button.update(screen)
+                
+                music_text = pygame.font.Font('Notable-Regular.ttf', 30)
+                text = music_text.render("Music", True, (255,255,255))
+                screen.blit(text, (450,300))
+
+                close_button.update(screen)
+
             pygame.display.update()

@@ -268,7 +268,7 @@ def run_level_0(screen, hint_manager, preserve_state=False):
         passcode = []
         correct_passcode = ['i', 'c', 'e']
 
-        font = pygame.font.SysFont(None, 40)
+        font = pygame.font.SysFont('Notable', 40 )
 
         setting_icon = pygame.image.load("assets/Icon/setting_button.png")
         setting_icon = pygame.transform.scale(setting_icon, (55, 55))
@@ -416,7 +416,9 @@ def run_level_0(screen, hint_manager, preserve_state=False):
                 pygame.draw.rect(screen,(40,40,40),menu_rect)
                 pygame.draw.rect(screen,(255,255,255),menu_rect,3)
                 
-                settings_text = font.render("SETTINGS",True,(255,255,255))
+                music_text = pygame.font.Font('Notable-Regular.ttf', 40)
+                font2 = pygame.font.Font('Notable-Regular.ttf', 60)
+                settings_text = font2.render("SETTINGS",True,(255,255,255))
                 screen.blit(settings_text,(420,180))
                 
                 if music_on:
@@ -424,9 +426,9 @@ def run_level_0(screen, hint_manager, preserve_state=False):
                 else:
                     off_button.update(screen)
                 
-                music_label = font.render("Music", True, (255,255,255))
-                screen.blit(music_label, (450,300))
-                
+                text = music_text.render("Music", True, (255,255,255))
+                screen.blit(text, (450,300))
+
                 close_button.update(screen)
             
             # Draw setting button (always on top)
