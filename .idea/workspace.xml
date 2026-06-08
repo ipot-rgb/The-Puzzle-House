@@ -5,21 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="91bcb789-3083-4be7-9953-e61e1812002b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/materials/bgm/lv0.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/materials/bgm/lv1.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/materials/bgm/lv3.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/materials/bgm/lv4.mp3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_0.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_0.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_1.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_1.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_2.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_3.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_4.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_4.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_5.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_5.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_6.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_6.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_7.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_7.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/level_8.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_8.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +56,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging Shawn-Ko",
+    "git-widget-placeholder": "Shawn-Ko",
     "last_opened_file_path": "C:/Users/USER/Projects/The-Puzzle-House",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
