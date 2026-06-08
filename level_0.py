@@ -15,10 +15,12 @@ def run_level_0(screen, hint_manager, preserve_state=None):
     background_img = pygame.image.load(os.path.join("materials", "tutorial level background.png")).convert()
     background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
 
-    
-    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
-    pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1)
+    # music management (for refresh)
+    if not preserve_state:
+        pygame.mixer.music.stop()  # stop any music from playing first
+        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
 
     class Button:
         def __init__(self, x, y, image):

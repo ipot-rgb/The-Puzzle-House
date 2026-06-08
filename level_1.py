@@ -17,10 +17,12 @@ def run_level_1(screen, hint_manager, preserve_state=False):
         run_level_1.base_start_time = start_timer
         print(f"NEW LEVEL: Starting timer at: {start_timer}")
 
-   
-    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv1.mp3"))
-    pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1)
+    # music management (for refresh)
+    if not preserve_state:
+        pygame.mixer.music.stop()  #stop any music from playing first
+        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv1.mp3"))
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
 
 
     class Letter_Button:
