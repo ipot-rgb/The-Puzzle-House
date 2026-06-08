@@ -119,14 +119,13 @@ level_complete = False
 game_complete = False
 
 #password input system
-
 message = ""
 message_timer = 0
+
 
 # ===============================
 # Level transition function
 # ===============================
-
 def show_level_complete_transition(screen, completion_time):
     clock = pygame.time.Clock()
     black_surf = pygame.Surface(screen.get_size())
@@ -164,21 +163,9 @@ def show_level_complete_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
-def level_cleanup() :
-    import gc
-
-    #get all surfaces currently in memory
-    for surface in gc.get_objects():
-        if isinstance(surface, pygame.Surface):
-            #deletes the surface
-            pass
-    gc.collect()
-
-
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
-preserved_states = {}
 def load_level(level):
     global message, message_timer, current_screen
     print(f"Loading Level {level}...")
@@ -200,8 +187,6 @@ def complete_level(completion_time):
         show_level_complete_transition(display, completion_time)
     else :
         pygame.time.wait(1000)
-
-    level_cleanup()
 
     if current_level < total_levels:
         message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
@@ -288,12 +273,11 @@ while running:
     # LEVEL HANDLER
     # ===============================
     elif current_screen.startswith("level_"):
-        preserve_state = preserved_states.get(current_screen, False)
 
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display, hint_manager,preserve_state=preserve_state)
+                result = func(display, hint_manager)
                 break
         else:
             result = None
@@ -301,20 +285,14 @@ while running:
         # ===============================
         # RESULT HANDLING
         # ===============================
-        if isinstance(result, tuple):
-            if result[0] == "complete":
-                completion_time = result[1]
-                preserved_states[current_screen] = False
-                complete_level(completion_time)
-            elif result[0] == "refresh":
-                preserved_states[current_screen] = True
-                continue
+        if isinstance(result, tuple) and result[0] == "complete":
+            completion_time = result[1]
+            complete_level(completion_time)
         elif result == "menu":
             current_screen = "menu"
-            preserved_states[current_screen] = False
         elif result == "quit":
             running = False
-        elif result == "complete":  # fallback for old levels without timer
+        elif result == "complete":  #fallback for old levels without timer
             complete_level(None)
 
     # Event handling
@@ -353,6 +331,7 @@ while running:
 
                 else:
                     pygame.mouse.set_cursor(default_cursor)
+                    
             else:
                 if exit_button.is_clicked(event.pos):
                     exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
@@ -363,6 +342,7 @@ while running:
                 elif start_button.is_clicked(event.pos):
                     whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
                     whoop.play()
+                    pygame.mixer.music.stop()
                     instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
                     show_instruction(display, instruction_font)
                     load_level(current_level)

@@ -1,6 +1,7 @@
 def run_level_4(screen, hint_manager, preserve_state=False):
     import pygame
     import time
+    import os
     from hints_system import show_hint_popup
     level_complete = False
 
@@ -13,6 +14,11 @@ def run_level_4(screen, hint_manager, preserve_state=False):
     else:
         start_timer = pygame.time.get_ticks()
         run_level_4.base_start_time = start_timer
+
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv4.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
 
     while not level_complete:
         class Button:
@@ -157,8 +163,46 @@ def run_level_4(screen, hint_manager, preserve_state=False):
 
         active_puzzle = None
 
+        setting_icon = pygame.image.load("assets/Icon/setting_button.png")
+        setting_icon = pygame.transform.scale(setting_icon, (55, 55))
+        setting_button = Button(45, 45, setting_icon)
+        setting_button.update(screen)
+
+        on_icon = pygame.image.load("assets/Icon/on_button.png")
+        on_icon = pygame.transform.scale(on_icon, (75, 55))
+        on_button = Button(700, 315, on_icon)
+
+        off_icon = pygame.image.load("assets/Icon/off_button.png")  
+        off_icon = pygame.transform.scale(off_icon, (75, 55))
+        off_button = Button(700, 315, off_icon)
+
+        close_icon = pygame.image.load("assets/Icon/close_icon.png")
+        close_icon = pygame.transform.scale(close_icon, (23, 23))
+        close_button = Button(820, 170, close_icon)
+
+        settings_open = False
+        music_on = True
+
         run = True
         while run:
+            # Get mouse position ONCE at the beginning of each frame
+            mouse_pos = pygame.mouse.get_pos()
+            # Handle cursor changes based on mouse position
+            if settings_open:
+                if close_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                elif music_on and on_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                elif (not music_on) and off_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
+            else:
+                if setting_button.rect.collidepoint(mouse_pos):
+                    pygame.mouse.set_cursor(hand_cursor)
+                else:
+                    pygame.mouse.set_cursor(default_cursor)
+
             mouse_pos = pygame.mouse.get_pos()
             pygame.mouse.set_cursor(default_cursor)
             for event in pygame.event.get():
