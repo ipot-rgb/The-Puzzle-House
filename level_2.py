@@ -25,7 +25,6 @@ def run_level_2(screen, hint_manager, preserve_state=False):
         print("Level 2 music started")
     else:
         print("Refresh: Music continues")
-    # ======================================
 
     clock = pygame.time.Clock()
     info = pygame.display.Info()
