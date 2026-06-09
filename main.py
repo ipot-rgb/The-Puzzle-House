@@ -163,6 +163,8 @@ def show_level_complete_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
+preserved_states = {}
+
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
@@ -274,10 +276,12 @@ while running:
     # ===============================
     elif current_screen.startswith("level_"):
 
+        preserve_state = preserved_states.get(current_screen, False)
+
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display, hint_manager)   # can be str or tuple
+                result = func(display, hint_manager,  preserve_state=preserve_state)
                 break
         else:
             result = None
@@ -285,14 +289,20 @@ while running:
         # ===============================
         # RESULT HANDLING
         # ===============================
-        if isinstance(result, tuple) and result[0] == "complete":
-            completion_time = result[1]
-            complete_level(completion_time)
+        if isinstance(result, tuple) :
+            if result[0] == "complete":
+                completion_time = result[1]
+                complete_level(completion_time)
+                preserved_states[current_screen] = False
+            elif result[0] == "refresh":
+                preserved_states[current_screen] = True
+                continue
+
         elif result == "menu":
             current_screen = "menu"
         elif result == "quit":
             running = False
-        elif result == "complete":  # fallback for old levels without timer
+        elif result == "complete":  #fallback for old levels without timer
             complete_level(None)
 
     # Event handling

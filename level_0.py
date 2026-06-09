@@ -15,20 +15,12 @@ def run_level_0(screen, hint_manager, preserve_state=None):
     background_img = pygame.image.load(os.path.join("materials", "tutorial level background.png")).convert()
     background_img = pygame.transform.scale(background_img, (WIDTH, HEIGHT))
 
-    if not hasattr(run_level_0, 'base_start_time'):
-        run_level_0.base_start_time = None
-
-    if preserve_state and run_level_0.base_start_time is not None:
-        start_timer = run_level_0.base_start_time
-        print(f"REFRESH: Keeping existing timer: {start_timer}")
-    else:
-        start_timer = pygame.time.get_ticks()
-        run_level_0.base_start_time = start_timer
-        print(f"NEW LEVEL: Starting timer at: {start_timer}")
-    
-    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
-    pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1)
+    # music management (for refresh)
+    if not preserve_state:
+        pygame.mixer.music.stop()  # stop any music from playing first
+        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
 
     class Button:
         def __init__(self, x, y, image):

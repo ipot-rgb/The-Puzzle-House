@@ -15,9 +15,13 @@ def run_level_3(screen, hint_manager, preserve_state=False):
         start_timer = pygame.time.get_ticks()
         run_level_3.base_start_time = start_timer
 
-    pygame.mixer.music.load(os.path.join("materials", "bgm", "lv3.mp3"))
-    pygame.mixer.music.set_volume(0.5)
-    pygame.mixer.music.play(-1)
+    #music management (for refresh)
+    if not preserve_state:
+        pygame.mixer.music.stop() #stop any music from playing first
+        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv3.mp3"))
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
+
 
 
     while not level_complete:
