@@ -295,9 +295,7 @@ while running:
                 complete_level(completion_time)
                 preserved_states[current_screen] = False
             elif result[0] == "refresh":
-                # Mark that next run should preserve timer/hint state
                 preserved_states[current_screen] = True
-                # Don't change screen - will re-run the level on next iteration
                 continue
 
         elif result == "menu":
