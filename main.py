@@ -163,6 +163,122 @@ def show_level_complete_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
+
+# ===============================
+# Transition page for level 0
+# ===============================
+def show_tutorial_transition(screen):
+
+    #stop music and put on sound effect
+    pygame.mixer.music.stop()
+    sound_tutorial = pygame.mixer.Sound("assets/sound_effect/tutorial_se.wav")
+    sound_tutorial.play()
+    time.sleep(1)
+
+    clock = pygame.time.Clock()
+    black_surf = pygame.Surface(screen.get_size())
+    black_surf.fill((0, 0, 0))
+
+    #fonts
+    font_big = pygame.font.Font('Notable-Regular.ttf', 70)
+    font_small = pygame.font.Font('Notable-Regular.ttf', 40)
+
+    #screen dimensions
+    screen_width = screen.get_width()
+    screen_height = screen.get_height()
+
+    #part 1: "Congratulations!"
+    congrats_text = font_big.render("Congratulations!", True, (0, 128, 0))
+    congrats_rect = congrats_text.get_rect(center=(screen_width // 2, screen_height // 2 - 50))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        congrats_text.set_alpha(alpha)
+        screen.blit(congrats_text, congrats_rect)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.time.wait(1000)
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        congrats_text.set_alpha(255)
+        screen.blit(congrats_text, congrats_rect)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.time.wait(1000)
+
+    #part 2: transition to show "Welcome To The Puzzle House"
+    for alpha in range(255, -1, -5):
+        screen.blit(black_surf, (0, 0))
+        congrats_text.set_alpha(alpha)
+        screen.blit(congrats_text, congrats_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    welcome_text = font_small.render("Welcome", True, (200, 200, 200))
+    welcome_rect = welcome_text.get_rect(center=(screen_width // 2 - 100, screen_height // 2 - 50))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        welcome_text.set_alpha(alpha)
+        screen.blit(welcome_text, welcome_rect)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.time.wait(450)
+
+    to_text = font_small.render("To", True, (200, 200, 200))
+    to_rect = to_text.get_rect(midleft=(welcome_rect.right + 20, welcome_rect.centery))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        welcome_text.set_alpha(255)
+        screen.blit(welcome_text, welcome_rect)
+        to_text.set_alpha(alpha)
+        screen.blit(to_text, to_rect)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.time.wait(450)
+
+    title_text = font_big.render("The Puzzle House", True, (0,128,0))
+    title_rect = title_text.get_rect(center=(screen_width // 2, welcome_rect.bottom + 60))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        welcome_text.set_alpha(255)
+        screen.blit(welcome_text, welcome_rect)
+        to_text.set_alpha(255)
+        screen.blit(to_text, to_rect)
+        title_text.set_alpha(alpha)
+        screen.blit(title_text, title_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    start_time = time.time()
+    while time.time() - start_time < 2:
+        screen.blit(black_surf, (0, 0))
+        welcome_text.set_alpha(255)
+        screen.blit(welcome_text, welcome_rect)
+        to_text.set_alpha(255)
+        screen.blit(to_text, to_rect)
+        title_text.set_alpha(255)
+        screen.blit(title_text, title_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(black_surf, (0, 0))
+        welcome_text.set_alpha(alpha)
+        screen.blit(welcome_text, welcome_rect)
+        to_text.set_alpha(alpha)
+        screen.blit(to_text, to_rect)
+        title_text.set_alpha(alpha)
+        screen.blit(title_text, title_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    pygame.time.wait(500)
+
+
 preserved_states = {}
 
 # ===============================
@@ -189,6 +305,9 @@ def complete_level(completion_time):
         show_level_complete_transition(display, completion_time)
     else :
         pygame.time.wait(1000)
+
+    if current_level == 0:
+        show_tutorial_transition(display)
 
     if current_level < total_levels:
         message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
