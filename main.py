@@ -126,24 +126,26 @@ message_timer = 0
 # ===============================
 # Level transition function
 # ===============================
-def show_level_complete_transition(screen, completion_time):
+def level_transition(screen, completion_time):
+    pygame.mixer.music.stop()
+
     clock = pygame.time.Clock()
     black_surf = pygame.Surface(screen.get_size())
     black_surf.fill((0, 0, 0))
 
-    #Fonts
+    #fonts
     font_big = pygame.font.Font('Notable-Regular.ttf', 70)
     font_small = pygame.font.Font('Notable-Regular.ttf', 40)
 
-    #Texts
+    #texts
     congrats_text = font_big.render("Congratulations!", True, (0, 128, 0))
     time_text = font_small.render(f"Level finished in {completion_time:.2f} s", True, (200, 200, 200))
 
-    #Positions
+    #positions
     congrats_rect = congrats_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 - 50))
     time_rect = time_text.get_rect(center=(screen.get_width() // 2, screen.get_height() // 2 + 50))
 
-    #Fade in "Congratulations!"
+    #fade in "Congratulations!"
     for alpha in range(0, 256, 5):
         screen.blit(black_surf, (0, 0))
         congrats_text.set_alpha(alpha)
@@ -152,7 +154,7 @@ def show_level_complete_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(1000)
 
-    #Fade in time text
+    #fade in timer text
     for alpha in range(0, 256, 5):
         screen.blit(black_surf, (0, 0))
         congrats_text.set_alpha(255)
@@ -167,7 +169,7 @@ def show_level_complete_transition(screen, completion_time):
 # ===============================
 # Transition page for level 0
 # ===============================
-def show_tutorial_transition(screen):
+def tutorial_transition(screen):
 
     #stop music and put on sound effect
     pygame.mixer.music.stop()
@@ -302,12 +304,12 @@ def complete_level(completion_time):
     global message, message_timer, current_screen
 
     if completion_time is not None:
-        show_level_complete_transition(display, completion_time)
+        level_transition(display, completion_time)
     else :
         pygame.time.wait(1000)
 
     if current_level == 0:
-        show_tutorial_transition(display)
+        tutorial_transition(display)
 
     if current_level < total_levels:
         message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
