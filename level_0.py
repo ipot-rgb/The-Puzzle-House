@@ -388,13 +388,8 @@ def run_level_0(screen, hint_manager, preserve_state=None):
                             if passcode == correct_passcode:
                                 for btn in buttons:
                                     btn.visible = False
-                                congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 148, 0))
-                                screen.blit(congratulations,(400,305))
                                 pygame.display.flip()
                                 level_completed = True
-                                sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
-                                sound3.play()
-                                time.sleep(1)
                                 return "complete"
                             else:
                                 wrong = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
