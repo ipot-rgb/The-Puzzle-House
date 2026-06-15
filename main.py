@@ -123,6 +123,15 @@ message = ""
 message_timer = 0
 
 
+def cleanup_level():
+    import gc
+
+    for surface in gc.get_objects():
+        if isinstance(surface, pygame.Surface):
+            pass
+
+    gc.collect()
+
 # ===============================
 # Level transition function
 # ===============================
@@ -310,6 +319,8 @@ def complete_level(completion_time):
 
     if current_level == 0:
         tutorial_transition(display)
+
+    cleanup_level()
 
     if current_level < total_levels:
         message = f"Level {current_level} Complete! Moving to Level {current_level + 1}"
