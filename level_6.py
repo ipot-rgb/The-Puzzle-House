@@ -1,6 +1,7 @@
 def run_level_6(screen, hint_manager, preserve_state=False):
     import pygame
     import time
+    import os
     from hints_system import show_hint_popup
     level_complete = False
 
@@ -13,6 +14,13 @@ def run_level_6(screen, hint_manager, preserve_state=False):
     else:
         start_timer = pygame.time.get_ticks()
         run_level_6.base_start_time = start_timer
+
+           #music management (for refresh)
+    if not preserve_state:
+        pygame.mixer.music.stop() #stop any music from playing first
+        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv6.mp3"))
+        pygame.mixer.music.set_volume(0.5)
+        pygame.mixer.music.play(-1)
 
     while not level_complete:
         class Button:
