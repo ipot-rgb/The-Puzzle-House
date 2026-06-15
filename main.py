@@ -1,6 +1,7 @@
 import pygame
 import time
 import os 
+import settings
 from instruction import show_instruction
 from hints_system import HintManager
 
@@ -351,7 +352,6 @@ running = True
 current_screen = "menu"
 menu_list = [1,2,3,4,5,6,7,8,9,0]
 
-music_on = True
 while running:
     mouse_pos = pygame.mouse.get_pos()
 
@@ -392,7 +392,7 @@ while running:
             settings_text = font.render("SETTINGS",True,(255,255,255))
             display.blit(settings_text,(420,180))
 
-            if music_on:
+            if settings.music_on:
                 on_button.update(display)
             else:
                 off_button.update(display)
@@ -454,21 +454,23 @@ while running:
                 if close_button.is_clicked(event.pos):
                     settings_open = False
 
-                elif music_on and on_button.is_clicked(event.pos):
-                    music_on = False
+                elif settings.music_on and on_button.is_clicked(event.pos):
+                    settings.music_on = False
                     pygame.mixer.music.set_volume(0)
+                    print("music is off")
 
-                elif (not music_on) and off_button.is_clicked(event.pos):
-                    music_on = True
+                elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                    settings.music_on = True
                     pygame.mixer.music.set_volume(0.5)
+                    print('music is on')
                     
                 if close_button.is_hovered(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
 
-                elif music_on and on_button.is_hovered(mouse_pos):
+                elif settings.music_on and on_button.is_hovered(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
 
-                elif (not music_on) and off_button.is_hovered(mouse_pos):
+                elif (not settings.music_on) and off_button.is_hovered(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
 
                 else:

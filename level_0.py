@@ -2,6 +2,7 @@ def run_level_0(screen, hint_manager, preserve_state=None):
     import pygame
     import os
     import time
+    import settings
 
     pygame.display.set_caption("The Puzzle House - Tutorial Level")
     level_complete = False
@@ -18,9 +19,10 @@ def run_level_0(screen, hint_manager, preserve_state=None):
     # music management (for refresh)
     if not preserve_state:
         pygame.mixer.music.stop()  # stop any music from playing first
-        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
-        pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1)
+        
+        if settings.music_on:
+            pygame.mixer.music.load(os.path.join("materials", "bgm", "lv0.mp3"))
+            pygame.mixer.music.play(-1)
 
     class Button:
         def __init__(self, x, y, image):
@@ -302,7 +304,6 @@ def run_level_0(screen, hint_manager, preserve_state=None):
         text2 = "After that click the button on the right side"
         running = True
         settings_open = False
-        music_on = True
 
         # Cursors
         default_cursor = pygame.SYSTEM_CURSOR_ARROW
@@ -318,10 +319,13 @@ def run_level_0(screen, hint_manager, preserve_state=None):
             if settings_open:
                 if close_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
-                elif music_on and on_button.rect.collidepoint(mouse_pos):
+
+                elif settings.music_on and on_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
-                elif (not music_on) and off_button.rect.collidepoint(mouse_pos):
+
+                elif (not settings.music_on) and off_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
+                    
                 else:
                     pygame.mouse.set_cursor(default_cursor)
             else:
@@ -352,13 +356,22 @@ def run_level_0(screen, hint_manager, preserve_state=None):
                         if close_button.is_clicked(event.pos):
                             settings_open = False
                         
-                        elif music_on and on_button.is_clicked(event.pos):
-                            music_on = False
+                        elif settings.music_on and on_button.is_clicked(event.pos):
+                            settings.music_on = False
                             pygame.mixer.music.set_volume(0)
+                            print("music is off")
                         
-                        elif (not music_on) and off_button.is_clicked(event.pos):
-                            music_on = True
-                            pygame.mixer.music.set_volume(0.5)
+                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                            settings.music_on = True
+
+                            if not pygame.mixer.music.get_busy():
+                                pygame.mixer.music.load(
+                                    os.path.join("materials", "bgm", "lv0.mp3")
+                                )
+                                pygame.mixer.music.play(-1)
+
+                            pygame.mixer.music.set_volume(settings.music_volume)
+                            print("music is on")
                     
                     # Letter buttons (only if settings is closed to prevent conflicts)
                     elif not settings_open:
@@ -412,7 +425,7 @@ def run_level_0(screen, hint_manager, preserve_state=None):
                 settings_text = font2.render("SETTINGS",True,(255,255,255))
                 screen.blit(settings_text,(420,180))
                 
-                if music_on:
+                if settings.music_on:
                     on_button.update(screen)
                 else:
                     off_button.update(screen)

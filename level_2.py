@@ -3,6 +3,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
     import os
     import math
     import time
+    import settings
     from hints_system import show_hint_popup
     level_complete = False
 
@@ -18,13 +19,11 @@ def run_level_2(screen, hint_manager, preserve_state=False):
 
     #music management (for refresh)
     if not preserve_state:
-        pygame.mixer.music.stop() #stop any music from playing first
-        pygame.mixer.music.load("materials/bgm/lv2.mp3")
-        pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1)
-        print("Level 2 music started")
-    else:
-        print("Refresh: Music continues")
+        pygame.mixer.music.stop()  # stop any music from playing first
+        
+        if settings.music_on:
+            pygame.mixer.music.load(os.path.join("materials", "bgm", "lv2.mp3"))
+            pygame.mixer.music.play(-1)
 
     clock = pygame.time.Clock()
     info = pygame.display.Info()
@@ -271,7 +270,6 @@ def run_level_2(screen, hint_manager, preserve_state=False):
         close_button = Button(820, 170, close_icon)
 
         settings_open = False
-        music_on = True
 
         running = True
         while running:
@@ -283,9 +281,9 @@ def run_level_2(screen, hint_manager, preserve_state=False):
             if settings_open:
                 if close_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
-                elif music_on and on_button.rect.collidepoint(mouse_pos):
+                elif settings.music_on and on_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
-                elif (not music_on) and off_button.rect.collidepoint(mouse_pos):
+                elif (not settings.music_on) and off_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
                 else:
                     pygame.mouse.set_cursor(default_cursor)
@@ -315,13 +313,22 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                         if close_button.is_clicked(event.pos):
                             settings_open = False
                         
-                        elif music_on and on_button.is_clicked(event.pos):
-                            music_on = False
+                        elif settings.music_on and on_button.is_clicked(event.pos):
+                            settings.music_on = False
                             pygame.mixer.music.set_volume(0)
+                            print("music is off")
                         
-                        elif (not music_on) and off_button.is_clicked(event.pos):
-                            music_on = True
-                            pygame.mixer.music.set_volume(0.5)
+                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                            settings.music_on = True
+
+                            if not pygame.mixer.music.get_busy():
+                                pygame.mixer.music.load(
+                                    os.path.join("materials", "bgm", "lv2.mp3")
+                                )
+                                pygame.mixer.music.play(-1)
+
+                            pygame.mixer.music.set_volume(settings.music_volume)
+                            print("music is on")
 
                 constellation.handle_event(event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
@@ -336,13 +343,22 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                         if close_button.is_clicked(event.pos):
                             settings_open = False
                         
-                        elif music_on and on_button.is_clicked(event.pos):
-                            music_on = False
+                        elif settings.music_on and on_button.is_clicked(event.pos):
+                            settings.music_on = False
                             pygame.mixer.music.set_volume(0)
+                            print("music is off")
                         
-                        elif (not music_on) and off_button.is_clicked(event.pos):
-                            music_on = True
-                            pygame.mixer.music.set_volume(0.5)
+                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                            settings.music_on = True
+
+                            if not pygame.mixer.music.get_busy():
+                                pygame.mixer.music.load(
+                                    os.path.join("materials", "bgm", "lv2.mp3")
+                                )
+                                pygame.mixer.music.play(-1)
+
+                            pygame.mixer.music.set_volume(settings.music_volume)
+                            print("music is on")
                     
                     # Letter buttons (only if settings is closed to prevent conflicts)
                     elif not settings_open:
@@ -429,7 +445,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                 settings_text = font.render("SETTINGS",True,(255,255,255))
                 screen.blit(settings_text,(420,180))
                 
-                if music_on:
+                if settings.music_on:
                     on_button.update(screen)
                 else:
                     off_button.update(screen)
