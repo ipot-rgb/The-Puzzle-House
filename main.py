@@ -325,10 +325,12 @@ while running:
                 elif settings.music_on and on_button.is_clicked(event.pos):
                     settings.music_on = False
                     pygame.mixer.music.set_volume(0)
+                    print("music is off")
 
                 elif (not settings.music_on) and off_button.is_clicked(event.pos):
                     settings.music_on = True
-                    pygame.mixer.music.set_volume(settings.music_volume)
+                    pygame.mixer.music.set_volume(0.5)
+                    print('music is on')
                     
                 if close_button.is_hovered(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)

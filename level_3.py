@@ -2,6 +2,7 @@ def run_level_3(screen, hint_manager, preserve_state=False):
     import pygame
     import time
     import os
+    import settings
     from hints_system import show_hint_popup
     level_complete = False
 
@@ -17,10 +18,11 @@ def run_level_3(screen, hint_manager, preserve_state=False):
 
     #music management (for refresh)
     if not preserve_state:
-        pygame.mixer.music.stop() #stop any music from playing first
-        pygame.mixer.music.load(os.path.join("materials", "bgm", "lv3.mp3"))
-        pygame.mixer.music.set_volume(0.5)
-        pygame.mixer.music.play(-1)
+        pygame.mixer.music.stop()  # stop any music from playing first
+        
+        if settings.music_on:
+            pygame.mixer.music.load(os.path.join("materials", "bgm", "lv3.mp3"))
+            pygame.mixer.music.play(-1)
 
 
 
@@ -198,7 +200,6 @@ def run_level_3(screen, hint_manager, preserve_state=False):
         close_button = Button(820, 170, close_icon)
 
         settings_open = False
-        music_on = True
 
         run = True
         while run:
@@ -207,10 +208,13 @@ def run_level_3(screen, hint_manager, preserve_state=False):
             if settings_open:
                 if close_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
-                elif music_on and on_button.rect.collidepoint(mouse_pos):
+
+                elif settings.music_on and on_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
-                elif (not music_on) and off_button.rect.collidepoint(mouse_pos):
+
+                elif (not settings.music_on) and off_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
+                    
                 else:
                     pygame.mouse.set_cursor(default_cursor)
             else:
@@ -219,7 +223,6 @@ def run_level_3(screen, hint_manager, preserve_state=False):
                 else:
                     pygame.mouse.set_cursor(default_cursor)
                     
-            pygame.mouse.set_cursor(default_cursor)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "quit"
@@ -229,11 +232,49 @@ def run_level_3(screen, hint_manager, preserve_state=False):
                         return "menu"
 
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # Settings button click (works regardless of settings_open state)
+                    if setting_button.is_clicked(event.pos):
+                        settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
+                        settings_se.play()
+                        settings_open = not settings_open
+                    
+                    # Settings menu buttons (only if settings is open)
+                    elif settings_open:    
+                        if close_button.is_clicked(event.pos):
+                            settings_open = False
+                        
+                        elif settings.music_on and on_button.is_clicked(event.pos):
+                            settings.music_on = False
+                            pygame.mixer.music.set_volume(0)
+                            print("music is off")
+                        
+                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                            settings.music_on = True
+
+                            if not pygame.mixer.music.get_busy():
+                                pygame.mixer.music.load(
+                                    os.path.join("materials", "bgm", "lv3.mp3")
+                                )
+                                pygame.mixer.music.play(-1)
+
+                            pygame.mixer.music.set_volume(settings.music_volume)
+                            print("music is on")
+                    
+                    # Letter buttons (only if settings is closed to prevent conflicts)
+                    elif not settings_open:
+                        clicked_btn = next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)
+                        if clicked_btn:
+                            pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                            pop.play()
+                            passcode.append(clicked_btn.letter)
+                            clicked_btn.hide()
+
                     # --- check hint button click ---
                     if hint_button_rect.collidepoint(event.pos):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 3, ui_font)
+
                     #refresh button click
                     if refresh_button_rect.collidepoint(event.pos):
                         click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
@@ -246,6 +287,7 @@ def run_level_3(screen, hint_manager, preserve_state=False):
                                 btn.visible = True
                         passcode = []
                         return ("refresh",)
+
                     # Button Click Detection
                     if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
                         pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
@@ -294,6 +336,34 @@ def run_level_3(screen, hint_manager, preserve_state=False):
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
 
+            # Draw setting button (always on top)
+            setting_button.update(screen)
+
+            # Draw settings menu (if open)
+            if settings_open:
+                overlay = pygame.Surface(screen.get_size())
+                overlay.fill((0,0,0))
+                overlay.set_alpha(150)
+                screen.blit(overlay, (0,0))
+                
+                menu_rect = pygame.Rect(350,150,500,300)
+                pygame.draw.rect(screen,(40,40,40),menu_rect)
+                pygame.draw.rect(screen,(255,255,255),menu_rect,3)
+                
+                settings_text = font.render("SETTINGS",True,(255,255,255))
+                screen.blit(settings_text,(420,180))
+                
+                if settings.music_on:
+                    on_button.update(screen)
+                else:
+                    off_button.update(screen)
+                
+                music_text = pygame.font.Font('Notable-Regular.ttf', 30)
+                text = music_text.render("Music", True, (255,255,255))
+                screen.blit(text, (450,300))
+
+                close_button.update(screen)
+                
             #hint button
             screen.blit(hint_img, hint_button_rect)
             #refresh button
