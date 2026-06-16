@@ -56,7 +56,7 @@ ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 pygame.mixer.init()
 pygame.mixer.music.load(os.path.join("materials", "bgm", "menu_bgm.mp3"))
-pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(0.25)
 pygame.mixer.music.play(-1)
 
 #===============================
@@ -329,7 +329,7 @@ while running:
 
                 elif (not settings.music_on) and off_button.is_clicked(event.pos):
                     settings.music_on = True
-                    pygame.mixer.music.set_volume(0.5)
+                    pygame.mixer.music.set_volume(0.25)
                     print('music is on')
                     
                 if close_button.is_hovered(mouse_pos):

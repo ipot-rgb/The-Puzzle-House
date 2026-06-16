@@ -1,2 +1,2 @@
 music_on = True
-music_volume = 0.5
+music_volume = 0.2
