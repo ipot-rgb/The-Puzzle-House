@@ -80,6 +80,11 @@ def run_level_0(screen, hint_manager, preserve_state=None):
         def update(self, events):
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if tutorial_active or tutorial_active_2:
+                        return
+                    if self.rect.collidepoint(event.pos):
+                        self.is_dragging = True
+
                     if self.rect.collidepoint(event.pos):
                         self.is_dragging = True
                         self.offset_x = self.rect.x - event.pos[0]
@@ -111,6 +116,12 @@ def run_level_0(screen, hint_manager, preserve_state=None):
 
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if tutorial_active or tutorial_active_2:
+                        return
+
+                    if self.rect.collidepoint(event.pos):
+                        self.is_dragging = True
+
                     if self.rect.collidepoint(event.pos):
                         self.is_dragging = True
                         self.offset_x = self.rect.x - event.pos[0]
@@ -141,6 +152,12 @@ def run_level_0(screen, hint_manager, preserve_state=None):
         def update(self, events):
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if tutorial_active or tutorial_active_2:
+                        return
+
+                    if self.rect.collidepoint(event.pos):
+                        self.is_dragging = True
+                        
                     if self.rect.collidepoint(event.pos):
                         self.is_dragging = True
                         self.offset_x = self.rect.x - event.pos[0]
@@ -171,6 +188,11 @@ def run_level_0(screen, hint_manager, preserve_state=None):
         def update(self, events):
             for event in events:
                 if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    if tutorial_active or tutorial_active_2:
+                        return
+                    if self.rect.collidepoint(event.pos):
+                        self.is_dragging = True
+
                     if self.rect.collidepoint(event.pos):
                         self.is_dragging = True
                         self.offset_x = self.rect.x - event.pos[0]
@@ -309,6 +331,7 @@ def run_level_0(screen, hint_manager, preserve_state=None):
         default_cursor = pygame.SYSTEM_CURSOR_ARROW
         hand_cursor = pygame.SYSTEM_CURSOR_HAND
 
+        settings_locked = True
         while running:
             clock.tick(60)
             
@@ -374,7 +397,7 @@ def run_level_0(screen, hint_manager, preserve_state=None):
                             print("music is on")
                     
                     # Letter buttons (only if settings is closed to prevent conflicts)
-                    elif not settings_open:
+                    elif not settings_open and not tutorial_active_2:
                         clicked_btn = next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)
                         if clicked_btn:
                             pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
@@ -388,13 +411,8 @@ def run_level_0(screen, hint_manager, preserve_state=None):
                             if passcode == correct_passcode:
                                 for btn in buttons:
                                     btn.visible = False
-                                congratulations = pygame.font.SysFont(None, 70).render("Congratulations!", True, (0, 148, 0))
-                                screen.blit(congratulations,(400,305))
                                 pygame.display.flip()
                                 level_completed = True
-                                sound3 = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
-                                sound3.play()
-                                time.sleep(1)
                                 return "complete"
                             else:
                                 wrong = pygame.mixer.Sound("assets/sound_effect/wrong_se.wav")
