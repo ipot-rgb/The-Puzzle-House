@@ -325,6 +325,11 @@ def tutorial_transition(screen):
 # Credit scene
 # ===============================
 def credit_scene(screen):
+    
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "The_end.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
     clock = pygame.time.Clock()
     black_surf = pygame.Surface(screen.get_size())
     black_surf.fill((0, 0, 0))
@@ -455,6 +460,7 @@ def credit_scene(screen):
         pygame.display.flip()
         clock.tick(60)
 
+pygame.mixer.music.stop()
 
 preserved_states = {}
 
@@ -589,20 +595,23 @@ while running:
             box = pygame.Rect(400, 200, 400, 200)
             pygame.draw.rect(display, (50,50,50), box)
             pygame.draw.rect(display, (255,255,255), box, 3)
+           
+            font_title = pygame.font.Font('Notable-Regular.ttf', 24)
+            font_button = pygame.font.Font('Notable-Regular.ttf', 20)
 
-            font_small = pygame.font.Font('Notable-Regular.ttf', 30)
+            text = font_title.render("Continue Game?", True, (255,255,255))
+            title_rect = text.get_rect(center=(600, 250))
+           
+            continue_text = font_button.render("Continue", True, (0,255,0))
+            continue_rect = continue_text.get_rect(center=(500, 330))
 
-            text = font_small.render("Continue Game?", True, (255,255,255))
-            display.blit(text, (440, 230))
+            newgame_text = font_button.render("New Game", True, (255,0,0))
+            newgame_rect = newgame_text.get_rect(center=(700, 330))
 
-            continue_text = font_small.render("Continue", True, (0,255,0))
-            newgame_text = font_small.render("New Game", True, (255,0,0))
+            display.blit(text, title_rect)
+            display.blit(continue_text, continue_rect)
+            display.blit(newgame_text, newgame_rect)
 
-            display.blit(continue_text, (450, 300))
-            display.blit(newgame_text, (650, 300))
-
-            continue_rect = continue_text.get_rect(topleft=(450,300))
-            newgame_rect = newgame_text.get_rect(topleft=(650,300))
 
     # ===============================
     # LEVEL HANDLER
