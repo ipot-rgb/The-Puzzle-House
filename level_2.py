@@ -274,10 +274,9 @@ def run_level_2(screen, hint_manager, preserve_state=False):
         running = True
         while running:
             clock.tick(60)
-            # Get mouse position ONCE at the beginning of each frame
             mouse_pos = pygame.mouse.get_pos()
             
-            # Handle cursor changes based on mouse position
+            # Handle cursor changes
             if settings_open:
                 if close_button.rect.collidepoint(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
@@ -293,101 +292,83 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                 else:
                     pygame.mouse.set_cursor(default_cursor)
             
-            # Event handling
+            # ========== 事件处理 ==========
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "quit"
-
+                
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         return "menu"
-
-                    # Settings button click (works regardless of settings_open state)
-                    if setting_button.is_clicked(event.pos):
+                    continue
+                
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    click_pos = event.pos
+                    
+                    if setting_button.is_clicked(click_pos):
                         settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                         settings_se.play()
                         settings_open = not settings_open
-                    
-                    # Settings menu buttons (only if settings is open)
-                    elif settings_open:    
-                        if close_button.is_clicked(event.pos):
+                        continue 
+
+                    if settings_open:
+                        if close_button.is_clicked(click_pos):
                             settings_open = False
-                        
-                        elif settings.music_on and on_button.is_clicked(event.pos):
+                            continue
+                        elif settings.music_on and on_button.is_clicked(click_pos):
                             settings.music_on = False
                             pygame.mixer.music.set_volume(0)
                             print("music is off")
-                        
-                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                            continue
+                        elif (not settings.music_on) and off_button.is_clicked(click_pos):
                             settings.music_on = True
-
                             if not pygame.mixer.music.get_busy():
-                                pygame.mixer.music.load(
-                                    os.path.join("materials", "bgm", "lv2.mp3")
-                                )
+                                pygame.mixer.music.load(os.path.join("materials", "bgm", "lv2.mp3"))
                                 pygame.mixer.music.play(-1)
-
                             pygame.mixer.music.set_volume(settings.music_volume)
                             print("music is on")
-
-                constellation.handle_event(event)
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    # Settings button click (works regardless of settings_open state)
-                    if setting_button.is_clicked(event.pos):
-                        settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
-                        settings_se.play()
-                        settings_open = not settings_open
-                    
-                    # Settings menu buttons (only if settings is open)
-                    elif settings_open:    
-                        if close_button.is_clicked(event.pos):
-                            settings_open = False
-                        
-                        elif settings.music_on and on_button.is_clicked(event.pos):
-                            settings.music_on = False
-                            pygame.mixer.music.set_volume(0)
-                            print("music is off")
-                        
-                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
-                            settings.music_on = True
-
-                            if not pygame.mixer.music.get_busy():
-                                pygame.mixer.music.load(
-                                    os.path.join("materials", "bgm", "lv2.mp3")
-                                )
-                                pygame.mixer.music.play(-1)
-
-                            pygame.mixer.music.set_volume(settings.music_volume)
-                            print("music is on")
-                    
-                    # Letter buttons (only if settings is closed to prevent conflicts)
-                    elif not settings_open:
-                        clicked_btn = next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)
-                        if clicked_btn:
-                            pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
-                            pop.play()
-                            passcode.append(clicked_btn.letter)
-                            clicked_btn.hide()
-
-                    # --- check hint button click ---
-                    if hint_button_rect.collidepoint(event.pos):
+                            continue
+                        continue
+            
+                    # Hint button
+                    if hint_button_rect.collidepoint(click_pos):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 2, ui_font)
-                    #refresh button click
-                    if refresh_button_rect.collidepoint(event.pos):
-                        click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")  # or any sound
+                        continue
+                    
+                    # Refresh button
+                    if refresh_button_rect.collidepoint(click_pos):
+                        click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
                         click_se.play()
                         return ("refresh",)
-                    if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"),None)):
-                        if True:
-                            pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
-                            pop.play()
-                            passcode.append(clicked_btn.letter)
-                            print(f"Clicked: {clicked_btn.letter}, passcode: {passcode}")
-                            clicked_btn.hide()
-                    elif (enter_clicked := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"),None)):
+                    
+                    # Letter buttons (A-I)
+                    clicked_btn = next(
+                        (btn for btn in buttons 
+                        if btn.rect.collidepoint(click_pos) 
+                        and btn.visible 
+                        and btn.letter != "ENTER"), 
+                        None
+                    )
+                    if clicked_btn:
+                        pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
+                        pop.play()
+                        passcode.append(clicked_btn.letter)
+                        print(f"Clicked: {clicked_btn.letter}, passcode: {passcode}")
+                        clicked_btn.hide()
+                        continue
+                    
+                    # ENTER button
+                    enter_clicked = next(
+                        (btn for btn in buttons 
+                        if btn.rect.collidepoint(click_pos) 
+                        and btn.letter == "ENTER"), 
+                        None
+                    )
+                    if enter_clicked:
                         if passcode == correct_passcode:
+                            print("✅ You passed!")
                             celebrate = pygame.mixer.Sound("assets/sound_effect/celebrate_se.wav")
                             celebrate.play()
                             timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
@@ -406,7 +387,11 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                                     btn.clicked = False
                             passcode = []
                             print("Game reset. Try again.")
-                constellation.handle_event(event)
+                        continue
+                
+                if event.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION):
+                    if not settings_open:
+                        constellation.handle_event(event)
 
             all_sprites.update()
 

@@ -11,7 +11,6 @@ levels = {}
 
 for i in range(9):
     module = importlib.import_module(f"level_{i}")
-
     levels[i] = (
         f"level_{i}",
         getattr(module, f"run_level_{i}")
@@ -39,7 +38,6 @@ class Button:
 #===============================
 # Picture class
 #===============================
-
 class picture:
     def __init__(self, path_parts, x, y):
         path = os.path.join(ASSETS_DIR, *path_parts)
@@ -47,12 +45,10 @@ class picture:
         self.x = x
         self.y = y
 
-
 pygame.init()
 
 BASE_DIR = os.path.dirname(__file__)
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
-
 
 pygame.mixer.init()
 pygame.mixer.music.load(os.path.join("materials", "bgm", "menu_bgm.mp3"))
@@ -81,7 +77,6 @@ hand_cursor = pygame.SYSTEM_CURSOR_HAND
 #===============================
 # Main Menu
 #===============================
-
 exit_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "exit_button.png"))
 exit_icon = pygame.transform.scale(exit_icon, (110, 75))
 exit_button = Button(1125, 587, exit_icon)
@@ -123,9 +118,15 @@ game_complete = False
 message = ""
 message_timer = 0
 
+# Global settings state
+settings_open = False
 
 def cleanup_level():
     import gc
+    global settings_open
+    
+    # Reset settings state
+    settings_open = False
 
     for surface in gc.get_objects():
         if isinstance(surface, pygame.Surface):
@@ -175,12 +176,10 @@ def level_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
-
 # ===============================
 # Transition page for level 0
 # ===============================
 def tutorial_transition(screen):
-
     #stop music and put on sound effect
     pygame.mixer.music.stop()
     sound_tutorial = pygame.mixer.Sound("assets/sound_effect/tutorial_se.wav")
@@ -290,14 +289,17 @@ def tutorial_transition(screen):
 
     pygame.time.wait(500)
 
-
 preserved_states = {}
 
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
 def load_level(level):
-    global message, message_timer, current_screen
+    global message, message_timer, current_screen, settings_open
+    
+    # Reset settings state when loading a level
+    settings_open = False
+    
     print(f"Loading Level {level}...")
 
     pygame.mixer.music.stop()
@@ -311,11 +313,14 @@ def load_level(level):
 
 def complete_level(completion_time):
     global current_level, level_complete, game_complete
-    global message, message_timer, current_screen
+    global message, message_timer, current_screen, settings_open
+
+    # Reset settings state when completing a level
+    settings_open = False
 
     if completion_time is not None:
         level_transition(display, completion_time)
-    else :
+    else:
         pygame.time.wait(1000)
 
     if current_level == 0:
@@ -343,11 +348,9 @@ def complete_level(completion_time):
         print("Game complete!")
         time.sleep(2)
 
-
 #===============================
 # Game loop
 #===============================
-settings_open = False
 running = True
 current_screen = "menu"
 menu_list = [1,2,3,4,5,6,7,8,9,0]
@@ -407,13 +410,12 @@ while running:
     # LEVEL HANDLER
     # ===============================
     elif current_screen.startswith("level_"):
-
         preserve_state = preserved_states.get(current_screen, False)
 
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display, hint_manager,  preserve_state=preserve_state)
+                result = func(display, hint_manager, preserve_state=preserve_state)
                 break
         else:
             result = None
@@ -421,7 +423,7 @@ while running:
         # ===============================
         # RESULT HANDLING
         # ===============================
-        if isinstance(result, tuple) :
+        if isinstance(result, tuple):
             if result[0] == "complete":
                 completion_time = result[1]
                 complete_level(completion_time)
@@ -432,12 +434,15 @@ while running:
 
         elif result == "menu":
             current_screen = "menu"
+            settings_open = False
         elif result == "quit":
             running = False
         elif result == "complete":  #fallback for old levels without timer
             complete_level(None)
 
-    # Event handling
+    # ===============================
+    # EVENT HANDLING
+    # ===============================
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -448,7 +453,6 @@ while running:
                 settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                 settings_se.play()
                 settings_open = not settings_open
-                # pygame.display.update()
 
             elif settings_open:    
                 if close_button.is_clicked(event.pos):
@@ -492,4 +496,5 @@ while running:
                     load_level(current_level)
 
     pygame.display.update()
+
 pygame.quit()

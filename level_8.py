@@ -1,4 +1,4 @@
-def run_level_8(screen, hint_manager,preserve_state=False):
+def run_level_8(screen, hint_manager, preserve_state=False):
     import pygame
     import time
     import os
@@ -16,10 +16,9 @@ def run_level_8(screen, hint_manager,preserve_state=False):
         start_timer = pygame.time.get_ticks()
         run_level_8.base_start_time = start_timer
 
-
     # music management (for refresh)
     if not preserve_state:
-        pygame.mixer.music.stop()  # stop any music from playing first
+        pygame.mixer.music.stop()
         
         if settings.music_on:
             pygame.mixer.music.load(os.path.join("materials", "bgm", "lv8.mp3"))
@@ -98,8 +97,8 @@ def run_level_8(screen, hint_manager,preserve_state=False):
         screen_width = 1200
         screen_height = 650
 
-        right_section_width = screen_width // 3     # 800
-        button_start_x = screen_width - right_section_width     # 400
+        right_section_width = screen_width // 3
+        button_start_x = screen_width - right_section_width
 
         # Configure button grid
         button_size = 45
@@ -107,18 +106,18 @@ def run_level_8(screen, hint_manager,preserve_state=False):
         rows = 3
 
         cal_grid = lambda row: row * button_gap
-        grid_width = cal_grid(rows)  # 240
-        grid_height = cal_grid(rows) # 240
+        grid_width = cal_grid(rows)
+        grid_height = cal_grid(rows)
 
         # Letters grid start position (centered in the right section)
-        grid_x = button_start_x + (right_section_width - grid_width) // 2  # 400 + (800- 240) //2 = 680
-        grid_y = (screen_height - grid_height) // 2                        # (650 - 240) //2 = 205
+        grid_x = button_start_x + (right_section_width - grid_width) // 2
+        grid_y = (screen_height - grid_height) // 2
 
         # Create letter buttons
         buttons = []
         for i, letter in enumerate(letters):
             row = i // rows
-            col = i % rows      # 3x3
+            col = i % rows
             x = grid_x + col * button_gap
             y = grid_y + row * button_gap
             btn = Letter_Button(x, y, images[letter])
@@ -126,7 +125,7 @@ def run_level_8(screen, hint_manager,preserve_state=False):
             buttons.append(btn)
 
         # ENTER Button
-        enter_x = grid_x + (grid_width // 2) - 22 # 680 + ()
+        enter_x = grid_x + (grid_width // 2) - 22
         enter_y = grid_y + grid_height + 30
         enter_btn = Letter_Button(enter_x, enter_y, enter_img)
         enter_btn.letter = "ENTER"
@@ -160,8 +159,6 @@ def run_level_8(screen, hint_manager,preserve_state=False):
 
         active_puzzle = None
 
-        start_timer = pygame.time.get_ticks()
-
         setting_icon = pygame.image.load("assets/Icon/setting_button.png")
         setting_icon = pygame.transform.scale(setting_icon, (55, 55))
         setting_button = Button(45, 45, setting_icon)
@@ -183,6 +180,7 @@ def run_level_8(screen, hint_manager,preserve_state=False):
         run = True
 
         font = pygame.font.Font('Notable-Regular.ttf', 60)
+        
         while run:
             # Get mouse position ONCE at the beginning of each frame
             mouse_pos = pygame.mouse.get_pos()
@@ -202,7 +200,8 @@ def run_level_8(screen, hint_manager,preserve_state=False):
                     pygame.mouse.set_cursor(hand_cursor)
                 else:
                     pygame.mouse.set_cursor(default_cursor)
-             
+
+            # ========== Event Handling ==========
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "quit"
@@ -211,42 +210,47 @@ def run_level_8(screen, hint_manager,preserve_state=False):
                     if event.key == pygame.K_ESCAPE:
                         return "menu"
 
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    # Settings button click (works regardless of settings_open state)
-                    if setting_button.is_clicked(event.pos):
+                elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                    click_pos = event.pos
+                    
+                    # ===== 1. Settings Button (最高优先级) =====
+                    if setting_button.is_clicked(click_pos):
                         settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                         settings_se.play()
                         settings_open = not settings_open
+                        continue
                     
-                    # Settings menu buttons (only if settings is open)
-                    elif settings_open:    
-                        if close_button.is_clicked(event.pos):
+                    # ===== 2. Settings Menu (如果 settings 打开) =====
+                    if settings_open:
+                        if close_button.is_clicked(click_pos):
                             settings_open = False
-                        
-                        elif settings.music_on and on_button.is_clicked(event.pos):
+                            continue
+                        elif settings.music_on and on_button.is_clicked(click_pos):
                             settings.music_on = False
                             pygame.mixer.music.set_volume(0)
                             print("music is off")
-                        
-                        elif (not settings.music_on) and off_button.is_clicked(event.pos):
+                            continue
+                        elif (not settings.music_on) and off_button.is_clicked(click_pos):
                             settings.music_on = True
-
                             if not pygame.mixer.music.get_busy():
-                                pygame.mixer.music.load(
-                                    os.path.join("materials", "bgm", "lv8.mp3")
-                                )
+                                pygame.mixer.music.load(os.path.join("materials", "bgm", "lv8.mp3"))
                                 pygame.mixer.music.play(-1)
-
                             pygame.mixer.music.set_volume(settings.music_volume)
                             print("music is on")
-
-                    # --- check hint button click ---
-                    if hint_button_rect.collidepoint(event.pos):
+                            continue
+                        # 如果 settings 打开，不处理其他任何点击
+                        continue
+                    
+                    # ===== 3. 如果 settings 没打开，处理游戏按钮 =====
+                    # Hint button
+                    if hint_button_rect.collidepoint(click_pos):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
                         ding.play()
                         show_hint_popup(screen, hint_manager, 8, ui_font)
-                    # refresh button click
-                    if refresh_button_rect.collidepoint(event.pos):
+                        continue
+                    
+                    # Refresh button
+                    if refresh_button_rect.collidepoint(click_pos):
                         click_se = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
                         click_se.play()
                         for puzzle in puzzles:
@@ -257,15 +261,33 @@ def run_level_8(screen, hint_manager,preserve_state=False):
                                 btn.visible = True
                         passcode = []
                         return ("refresh",)
-                    # Button Click Detection
-                    if (clicked_btn := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.visible and btn.letter != "ENTER"), None)):
+                    
+                    # Letter buttons (A-I)
+                    clicked_btn = next(
+                        (btn for btn in buttons 
+                         if btn.rect.collidepoint(click_pos) 
+                         and btn.visible 
+                         and btn.letter != "ENTER"), 
+                        None
+                    )
+                    if clicked_btn:
                         pop = pygame.mixer.Sound("assets/sound_effect/pop_se.wav")
                         pop.play()
                         passcode.append(clicked_btn.letter)
+                        print(f"Clicked: {clicked_btn.letter}, passcode: {passcode}")
                         clicked_btn.hide()
-
-                    elif (enter_clicked := next((btn for btn in buttons if btn.rect.collidepoint(event.pos) and btn.letter == "ENTER"), None)):
+                        continue
+                    
+                    # ENTER button
+                    enter_clicked = next(
+                        (btn for btn in buttons 
+                         if btn.rect.collidepoint(click_pos) 
+                         and btn.letter == "ENTER"), 
+                        None
+                    )
+                    if enter_clicked:
                         if passcode == correct_passcode:
+                            print("✅ You passed!")
                             timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
                             for btn in buttons:
                                 btn.visible = False
@@ -282,29 +304,37 @@ def run_level_8(screen, hint_manager,preserve_state=False):
                                 if btn.letter != "ENTER":
                                     btn.visible = True
                             passcode = []
+                            print("Game reset. Try again.")
+                        continue
+                    
+                    # ===== 4. Puzzle Dragging (只在 settings 关闭时) =====
+                    for i, p in enumerate(puzzles):
+                        if p["rect"].collidepoint(click_pos):
+                            active_puzzle = i
+                            break
 
-                    # Puzzle Dragging Detection
-                    elif event.button == 1:
-                        for i, p in enumerate(puzzles):
-                            if p["rect"].collidepoint(event.pos):
-                                active_puzzle = i
-                    current_time = time.time()
-
-                elif event.type == pygame.MOUSEBUTTONUP:
+                elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                    # ✅ 只在 settings 关闭时释放 puzzle
+                    if not settings_open:
                         active_puzzle = None
 
                 elif event.type == pygame.MOUSEMOTION:
-                        if active_puzzle is not None:
-                            puzzles[active_puzzle]["rect"].move_ip(event.rel)
-                            rect = puzzles[active_puzzle]["rect"]
-                            rect.x = max(0, min(rect.x, screen_width - rect.width))
-                            rect.y = max(0, min(rect.y, screen_height - rect.height))
+                    # ✅ 只在 settings 关闭时拖动 puzzle
+                    if not settings_open and active_puzzle is not None:
+                        puzzles[active_puzzle]["rect"].move_ip(event.rel)
+                        rect = puzzles[active_puzzle]["rect"]
+                        rect.x = max(0, min(rect.x, screen_width - rect.width))
+                        rect.y = max(0, min(rect.y, screen_height - rect.height))
+
+            # ========== Drawing ==========
             screen.fill(blue)
             screen.blit(fish, (60, 200))
-            for btn in buttons:
-                btn.draw()
+            
             for p in puzzles:
                 screen.blit(p["img"], p["rect"])
+            
+            for btn in buttons:
+                btn.draw()
 
             # Draw setting button (always on top)
             setting_button.update(screen)
@@ -312,16 +342,16 @@ def run_level_8(screen, hint_manager,preserve_state=False):
             # Draw settings menu (if open)
             if settings_open:
                 overlay = pygame.Surface(screen.get_size())
-                overlay.fill((0,0,0))
+                overlay.fill((0, 0, 0))
                 overlay.set_alpha(150)
-                screen.blit(overlay, (0,0))
+                screen.blit(overlay, (0, 0))
                 
-                menu_rect = pygame.Rect(350,150,500,300)
-                pygame.draw.rect(screen,(40,40,40),menu_rect)
-                pygame.draw.rect(screen,(255,255,255),menu_rect,3)
+                menu_rect = pygame.Rect(350, 150, 500, 300)
+                pygame.draw.rect(screen, (40, 40, 40), menu_rect)
+                pygame.draw.rect(screen, (255, 255, 255), menu_rect, 3)
                 
-                settings_text = font.render("SETTINGS",True,(255,255,255))
-                screen.blit(settings_text,(420,180))
+                settings_text = font.render("SETTINGS", True, (255, 255, 255))
+                screen.blit(settings_text, (420, 180))
                 
                 if settings.music_on:
                     on_button.update(screen)
@@ -329,13 +359,13 @@ def run_level_8(screen, hint_manager,preserve_state=False):
                     off_button.update(screen)
                 
                 music_text = pygame.font.Font('Notable-Regular.ttf', 30)
-                text = music_text.render("Music", True, (255,255,255))
-                screen.blit(text, (450,300))
+                text = music_text.render("Music", True, (255, 255, 255))
+                screen.blit(text, (450, 300))
 
                 close_button.update(screen)
 
-            #hint button
+            # Hint and Refresh buttons
             screen.blit(hint_img, hint_button_rect)
-            #refresh button
             screen.blit(refresh_img, refresh_button_rect)
+            
             pygame.display.flip()
