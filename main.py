@@ -2,8 +2,38 @@ import pygame
 import time
 import os 
 import settings
+import json
 from instruction import show_instruction
 from hints_system import HintManager
+
+BASE_DIR = os.path.dirname(__file__)
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+SAVE_FILE = os.path.join(BASE_DIR, "save_data.json")
+
+def save_game():
+    data = {
+        "current_level": current_level
+    }
+    with open(SAVE_FILE, "w") as f:
+        json.dump(data, f)
+    print("Game saved!")
+
+def load_game():
+    global current_level
+    if os.path.exists(SAVE_FILE):
+        with open(SAVE_FILE, "r") as f:
+            data = json.load(f)
+            current_level = data.get("current_level", 0)
+        print("Save loaded!")
+        return True
+    return False
+
+def delete_save():
+    if os.path.exists(SAVE_FILE):
+        os.remove(SAVE_FILE)
+        print("Save deleted")
+
+
 
 # Import level modules
 import importlib
@@ -295,6 +325,11 @@ def tutorial_transition(screen):
 # Credit scene
 # ===============================
 def credit_scene(screen):
+    
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "The_end.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
     clock = pygame.time.Clock()
     black_surf = pygame.Surface(screen.get_size())
     black_surf.fill((0, 0, 0))
@@ -425,6 +460,7 @@ def credit_scene(screen):
         pygame.display.flip()
         clock.tick(60)
 
+pygame.mixer.music.stop()
 
 preserved_states = {}
 
@@ -470,12 +506,15 @@ def complete_level(completion_time):
         current_level += 1
         level_complete = False
 
+        save_game()
+
         load_level(current_level)
 
         print(f"Moving to level {current_level}")
 
     else:
         game_complete = True
+        delete_save()
         message = "Congratulations! You completed all levels!"
         message_timer = 180
         current_screen = "menu"
@@ -491,6 +530,10 @@ settings_open = False
 running = True
 current_screen = "menu"
 menu_list = [1,2,3,4,5,6,7,8,9,0]
+show_continue_prompt = False
+continue_rect = None
+newgame_rect = None
+
 
 while running:
     mouse_pos = pygame.mouse.get_pos()
@@ -543,6 +586,33 @@ while running:
 
             close_button.update(display)
 
+        if show_continue_prompt:
+            overlay = pygame.Surface(display.get_size())
+            overlay.fill((0,0,0))
+            overlay.set_alpha(180)
+            display.blit(overlay, (0,0))
+
+            box = pygame.Rect(400, 200, 400, 200)
+            pygame.draw.rect(display, (50,50,50), box)
+            pygame.draw.rect(display, (255,255,255), box, 3)
+           
+            font_title = pygame.font.Font('Notable-Regular.ttf', 24)
+            font_button = pygame.font.Font('Notable-Regular.ttf', 20)
+
+            text = font_title.render("Continue Game?", True, (255,255,255))
+            title_rect = text.get_rect(center=(600, 250))
+           
+            continue_text = font_button.render("Continue", True, (0,255,0))
+            continue_rect = continue_text.get_rect(center=(500, 330))
+
+            newgame_text = font_button.render("New Game", True, (255,0,0))
+            newgame_rect = newgame_text.get_rect(center=(700, 330))
+
+            display.blit(text, title_rect)
+            display.blit(continue_text, continue_rect)
+            display.blit(newgame_text, newgame_rect)
+
+
     # ===============================
     # LEVEL HANDLER
     # ===============================
@@ -583,14 +653,44 @@ while running:
             running = False
 
         # ~~~~~ Handle button clicks ~~~~~
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if show_continue_prompt:
+                if continue_rect and continue_rect.collidepoint(event.pos):
+                    load_game()
+
+                    whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
+                    whoop.play()
+
+                    pygame.mixer.music.stop()
+                    instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                    show_instruction(display, instruction_font)
+
+                    load_level(current_level)
+                    show_continue_prompt = False
+
+                elif newgame_rect and newgame_rect.collidepoint(event.pos):
+                    delete_save()
+                    current_level = 0
+
+                    whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
+                    whoop.play()
+
+                    pygame.mixer.music.stop()
+                    instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                    show_instruction(display, instruction_font)
+
+                    load_level(current_level)
+                    show_continue_prompt = False
+
+                continue
+
             if setting_button.is_clicked(event.pos):
                 settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                 settings_se.play()
                 settings_open = not settings_open
                 # pygame.display.update()
 
-            elif settings_open:    
+            elif settings_open:
                 if close_button.is_clicked(event.pos):
                     settings_open = False
 
@@ -603,7 +703,7 @@ while running:
                     settings.music_on = True
                     pygame.mixer.music.set_volume(0.5)
                     print('music is on')
-                    
+
                 if close_button.is_hovered(mouse_pos):
                     pygame.mouse.set_cursor(hand_cursor)
 
@@ -615,7 +715,7 @@ while running:
 
                 else:
                     pygame.mouse.set_cursor(default_cursor)
-                    
+
             else:
                 if exit_button.is_clicked(event.pos):
                     exit_se = pygame.mixer.Sound("assets/sound_effect/exit_se.wav")
@@ -624,12 +724,16 @@ while running:
                     running = False
 
                 elif start_button.is_clicked(event.pos):
-                    whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
-                    whoop.play()
-                    pygame.mixer.music.stop()
-                    instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
-                    show_instruction(display, instruction_font)
-                    load_level(current_level)
+                    if os.path.exists(SAVE_FILE):
+                        show_continue_prompt = True
+                    else:
+                        whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
+                        whoop.play()
+                        pygame.mixer.music.stop()
+                        instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+                        show_instruction(display, instruction_font)
+                        load_level(current_level)
+
 
     pygame.display.update()
 pygame.quit()
