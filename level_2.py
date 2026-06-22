@@ -197,7 +197,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
         enter_img = pygame.transform.scale(enter_img, (45, 45))
 
         for letter in letters:
-            img = pygame.image.load(f"materials/button/letter_{letter}.png")
+            img = pygame.image.load(f"assets/Button_alphabet/letter_{letter}.png")
             images[letter] = pygame.transform.scale(img, (45, 45))
 
         button_size = 45

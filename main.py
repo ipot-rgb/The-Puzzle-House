@@ -460,7 +460,7 @@ def credit_scene(screen):
         pygame.display.flip()
         clock.tick(60)
 
-pygame.mixer.music.stop()
+    pygame.mixer.music.stop()
 
 preserved_states = {}
 
