@@ -8,12 +8,24 @@ def run_level_5(screen, hint_manager, preserve_state=False):
     # timer management (for refresh)
     if not hasattr(run_level_5, 'base_start_time'):
         run_level_5.base_start_time = None
+        run_level_5.paused_time = 0
+        run_level_5.timer_paused = False
+        run_level_5.pause_start = 0
 
     if preserve_state and run_level_5.base_start_time is not None:
         start_timer = run_level_5.base_start_time
+        paused_time = run_level_5.paused_time
+        timer_paused = run_level_5.timer_paused
+        pause_start = run_level_5.pause_start
     else:
         start_timer = pygame.time.get_ticks()
         run_level_5.base_start_time = start_timer
+        paused_time = 0
+        run_level_5.paused_time = 0
+        timer_paused = False
+        run_level_5.timer_paused = False
+        pause_start = 0
+        run_level_5.pause_start = 0
 
     #music management (for refresh)
     if not preserve_state:
@@ -180,10 +192,25 @@ def run_level_5(screen, hint_manager, preserve_state=False):
         
         settings_open = False
         run = True
-        
+
+        #timer pause tracking
+        timer_paused = False
+        timer_pause_start = 0
+
         while run:
             # Get mouse position ONCE at the beginning of each frame
             mouse_pos = pygame.mouse.get_pos()
+
+            if settings_open and not timer_paused:
+                timer_paused = True
+                timer_pause_start = pygame.time.get_ticks()
+                run_level_5.timer_paused = True
+                run_level_5.pause_start = timer_pause_start
+            elif not settings_open and timer_paused:
+                timer_paused = False
+                paused_time += pygame.time.get_ticks() - timer_pause_start
+                run_level_5.paused_time = paused_time
+                run_level_5.timer_paused = False
             
             # Handle cursor changes based on mouse position
             if settings_open:
@@ -288,7 +315,8 @@ def run_level_5(screen, hint_manager, preserve_state=False):
                     if enter_clicked:
                         if passcode == correct_passcode:
                             print("✅ You passed!")
-                            timer_sec = (pygame.time.get_ticks() - start_timer) / 1000
+                            total_elapsed = pygame.time.get_ticks() - start_timer - paused_time
+                            timer_sec = total_elapsed / 1000
                             for btn in buttons:
                                 btn.visible = False
                             pygame.display.flip()
@@ -343,7 +371,7 @@ def run_level_5(screen, hint_manager, preserve_state=False):
             if settings_open:
                 overlay = pygame.Surface(screen.get_size())
                 overlay.fill((0, 0, 0))
-                overlay.set_alpha(150)
+                overlay.set_alpha(235)
                 screen.blit(overlay, (0, 0))
                 
                 menu_rect = pygame.Rect(350, 150, 500, 300)
