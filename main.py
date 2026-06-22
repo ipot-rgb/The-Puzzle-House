@@ -11,6 +11,7 @@ levels = {}
 
 for i in range(9):
     module = importlib.import_module(f"level_{i}")
+
     levels[i] = (
         f"level_{i}",
         getattr(module, f"run_level_{i}")
@@ -38,6 +39,7 @@ class Button:
 #===============================
 # Picture class
 #===============================
+
 class picture:
     def __init__(self, path_parts, x, y):
         path = os.path.join(ASSETS_DIR, *path_parts)
@@ -45,14 +47,16 @@ class picture:
         self.x = x
         self.y = y
 
+
 pygame.init()
 
 BASE_DIR = os.path.dirname(__file__)
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
+
 pygame.mixer.init()
 pygame.mixer.music.load(os.path.join("materials", "bgm", "menu_bgm.mp3"))
-pygame.mixer.music.set_volume(0.25)
+pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 
 #===============================
@@ -77,6 +81,7 @@ hand_cursor = pygame.SYSTEM_CURSOR_HAND
 #===============================
 # Main Menu
 #===============================
+
 exit_icon = pygame.image.load(os.path.join(ASSETS_DIR, "Icon", "exit_button.png"))
 exit_icon = pygame.transform.scale(exit_icon, (110, 75))
 exit_button = Button(1125, 587, exit_icon)
@@ -118,15 +123,9 @@ game_complete = False
 message = ""
 message_timer = 0
 
-# Global settings state
-settings_open = False
 
 def cleanup_level():
     import gc
-    global settings_open
-    
-    # Reset settings state
-    settings_open = False
 
     for surface in gc.get_objects():
         if isinstance(surface, pygame.Surface):
@@ -176,10 +175,12 @@ def level_transition(screen, completion_time):
         clock.tick(60)
     pygame.time.wait(2000)
 
+
 # ===============================
 # Transition page for level 0
 # ===============================
 def tutorial_transition(screen):
+
     #stop music and put on sound effect
     pygame.mixer.music.stop()
     sound_tutorial = pygame.mixer.Sound("assets/sound_effect/tutorial_se.wav")
@@ -289,17 +290,149 @@ def tutorial_transition(screen):
 
     pygame.time.wait(500)
 
+
+# ===============================
+# Credit scene
+# ===============================
+def credit_scene(screen):
+    clock = pygame.time.Clock()
+    black_surf = pygame.Surface(screen.get_size())
+    black_surf.fill((0, 0, 0))
+    pink_surf = pygame.Surface(screen.get_size())
+    pink_surf.fill((255, 182, 193))
+
+    # Fonts
+    font_big = pygame.font.Font('Notable-Regular.ttf', 80)
+    font_medium = pygame.font.Font('Notable-Regular.ttf', 52)
+    font_small = pygame.font.Font('Notable-Regular.ttf', 32)
+
+    screen_width = screen.get_width()
+    screen_height = screen.get_height()
+
+    # Part 1: "THE END" screen
+    the_end_text = font_big.render("THE END", True, (255, 255, 255))
+    the_end_rect = the_end_text.get_rect(center=(screen_width // 2, screen_height // 2))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        the_end_text.set_alpha(alpha)
+        screen.blit(the_end_text, the_end_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #display "THE END" for 2 seconds
+    start_time = time.time()
+    while time.time() - start_time < 2:
+        screen.blit(black_surf, (0, 0))
+        the_end_text.set_alpha(255)
+        screen.blit(the_end_text, the_end_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(black_surf, (0, 0))
+        the_end_text.set_alpha(alpha)
+        screen.blit(the_end_text, the_end_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #part 2: CREDIT screen
+    screen.blit(pink_surf, (0, 0))
+    pygame.display.flip()
+
+    #"CREDIT" title at top center
+    credit_title = font_big.render("CREDIT", True, (255, 255, 255))
+    credit_title_rect = credit_title.get_rect(center=(screen_width // 2, 80))
+
+    credit_lines = [
+        "Level designer: Yap Hong Meng & Yong Jia Hooi",
+        "System designer: Shawn Ko Phor Shyuan",
+        "Sound & Effect Producer: Yong Jia Hooi"
+    ]
+
+    credit_texts = []
+    y_offset = 180
+    for line in credit_lines:
+        text = font_small.render(line, True, (255, 255, 255))
+        rect = text.get_rect(topleft=(80, y_offset))
+        credit_texts.append((text, rect))
+        y_offset += 45
+
+    #"Presented by" line (with 4 lines of space)
+    presented_y = y_offset + (45 * 4)  # 4 lines of space
+    presented_by = font_small.render("Presented by: G068", True, (255, 255, 255))
+    presented_rect = presented_by.get_rect(topleft=(80, presented_y))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(pink_surf, (0, 0))
+        credit_title.set_alpha(alpha)
+        screen.blit(credit_title, credit_title_rect)
+        for text, rect in credit_texts:
+            text.set_alpha(alpha)
+            screen.blit(text, rect)
+        presented_by.set_alpha(alpha)
+        screen.blit(presented_by, presented_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #display credit screen for 5 seconds
+    start_time = time.time()
+    while time.time() - start_time < 5:
+        screen.blit(pink_surf, (0, 0))
+        screen.blit(credit_title, credit_title_rect)
+        for text, rect in credit_texts:
+            screen.blit(text, rect)
+        screen.blit(presented_by, presented_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(pink_surf, (0, 0))
+        credit_title.set_alpha(alpha)
+        screen.blit(credit_title, credit_title_rect)
+        for text, rect in credit_texts:
+            text.set_alpha(alpha)
+            screen.blit(text, rect)
+        presented_by.set_alpha(alpha)
+        screen.blit(presented_by, presented_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #part 3: "THANK YOU FOR PLAYING" screen
+    thank_you_text = font_medium.render("THANK YOU FOR PLAYING", True, (255, 255, 255))
+    thank_you_rect = thank_you_text.get_rect(center=(screen_width // 2, screen_height // 2))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        thank_you_text.set_alpha(alpha)
+        screen.blit(thank_you_text, thank_you_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #display "THANK YOU FOR PLAYING" for 3 seconds
+    start_time = time.time()
+    while time.time() - start_time < 3:
+        screen.blit(black_surf, (0, 0))
+        thank_you_text.set_alpha(255)
+        screen.blit(thank_you_text, thank_you_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(black_surf, (0, 0))
+        thank_you_text.set_alpha(alpha)
+        screen.blit(thank_you_text, thank_you_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+
 preserved_states = {}
 
 # ===============================
 # LEVEL FUNCTION MAP
 # ===============================
 def load_level(level):
-    global message, message_timer, current_screen, settings_open
-    
-    # Reset settings state when loading a level
-    settings_open = False
-    
+    global message, message_timer, current_screen
     print(f"Loading Level {level}...")
 
     pygame.mixer.music.stop()
@@ -313,18 +446,20 @@ def load_level(level):
 
 def complete_level(completion_time):
     global current_level, level_complete, game_complete
-    global message, message_timer, current_screen, settings_open
+    global message, message_timer, current_screen
 
-    # Reset settings state when completing a level
-    settings_open = False
+    is_last_level = (current_level == 8)
 
     if completion_time is not None:
         level_transition(display, completion_time)
-    else:
+    else :
         pygame.time.wait(1000)
 
     if current_level == 0:
         tutorial_transition(display)
+
+    if is_last_level:
+        credit_scene(display)
 
     cleanup_level()
 
@@ -348,9 +483,11 @@ def complete_level(completion_time):
         print("Game complete!")
         time.sleep(2)
 
+
 #===============================
 # Game loop
 #===============================
+settings_open = False
 running = True
 current_screen = "menu"
 menu_list = [1,2,3,4,5,6,7,8,9,0]
@@ -410,12 +547,13 @@ while running:
     # LEVEL HANDLER
     # ===============================
     elif current_screen.startswith("level_"):
+
         preserve_state = preserved_states.get(current_screen, False)
 
         # level function
         for lvl, (name, func) in levels.items():
             if name == current_screen:
-                result = func(display, hint_manager, preserve_state=preserve_state)
+                result = func(display, hint_manager,  preserve_state=preserve_state)
                 break
         else:
             result = None
@@ -423,7 +561,7 @@ while running:
         # ===============================
         # RESULT HANDLING
         # ===============================
-        if isinstance(result, tuple):
+        if isinstance(result, tuple) :
             if result[0] == "complete":
                 completion_time = result[1]
                 complete_level(completion_time)
@@ -434,15 +572,12 @@ while running:
 
         elif result == "menu":
             current_screen = "menu"
-            settings_open = False
         elif result == "quit":
             running = False
         elif result == "complete":  #fallback for old levels without timer
             complete_level(None)
 
-    # ===============================
-    # EVENT HANDLING
-    # ===============================
+    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -453,6 +588,7 @@ while running:
                 settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                 settings_se.play()
                 settings_open = not settings_open
+                # pygame.display.update()
 
             elif settings_open:    
                 if close_button.is_clicked(event.pos):
@@ -465,7 +601,7 @@ while running:
 
                 elif (not settings.music_on) and off_button.is_clicked(event.pos):
                     settings.music_on = True
-                    pygame.mixer.music.set_volume(0.25)
+                    pygame.mixer.music.set_volume(0.5)
                     print('music is on')
                     
                 if close_button.is_hovered(mouse_pos):
@@ -496,5 +632,4 @@ while running:
                     load_level(current_level)
 
     pygame.display.update()
-
 pygame.quit()
