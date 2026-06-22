@@ -321,6 +321,141 @@ def tutorial_transition(screen):
     pygame.time.wait(500)
 
 
+# ===============================
+# Credit scene
+# ===============================
+def credit_scene(screen):
+    clock = pygame.time.Clock()
+    black_surf = pygame.Surface(screen.get_size())
+    black_surf.fill((0, 0, 0))
+    pink_surf = pygame.Surface(screen.get_size())
+    pink_surf.fill((255, 182, 193))
+
+    # Fonts
+    font_big = pygame.font.Font('Notable-Regular.ttf', 80)
+    font_medium = pygame.font.Font('Notable-Regular.ttf', 52)
+    font_small = pygame.font.Font('Notable-Regular.ttf', 32)
+
+    screen_width = screen.get_width()
+    screen_height = screen.get_height()
+
+    # Part 1: "THE END" screen
+    the_end_text = font_big.render("THE END", True, (255, 255, 255))
+    the_end_rect = the_end_text.get_rect(center=(screen_width // 2, screen_height // 2))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        the_end_text.set_alpha(alpha)
+        screen.blit(the_end_text, the_end_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #display "THE END" for 2 seconds
+    start_time = time.time()
+    while time.time() - start_time < 2:
+        screen.blit(black_surf, (0, 0))
+        the_end_text.set_alpha(255)
+        screen.blit(the_end_text, the_end_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(black_surf, (0, 0))
+        the_end_text.set_alpha(alpha)
+        screen.blit(the_end_text, the_end_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #part 2: CREDIT screen
+    screen.blit(pink_surf, (0, 0))
+    pygame.display.flip()
+
+    #"CREDIT" title at top center
+    credit_title = font_big.render("CREDIT", True, (255, 255, 255))
+    credit_title_rect = credit_title.get_rect(center=(screen_width // 2, 80))
+
+    credit_lines = [
+        "Level designer: Yap Hong Meng & Yong Jia Hooi",
+        "System designer: Shawn Ko Phor Shyuan",
+        "Sound & Effect Producer: Yong Jia Hooi"
+    ]
+
+    credit_texts = []
+    y_offset = 180
+    for line in credit_lines:
+        text = font_small.render(line, True, (255, 255, 255))
+        rect = text.get_rect(topleft=(80, y_offset))
+        credit_texts.append((text, rect))
+        y_offset += 45
+
+    #"Presented by" line (with 4 lines of space)
+    presented_y = y_offset + (45 * 4)  # 4 lines of space
+    presented_by = font_small.render("Presented by: G068", True, (255, 255, 255))
+    presented_rect = presented_by.get_rect(topleft=(80, presented_y))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(pink_surf, (0, 0))
+        credit_title.set_alpha(alpha)
+        screen.blit(credit_title, credit_title_rect)
+        for text, rect in credit_texts:
+            text.set_alpha(alpha)
+            screen.blit(text, rect)
+        presented_by.set_alpha(alpha)
+        screen.blit(presented_by, presented_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #display credit screen for 5 seconds
+    start_time = time.time()
+    while time.time() - start_time < 5:
+        screen.blit(pink_surf, (0, 0))
+        screen.blit(credit_title, credit_title_rect)
+        for text, rect in credit_texts:
+            screen.blit(text, rect)
+        screen.blit(presented_by, presented_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(pink_surf, (0, 0))
+        credit_title.set_alpha(alpha)
+        screen.blit(credit_title, credit_title_rect)
+        for text, rect in credit_texts:
+            text.set_alpha(alpha)
+            screen.blit(text, rect)
+        presented_by.set_alpha(alpha)
+        screen.blit(presented_by, presented_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #part 3: "THANK YOU FOR PLAYING" screen
+    thank_you_text = font_medium.render("THANK YOU FOR PLAYING", True, (255, 255, 255))
+    thank_you_rect = thank_you_text.get_rect(center=(screen_width // 2, screen_height // 2))
+
+    for alpha in range(0, 256, 5):
+        screen.blit(black_surf, (0, 0))
+        thank_you_text.set_alpha(alpha)
+        screen.blit(thank_you_text, thank_you_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    #display "THANK YOU FOR PLAYING" for 3 seconds
+    start_time = time.time()
+    while time.time() - start_time < 3:
+        screen.blit(black_surf, (0, 0))
+        thank_you_text.set_alpha(255)
+        screen.blit(thank_you_text, thank_you_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+    for alpha in range(255, -1, -5):
+        screen.blit(black_surf, (0, 0))
+        thank_you_text.set_alpha(alpha)
+        screen.blit(thank_you_text, thank_you_rect)
+        pygame.display.flip()
+        clock.tick(60)
+
+
 preserved_states = {}
 
 # ===============================
@@ -343,6 +478,8 @@ def complete_level(completion_time):
     global current_level, level_complete, game_complete
     global message, message_timer, current_screen
 
+    is_last_level = (current_level == 8)
+
     if completion_time is not None:
         level_transition(display, completion_time)
     else :
@@ -350,6 +487,9 @@ def complete_level(completion_time):
 
     if current_level == 0:
         tutorial_transition(display)
+
+    if is_last_level:
+        credit_scene(display)
 
     cleanup_level()
 
