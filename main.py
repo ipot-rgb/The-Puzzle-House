@@ -10,6 +10,12 @@ BASE_DIR = os.path.dirname(__file__)
 ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 SAVE_FILE = os.path.join(BASE_DIR, "save_data.json")
 
+def play_menu_music():
+    """播放主菜单背景音乐"""
+    pygame.mixer.music.load(os.path.join("materials", "bgm", "menu_bgm.mp3"))
+    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.play(-1)
+
 def save_game():
     data = {
         "current_level": current_level
@@ -18,13 +24,23 @@ def save_game():
         json.dump(data, f)
     print("Game saved!")
 
-def load_game():
+def load_game(skip_instruction=False):
     global current_level
     if os.path.exists(SAVE_FILE):
         with open(SAVE_FILE, "r") as f:
             data = json.load(f)
             current_level = data.get("current_level", 0)
         print("Save loaded!")
+        
+        if not skip_instruction:
+            # 只在需要时显示 instruction
+            whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
+            whoop.play()
+            pygame.mixer.music.stop()
+            instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
+            show_instruction(display, instruction_font)
+        
+        load_level(current_level)
         return True
     return False
 
@@ -85,9 +101,7 @@ ASSETS_DIR = os.path.join(BASE_DIR, "assets")
 
 
 pygame.mixer.init()
-pygame.mixer.music.load(os.path.join("materials", "bgm", "menu_bgm.mp3"))
-pygame.mixer.music.set_volume(0.5)
-pygame.mixer.music.play(-1)
+play_menu_music()  # 使用统一的音乐播放函数
 
 #===============================
 # Set up the display screen
@@ -167,7 +181,7 @@ def cleanup_level():
 # Level transition function
 # ===============================
 def level_transition(screen, completion_time):
-    pygame.mixer.music.stop()
+    pygame.mixer.music.fadeout(300)  # 使用淡出而不是立即停止
 
     clock = pygame.time.Clock()
     black_surf = pygame.Surface(screen.get_size())
@@ -212,7 +226,7 @@ def level_transition(screen, completion_time):
 def tutorial_transition(screen):
 
     #stop music and put on sound effect
-    pygame.mixer.music.stop()
+    pygame.mixer.music.fadeout(300)  # 使用淡出
     sound_tutorial = pygame.mixer.Sound("assets/sound_effect/tutorial_se.wav")
     sound_tutorial.play()
     time.sleep(1)
@@ -326,7 +340,7 @@ def tutorial_transition(screen):
 # ===============================
 def credit_scene(screen):
     
-    pygame.mixer.music.stop()
+    pygame.mixer.music.fadeout(300)
     pygame.mixer.music.load(os.path.join("materials", "bgm", "The_end.mp3"))
     pygame.mixer.music.set_volume(0.5)
     pygame.mixer.music.play(-1)
@@ -460,7 +474,8 @@ def credit_scene(screen):
         pygame.display.flip()
         clock.tick(60)
 
-    pygame.mixer.music.stop()
+    # 返回菜单后重新播放菜单音乐
+    play_menu_music()
 
 preserved_states = {}
 
@@ -471,12 +486,14 @@ def load_level(level):
     global message, message_timer, current_screen
     print(f"Loading Level {level}...")
 
-    pygame.mixer.music.stop()
+    # 淡出当前音乐而不是立即停止
+    pygame.mixer.music.fadeout(300)
 
     if level in levels:
         current_screen = levels[level][0]   # "level_x"
     else:
         current_screen = "menu"
+        play_menu_music()  # 返回菜单时播放音乐
 
     return current_screen
 
@@ -518,6 +535,9 @@ def complete_level(completion_time):
         message = "Congratulations! You completed all levels!"
         message_timer = 180
         current_screen = "menu"
+        
+        # 返回菜单时重新播放菜单音乐
+        play_menu_music()
 
         print("Game complete!")
         time.sleep(2)
@@ -542,6 +562,10 @@ while running:
     # MENU
     # ===============================
     if current_screen == "menu":
+        # 确保菜单音乐在播放
+        if not pygame.mixer.music.get_busy():
+            play_menu_music()
+        
         display.blit(brg.name, (brg.x, brg.y))
 
         text_title = font.render("The Puzzle House", True, (0, 0, 0))
@@ -642,6 +666,7 @@ while running:
 
         elif result == "menu":
             current_screen = "menu"
+            play_menu_music()  # 返回菜单时播放音乐
         elif result == "quit":
             running = False
         elif result == "complete":  #fallback for old levels without timer
@@ -656,16 +681,8 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if show_continue_prompt:
                 if continue_rect and continue_rect.collidepoint(event.pos):
-                    load_game()
-
-                    whoop = pygame.mixer.Sound("assets/sound_effect/whoop_se.wav")
-                    whoop.play()
-
-                    pygame.mixer.music.stop()
-                    instruction_font = pygame.font.Font('Notable-Regular.ttf', 28)
-                    show_instruction(display, instruction_font)
-
-                    load_level(current_level)
+                    # 加载存档并跳过 instruction
+                    load_game(skip_instruction=True)
                     show_continue_prompt = False
 
                 elif newgame_rect and newgame_rect.collidepoint(event.pos):
