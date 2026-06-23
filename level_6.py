@@ -394,7 +394,22 @@ def run_level_6(screen, hint_manager, preserve_state=False):
                 screen.blit(text, (450, 300))
 
                 close_button.update(screen)
+                if timer_paused:
+                    total_elapsed = timer_pause_start - start_timer - paused_time
+                else:
+                    total_elapsed = pygame.time.get_ticks() - start_timer - paused_time
+                timer_sec = total_elapsed / 1000
+                # print(f"Current time: {timer_sec:.2f} seconds")
 
+                # ===== Display Timer =====
+                timer_font = pygame.font.Font('Orbitron-VariableFont_wght.ttf', 36)
+                minutes = int(timer_sec // 60)
+                seconds = int(timer_sec % 60)
+                milliseconds = int((timer_sec % 1) * 100)
+                timer_text = f"{minutes:02d}:{seconds:02d}.{milliseconds:02d}"
+                time_surface = timer_font.render(timer_text, True, (255, 255, 255))
+                screen.blit(time_surface, (510, 390)) 
+                
             # Hint and Refresh buttons
             screen.blit(hint_img, hint_button_rect)
             screen.blit(refresh_img, refresh_button_rect)
