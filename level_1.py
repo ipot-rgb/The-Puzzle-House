@@ -269,14 +269,14 @@ def run_level_1(screen, hint_manager, preserve_state=False):
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     click_pos = event.pos
                     
-                    # ===== 1. Settings Button (最高优先级) =====
+                    # ===== 1. Settings Button =====
                     if setting_button.is_clicked(click_pos):
                         settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                         settings_se.play()
                         settings_open = not settings_open
                         continue
                     
-                    # ===== 2. Settings Menu (如果 settings 打开) =====
+                    # ===== 2. Settings Menu =====
                     if settings_open:
                         if close_button.is_clicked(click_pos):
                             settings_open = False

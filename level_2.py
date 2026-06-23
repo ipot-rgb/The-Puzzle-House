@@ -319,7 +319,7 @@ def run_level_2(screen, hint_manager, preserve_state=False):
                 else:
                     pygame.mouse.set_cursor(default_cursor)
             
-            # ========== 事件处理 ==========
+            # ========== Event Handling ==========
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return "quit"

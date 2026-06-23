@@ -240,14 +240,14 @@ def run_level_5(screen, hint_manager, preserve_state=False):
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     click_pos = event.pos
                     
-                    # ===== 1. Settings Button (最高优先级) =====
+                    # ===== 1. Settings Button =====
                     if setting_button.is_clicked(click_pos):
                         settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                         settings_se.play()
                         settings_open = not settings_open
                         continue
                     
-                    # ===== 2. Settings Menu (如果 settings 打开) =====
+                    # ===== 2. Settings Menu =====
                     if settings_open:
                         if close_button.is_clicked(click_pos):
                             settings_open = False
@@ -265,10 +265,9 @@ def run_level_5(screen, hint_manager, preserve_state=False):
                             pygame.mixer.music.set_volume(settings.music_volume)
                             print("music is on")
                             continue
-                        # 如果 settings 打开，不处理其他任何点击
                         continue
                     
-                    # ===== 3. 如果 settings 没打开，处理游戏按钮 =====
+                    # ===== 3. If settings is not open, handle game buttons =====
                     # Hint button
                     if hint_button_rect.collidepoint(click_pos):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
@@ -342,15 +341,12 @@ def run_level_5(screen, hint_manager, preserve_state=False):
                             break
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    # ✅ 只在 settings 关闭时释放 puzzle
                     if not settings_open:
                         active_puzzle = None
 
                 elif event.type == pygame.MOUSEMOTION:
-                    # ✅ 只在 settings 关闭时拖动 puzzle
                     if not settings_open and active_puzzle is not None:
                         puzzles[active_puzzle]["rect"].move_ip(event.rel)
-                        # 添加边界限制
                         rect = puzzles[active_puzzle]["rect"]
                         rect.x = max(0, min(rect.x, screen_width - rect.width))
                         rect.y = max(0, min(rect.y, screen_height - rect.height))

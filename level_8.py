@@ -240,14 +240,14 @@ def run_level_8(screen, hint_manager, preserve_state=False):
                 elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     click_pos = event.pos
                     
-                    # ===== 1. Settings Button (最高优先级) =====
+                    # ===== 1. Settings Button =====
                     if setting_button.is_clicked(click_pos):
                         settings_se = pygame.mixer.Sound("assets/sound_effect/setting_se.wav")
                         settings_se.play()
                         settings_open = not settings_open
                         continue
                     
-                    # ===== 2. Settings Menu (如果 settings 打开) =====
+                    # ===== 2. Settings Menu =====
                     if settings_open:
                         if close_button.is_clicked(click_pos):
                             settings_open = False
@@ -265,10 +265,9 @@ def run_level_8(screen, hint_manager, preserve_state=False):
                             pygame.mixer.music.set_volume(settings.music_volume)
                             print("music is on")
                             continue
-                        # 如果 settings 打开，不处理其他任何点击
                         continue
                     
-                    # ===== 3. 如果 settings 没打开，处理游戏按钮 =====
+                    # ===== 3. If settings is not open, handle game buttons =====
                     # Hint button
                     if hint_button_rect.collidepoint(click_pos):
                         ding = pygame.mixer.Sound("assets/sound_effect/ding_se.wav")
@@ -335,19 +334,19 @@ def run_level_8(screen, hint_manager, preserve_state=False):
                             print("Game reset. Try again.")
                         continue
                     
-                    # ===== 4. Puzzle Dragging (只在 settings 关闭时) =====
+                    # ===== 4. Puzzle Dragging =====
                     for i, p in enumerate(puzzles):
                         if p["rect"].collidepoint(click_pos):
                             active_puzzle = i
                             break
 
                 elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                    # ✅ 只在 settings 关闭时释放 puzzle
+                    # ✅ Only release puzzle if settings is closed
                     if not settings_open:
                         active_puzzle = None
 
                 elif event.type == pygame.MOUSEMOTION:
-                    # ✅ 只在 settings 关闭时拖动 puzzle
+                    # ✅ Only allow dragging if settings is closed and a puzzle is active
                     if not settings_open and active_puzzle is not None:
                         puzzles[active_puzzle]["rect"].move_ip(event.rel)
                         rect = puzzles[active_puzzle]["rect"]

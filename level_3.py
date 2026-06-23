@@ -351,7 +351,7 @@ def run_level_3(screen, hint_manager, preserve_state=False):
                             passcode = []
                         continue
                     
-                    # ===== 4. Puzzle Dragging (只在 settings 关闭时) =====
+                    # ===== 4. Puzzle Dragging =====
                     # Check if click is on any puzzle
                     for i, p in enumerate(puzzles):
                         if p["rect"].collidepoint(click_pos):
