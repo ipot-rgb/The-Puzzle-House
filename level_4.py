@@ -154,13 +154,13 @@ def run_level_4(screen, hint_manager, preserve_state=False):
         for i in range(1, 4):
             img = pygame.image.load(f"assets/Level_12/cat_0{i}.png")
             if i == 3:
-                img = pygame.transform.scale(img, (200, 400))
+                img = pygame.transform.scale(img, (100, 200))
                 rect = img.get_rect(topleft=(200, 50))
             elif i == 2:
-                img = pygame.transform.scale(img, (250, 550))
+                img = pygame.transform.scale(img, (200, 500))
                 rect = img.get_rect(topleft=(50, 100))
             else:
-                img = pygame.transform.scale(img, (205, 505))
+                img = pygame.transform.scale(img, (155, 455))
                 rect = img.get_rect(topleft=(400, 80))
 
             puzzles.append({"img": img, "rect": rect, "original_rect": rect.copy()})
